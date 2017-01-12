@@ -1,0 +1,19 @@
+<h1 class="center">{{stateName()}}</h1>
+<div class="grid" ngClass="{{stateName() | lowercase }}">
+  <div class="strip" *ngFor="let strip of grid.gridState; let i = index">
+    <div class="beat" *ngFor="let beatState of strip; let j = index"
+         (click)="setBeatState(i, j)">
+      <div class="quarter" *ngIf="beatState === 1"></div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="showCount()">
+    <div class="counter">{{beat}}</div>
+  </div>
+  <div class="position" *ngIf="showPosition()" [style.left]="(gridLoop.progress * 100) + '%'"></div>
+</div>
+<div class="info">
+  Round: {{round}}
+  Beat: {{beat}}
+  NextState: {{nextState}}
+  GoalNotes: {{grid.numGoalNotes}}
+</div>

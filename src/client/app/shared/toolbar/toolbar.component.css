@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  height: 110px;
+  margin-left: 48px;
+  padding: 15px;
+}
+
+h1 {
+  color: #1777CB;
+  display: inline;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 48px;
+
+}
+
+.sub {
+  color: #333;
+}

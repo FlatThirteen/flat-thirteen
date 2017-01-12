@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  padding: 25px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  margin: 10px;
+  text-align: center;
+  width: 100%;
+}
