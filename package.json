@@ -1,9 +1,9 @@
 {
-  "name": "angular-seed",
+  "name": "flat-thirteen",
   "version": "0.0.0",
-  "description": "Modular starter project for Angular 2 (and beyond) with statically typed build and AoT compilation",
+  "description": "Flat Thirteen Web Client",
   "repository": {
-    "url": "https://github.com/mgechev/angular-seed"
+    "url": "https://github.com/flatthirteen/flat-thirteen"
   },
   "scripts": {
     "build.dev": "gulp build.dev --color --env-config dev",
@@ -55,6 +55,7 @@
     "@types/gulp-sass": "^0.0.29",
     "@types/gulp-util": "^3.0.29",
     "@types/jasmine": "^2.5.35",
+    "@types/lodash": "^4.14.48",
     "@types/node": "^6.0.45",
     "@types/protractor": "^1.5.20",
     "@types/rimraf": "0.0.28",
@@ -134,10 +135,12 @@
     "@angular/platform-browser": "~2.4.0",
     "@angular/platform-browser-dynamic": "~2.4.0",
     "@angular/router": "~3.4.1",
+    "@ngrx/core": "^1.2.0",
     "@ngrx/router-store": "^1.2.5",
     "@ngrx/store": "^2.2.1",
     "core-js": "^2.4.1",
     "intl": "^1.2.5",
+    "lodash": "^4.17.4",
     "reflect-metadata": "^0.1.8",
     "rxjs": "5.0.2",
     "systemjs": "0.19.41",
