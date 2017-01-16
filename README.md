@@ -23,6 +23,13 @@ Use `yarn run compile` instead, it compiles and builds:aot
 The scripts are set to compile css next to scss because ngc compiler does not support Sass.
 To compile scss, use `yarn run sass`, but many of the scripts will either build or watch scss files.
 
+### Testing
+
+For unit tests, use `yarn run test` for continuous testing in watch mode and use
+`yarn run test:once` for single test. To view code coverage after running test, open `coverage/html/index.html` in your browser.
+
+For e2e tests, use `yarn run e2e`. To run unit test and e2e test at the same time, use `yarn run ci`.
+
 ## Seed Features
 
 * Angular 2
@@ -47,10 +54,3 @@ To compile scss, use `yarn run sass`, but many of the scripts will either build 
   * ngrx-store-freeze in dev mode (@ngrx/store meta reducer that prevents state from being mutated.)
 * Karma/Jasmine testing
 * Protractor for E2E testing
-
-### Testing
-
-For unit tests, use `yarn run test` for continuous testing in watch mode and use
-`yarn run test:once` for single test. To view code coverage after running test, open `coverage/html/index.html` in your browser.
-
-For e2e tests, use `yarn run e2e`. To run unit test and e2e test at the same time, use `yarn run ci`.
