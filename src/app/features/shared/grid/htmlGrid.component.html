@@ -1,0 +1,13 @@
+<div class="grid" ngClass="{{grid.stateName() | lowercase }}">
+  <div class="strip" *ngFor="let strip of grid.gridValues; let i = index">
+    <div class="beat" *ngFor="let beatState of strip; let j = index"
+         (click)="onToggle(i, j)">
+      <div class="quarter" *ngIf="beatState === 1"></div>
+    </div>
+  </div>
+  <div class="overlay" *ngIf="grid.showOverlay()">
+    <div class="paused" *ngIf="grid.paused" (click)="grid.start()">Click to start</div>
+    <div class="counter" *ngIf="!grid.paused">{{grid.beat}}</div>
+  </div>
+  <div class="position" *ngIf="grid.showPosition()" [style.left]="(grid.gridLoop.progress * 100) + '%'"></div>
+</div>
