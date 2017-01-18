@@ -4,6 +4,8 @@ import { Grid } from '../shared/grid/grid';
 
 import * as Tone from 'tone';
 
+import { GridComponent } from '../shared/grid/grid.component';
+
 /**
  * This class represents the lazy loaded A1Component.
  */
@@ -11,7 +13,7 @@ import * as Tone from 'tone';
   moduleId: module.id,
   selector: '.a1',
   templateUrl: 'a1.component.html',
-  styleUrls: ['a1.component.css'],
+  styleUrls: ['a1.component.css']
 })
 export class A1Component implements OnInit {
   gridLoop: Tone.Loop;

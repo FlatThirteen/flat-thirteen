@@ -5,11 +5,14 @@ import { routes } from './a1.routing';
 
 import { A1Component } from './a1.component';
 
+import { GridModule } from '../shared/grid/index';
+
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    GridModule
   ],
   declarations: [
     A1Component
