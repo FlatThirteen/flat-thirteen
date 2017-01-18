@@ -72,6 +72,7 @@
     "build:dev": "npm run clean:dist && npm run sass && webpack",
     "build:dll": "npm run clean:dll && npm run sass && webpack",
     "build:prod": "npm run clean:dist && npm run sass && webpack",
+    "build:prod:deploy": "npm run clean:dist && npm run sass && webpack",
     "build:prod:e2e": "npm run clean:dist && npm run sass && webpack",
     "build:universal": "npm run build:universal:prod",
     "build:universal:aot": "npm run build:universal:aot:prod",

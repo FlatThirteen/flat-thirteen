@@ -42,6 +42,7 @@ const HMR = hasProcessFlag('hot');
 const PROD = EVENT.includes('prod');
 const WATCH = hasProcessFlag('watch');
 const UNIVERSAL = EVENT.includes('universal');
+const DEPLOY = EVENT.includes('deploy');
 
 let port: number;
 if (!UNIVERSAL) {
@@ -198,11 +199,11 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       }),
       ...MY_CLIENT_PRODUCTION_PLUGINS,
     );
-    /*if (!E2E && !WATCH && !UNIVERSAL) {
+    if (!E2E && !WATCH && !UNIVERSAL && !DEPLOY) {
       config.plugins.push(
         new BundleAnalyzerPlugin({analyzerPort: 5000})
       );
-    }*/
+    }
   }
 
   return config;
