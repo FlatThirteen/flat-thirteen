@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 
-import { GridComponent } from './grid.component';
+import { PixiGridComponent } from './pixi/pixiGrid.component';
 
 
 @NgModule({
   declarations: [
-    GridComponent
+    PixiGridComponent
   ], 
   exports: [
-      GridComponent
+      PixiGridComponent
   ]
 })
 

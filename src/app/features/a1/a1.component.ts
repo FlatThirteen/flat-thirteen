@@ -4,7 +4,7 @@ import { Grid } from '../shared/grid/grid';
 
 import * as Tone from 'tone';
 
-import { GridComponent } from '../shared/grid/grid.component';
+import { PixiGridComponent } from '../shared/grid/pixi/pixiGrid.component';
 
 /**
  * This class represents the lazy loaded A1Component.

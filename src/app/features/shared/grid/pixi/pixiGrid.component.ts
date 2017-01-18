@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
  
 @Component({
-    selector: 'grid-component',
-    templateUrl: 'grid.component.html'
+    selector: 'pixi-grid-component',
+    templateUrl: 'pixiGrid.component.html'
 })
  
-export class GridComponent implements OnInit {
+export class PixiGridComponent implements OnInit {
     renderer: PIXI.SystemRenderer;
 
     constructor() {
