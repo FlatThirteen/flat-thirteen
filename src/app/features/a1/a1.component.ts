@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
+import { BeatService } from "../shared/beat.service";
+import { GoalService } from "../shared/goal.service";
 import { GridService } from "../shared/grid/grid.service";
 
 let requestAnimationFrameId: number;
@@ -18,10 +20,11 @@ export class A1Component implements OnInit, OnDestroy {
   /**
    * Creates an instance of the A1Component.
    */
-  constructor(private grid: GridService) {}
+  constructor(private beat: BeatService, private goal: GoalService, private grid: GridService) {}
 
   /**
-   * Get the names OnInit
+   * Starts up the requestAnimationFrame loop so that the browser redraws the
+   * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
     function draw() {
@@ -32,7 +35,7 @@ export class A1Component implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     window.cancelAnimationFrame(requestAnimationFrameId);
-    this.grid.stop(true);
+    this.beat.stop(true);
   }
 
 }

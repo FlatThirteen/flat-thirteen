@@ -6,8 +6,8 @@
     </div>
   </div>
   <div class="overlay" *ngIf="grid.showOverlay()">
-    <div class="paused" *ngIf="grid.paused" (click)="grid.start()">Click to start</div>
-    <div class="counter" *ngIf="!grid.paused">{{grid.beat}}</div>
+    <div class="paused" *ngIf="beat.paused" (click)="beat.start()">Click to start</div>
+    <div class="counter" *ngIf="!beat.paused">{{beat.count()}}</div>
   </div>
-  <div class="position" *ngIf="grid.showPosition()" [style.left]="(grid.gridLoop.progress * 100) + '%'"></div>
+  <div class="position" *ngIf="grid.showPosition()" [style.left]="(beat.progress() * 100) + '%'"></div>
 </div>

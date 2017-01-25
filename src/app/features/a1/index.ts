@@ -4,8 +4,10 @@ import { RouterModule } from '@angular/router';
 import { routes } from './a1.routing';
 
 import { A1Component } from './a1.component';
+import { BeatService } from '../shared/beat.service';
 import { GridModule } from '../shared/grid/index';
-import { GridService } from '../shared/grid/grid.service'
+import { GridService } from '../shared/grid/grid.service';
+import { GoalService } from "../shared/goal.service";
 
 @NgModule({
   imports: [
@@ -17,6 +19,8 @@ import { GridService } from '../shared/grid/grid.service'
     A1Component
   ],
   providers: [
+    BeatService,
+    GoalService,
     GridService
   ]
 })

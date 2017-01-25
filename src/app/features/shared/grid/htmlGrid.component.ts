@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { KickInstrument, SnareInstrument } from "../instruments/instrument";
+import { KickSound, SnareSound } from "../sounds/sound";
+import { BeatService } from "../beat.service";
 import { GridService } from './grid.service';
 
 /**
@@ -16,13 +17,14 @@ export class HtmlGridComponent implements OnInit {
   /**
    * Creates an instance of the A1Component.
    */
-  constructor(private grid: GridService) {}
+  constructor(private beat: BeatService, private grid: GridService) {}
 
   /**
    * Get the names OnInit
    */
   ngOnInit() {
-    this.grid.resetStage([new SnareInstrument(), new KickInstrument], 4);
+    this.beat.reset();
+    this.grid.resetStage([new SnareSound(), new KickSound]);
   }
 
   onToggle(stripIndex: number, beatIndex: number) {
