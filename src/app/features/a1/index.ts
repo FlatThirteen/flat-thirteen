@@ -4,9 +4,8 @@ import { RouterModule } from '@angular/router';
 import { routes } from './a1.routing';
 
 import { A1Component } from './a1.component';
-
 import { GridModule } from '../shared/grid/index';
-
+import { GridService } from '../shared/grid/grid.service'
 
 @NgModule({
   imports: [
@@ -16,6 +15,9 @@ import { GridModule } from '../shared/grid/index';
   ],
   declarations: [
     A1Component
+  ],
+  providers: [
+    GridService
   ]
 })
 

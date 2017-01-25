@@ -1,15 +1,20 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { PixiGridComponent } from './pixi/pixiGrid.component';
+import { HtmlGridComponent } from './htmlGrid.component';
 
 
 @NgModule({
+  imports: [
+    CommonModule
+  ],
   declarations: [
-    PixiGridComponent
-  ], 
+    HtmlGridComponent
+  ],
   exports: [
-      PixiGridComponent
+    HtmlGridComponent
   ]
 })
 
-export class GridModule {};
+export class GridModule {}
+
