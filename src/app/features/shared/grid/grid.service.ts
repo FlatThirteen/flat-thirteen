@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
-import * as Tone from 'tone';
 
-import { Instrument } from '../instruments/instrument';
+import { Sound } from '../sounds/sound';
+import { BeatService } from "../beat.service";
+import { GoalService } from "../goal.service";
+import { MonophonicMonotonePhraseBuilder } from "../phrase";
+import { Note } from "../note";
 
-const livePlayWithin: number = 0.3;
 
 enum State {
   Count,
@@ -16,84 +18,34 @@ enum State {
 
 @Injectable()
 export class GridService {
-  gridLoop: Tone.Loop;
-  noteLoop: Tone.Loop;
-
-  paused: boolean = true;
   state: State;
   nextState: State = State.Count;
   round: number = 0;
-  beat: number = 0;
   active: boolean = false;
   inactiveRounds: number = 0;
 
   numStrips: number;
-  numBeats: number;
-  sounds: Instrument[];
+  sounds: Sound[];
   gridValues: number[][];
-  goalValues: number[][];
-  playedValues: number[][];
-  numGoalNotes: number;
 
-  initializeIfNeeded() {
-    if (!this.gridLoop) {
-      this.gridLoop = new Tone.Loop((time) => { this.onTop() }, '1m');
-      this.gridLoop.start(0);
-
-      this.noteLoop = new Tone.Loop((time) => { this.onBeat() }, '4n');
-      this.noteLoop.start(0);
-    }
+  constructor(private beat: BeatService, private goal: GoalService) {
+    beat.setOnTop((time: number) => this.onTop(time));
+    beat.setOnPulse((time: number, measure: number, beat: number, pulse: number) => this.onPulse(time, beat));
   }
 
-  resetStage(sounds?: Instrument[], numBeats?: number) {
-    this.initializeIfNeeded();
+  resetStage(sounds?: Sound[]) {
     this.sounds = sounds || this.sounds;
     this.numStrips = this.sounds.length;
-    this.numBeats = numBeats || this.numBeats;
-    this.gridValues = _.times(this.numStrips, () => _.fill(Array(this.numBeats), 0));
-    this.clearPlayed();
-    this.newGoal(4);
+    this.gridValues = _.times(this.numStrips, () => _.fill(Array(this.beat.numBeats), 0));
+    this.goal.newGoal(new MonophonicMonotonePhraseBuilder(this.sounds, [1, 0, 0, 0]));
   }
 
-  clearPlayed() {
-    this.playedValues = _.times(this.numStrips, () => []); // TODO: Replace with _.stubArray when @types/lodash updated
-  }
-
-  newGoal(maxNotes: number) {
-    this.numGoalNotes = 0;
-    this.goalValues = _.times(this.numStrips, () => {
-      let strip: number[] = [];
-      for (let j = 0; j < this.numBeats; j++) {
-        let value = this.numGoalNotes < maxNotes ? _.random(1) : 0;
-        strip.push(value);
-        if (value) {
-          this.numGoalNotes++;
-        }
-      }
-      return strip;
-    });
-  }
-
-  start() {
-    this.paused = false;
-    Tone.Transport.start();
-  }
-
-  stop(shouldDestroy) {
-    this.paused = true;
-    Tone.Transport.stop(0);
-    if (shouldDestroy) {
-      this.gridLoop.dispose();
-      this.noteLoop.dispose();
-    }
-  }
-
-  onTop() {
-    if (_.isEqual(this.playedValues, this.goalValues)) {
+  onTop(time: number) {
+    if (this.goal.playedGoal()) {
       this.resetStage();
       this.nextState = State.Victory;
     } else {
-      this.clearPlayed();
+      this.goal.clearPlayed();
       if (this.active) {
         this.inactiveRounds = 0;
       } else if (this.inactiveRounds >= 3) {
@@ -103,7 +55,6 @@ export class GridService {
 
     this.state = this.nextState;
     this.active = false;
-    this.beat = 0;
     switch(this.state) {
       case State.Count:
       case State.Victory:
@@ -125,32 +76,16 @@ export class GridService {
     }
   }
 
-  onBeat() {
+  onPulse(time: number, pulseIndex: number) {
     if (this.state === State.Demo) {
-      this.playGoal(this.beat);
+      this.goal.playGoal(time, pulseIndex);
     } else {
-      this.playBeat(this.beat);
+      _.times(this.numStrips, (i) => {
+        if (this.gridValues[i][pulseIndex]) {
+          this.goal.playSound(pulseIndex, new Note(this.sounds[i]), time);
+        }
+      });
     }
-    this.beat++;
-  }
-
-  playGoal(beatIndex: number) {
-    _.times(this.numStrips, (i) => {
-      if (this.goalValues[i][beatIndex]) {
-        this.sounds[i].play();
-      }
-    });
-  }
-
-  playBeat(beatIndex: number) {
-    _.times(this.numStrips, (i) => {
-      if (this.gridValues[i][beatIndex]) {
-        this.sounds[i].play();
-        this.playedValues[i].push(1);
-      } else {
-        this.playedValues[i].push(0);
-      }
-    });
   }
 
   onToggle(stripIndex: number, beatIndex: number) {
@@ -160,17 +95,9 @@ export class GridService {
     this.active = true;
     this.gridValues[stripIndex][beatIndex] =
       this.gridValues[stripIndex][beatIndex] ? 0 : 1;
-    if (this.gridValues[stripIndex][beatIndex] && this.canPlaySound(beatIndex, this.noteLoop.progress)) {
-      this.sounds[stripIndex].play();
-      this.playedValues[stripIndex][beatIndex] = 1;
+    if (this.gridValues[stripIndex][beatIndex] && this.beat.canLivePlay(beatIndex)) {
+      this.goal.playSound(beatIndex, new Note(this.sounds[stripIndex]));
     }
-  }
-
-  canPlaySound(beatIndex: number, delay: number) {
-    if (beatIndex !== this.beat - 1) {
-      return false;
-    }
-    return delay < livePlayWithin;
   }
 
   public stateName() {
@@ -198,7 +125,7 @@ export class GridService {
   }
 
   showOverlay() {
-    return this.paused || this.state === State.Count || this.state === State.Victory;
+    return this.beat.paused || this.state === State.Count || this.state === State.Victory;
   }
 
   showPosition() {
