@@ -154,8 +154,6 @@ export class GridService {
   }
 
   onToggle(stripIndex: number, beatIndex: number) {
-    console.log(stripIndex);
-    console.log(beatIndex);
     if (this.state === State.Count || this.state === State.Victory) {
       return;
     }
@@ -175,8 +173,28 @@ export class GridService {
     return delay < livePlayWithin;
   }
 
-  stateName() {
+  public stateName() {
     return State[this.state];
+  }
+
+  public getStateName() {
+    let name = '';
+    switch(this.state) {
+      case State.Count:
+        name = 'count';
+        break;
+      case State.Victory:
+        name = 'victory';
+        break;
+      case State.Demo:
+        name = 'demo';
+        break;
+      case State.Play:
+        name = 'play';
+        break;
+    }
+
+    return name;
   }
 
   showOverlay() {

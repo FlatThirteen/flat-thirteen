@@ -18,7 +18,9 @@ export class PixiGridComponent implements OnInit {
     beatWidth: number = 256;
     stripGapSize: number = 16;
     beatCount: number = 4;
+    instrumentCount = 2;
 
+    renderableStrips: RenderableStrip[];
     renderableBar: RenderableBar;
 
     constructor(private grid: GridService) {
@@ -26,20 +28,19 @@ export class PixiGridComponent implements OnInit {
     }
 
     ngOnInit() {
-        let instrumentCount = 2;
-
         this.grid.resetStage([new SnareInstrument(), new KickInstrument], this.beatCount);
 
-        let canvasHeight = (this.stripHeight * instrumentCount) + (this.stripGapSize * (instrumentCount - 1));
+        let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
         this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
         document.getElementById('canvas-container').appendChild(this.renderer.view);
         
         this.stage = new PIXI.Container();
         
-        for (let i = 0; i < instrumentCount; ++i)
+        this.renderableStrips = [];
+        for (let i = 0; i < this.instrumentCount; ++i)
         {
-            let renderableStrip = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid));
-            let renderableObject = renderableStrip.getRenderableObject();
+            this.renderableStrips[i] = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid));
+            let renderableObject = this.renderableStrips[i].getRenderableObject();
             renderableObject.y = i * (this.stripHeight + this.stripGapSize);
             this.stage.addChild(renderableObject);
         }
@@ -60,7 +61,24 @@ export class PixiGridComponent implements OnInit {
             this.renderableBar.getRenderableObject().visible = true;
         }
         this.renderer.render(this.stage);
-        this.renderableBar.getRenderableObject().x = this.grid.gridLoop.progress * (this.beatWidth * this.beatCount);
+
+        if (false === this.grid.paused) {
+            this.renderableBar.getRenderableObject().x = this.grid.gridLoop.progress * (this.beatWidth * this.beatCount);
+        }
+
+        let name = this.grid.getStateName();
+        let active = false;
+        switch(name) {
+            case "demo":
+                active = false;
+                break;
+            case "play":
+                active = true;
+                break;
+        }
+        for (let i = 0; i < this.instrumentCount; ++i) {
+            this.renderableStrips[i].setRenderActive(active);
+        }
 
         requestAnimationFrame(this.render.bind(this));
     }
