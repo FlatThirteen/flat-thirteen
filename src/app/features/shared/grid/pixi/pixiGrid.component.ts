@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { KickInstrument, SnareInstrument } from "../../instruments/instrument";
+import { KickSound, SnareSound } from "../../sounds/sound";
 import { GridService } from '../grid.service';
+import { BeatService } from "../../beat.service";
 import * as PIXI from 'pixi.js'
 import { RenderableStrip } from './renderableStrip';
 import { RenderableBar } from './renderableBar';
@@ -23,12 +24,13 @@ export class PixiGridComponent implements OnInit {
     renderableStrips: RenderableStrip[];
     renderableBar: RenderableBar;
 
-    constructor(private grid: GridService) {
+    constructor(private beat: BeatService, private grid: GridService) {
         
     }
 
     ngOnInit() {
-        this.grid.resetStage([new SnareInstrument(), new KickInstrument], this.beatCount);
+        this.beat.reset();
+        this.grid.resetStage([new SnareSound(), new KickSound]);
 
         let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
         this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
@@ -62,8 +64,8 @@ export class PixiGridComponent implements OnInit {
         }
         this.renderer.render(this.stage);
 
-        if (false === this.grid.paused) {
-            this.renderableBar.getRenderableObject().x = this.grid.gridLoop.progress * (this.beatWidth * this.beatCount);
+        if (false === this.beat.paused) {
+            this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
         }
 
         let name = this.grid.getStateName();
@@ -84,8 +86,8 @@ export class PixiGridComponent implements OnInit {
     }
 
     onCanvasMouseUp() {
-        if (true === this.grid.paused) {
-            this.grid.start();
+        if (true === this.beat.paused) {
+            this.beat.start();
             this.stage.interactive = false;
         }
     }

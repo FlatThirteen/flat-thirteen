@@ -132,10 +132,6 @@ export class GridService {
     return this.state === State.Demo || this.state === State.Play;
   }
 
-  getBeatCount() {
-    return this.numBeats;
-  }
-
   getStripCount() {
     return this.numStrips;
   }
