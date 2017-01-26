@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HtmlGridComponent } from './htmlGrid.component';
+import { PixiGridComponent } from './pixi/pixiGrid.component';
 
 
 @NgModule({
@@ -9,10 +10,12 @@ import { HtmlGridComponent } from './htmlGrid.component';
     CommonModule
   ],
   declarations: [
-    HtmlGridComponent
+    HtmlGridComponent,
+    PixiGridComponent
   ],
   exports: [
-    HtmlGridComponent
+    HtmlGridComponent,
+    PixiGridComponent
   ]
 })
 
