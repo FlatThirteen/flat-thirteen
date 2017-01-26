@@ -38,7 +38,7 @@ export class PixiGridComponent implements OnInit {
         
         for (let i = 0; i < instrumentCount; ++i)
         {
-            let renderableStrip = new RenderableStrip(this.stripHeight, this.beatWidth, this.beatCount);
+            let renderableStrip = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid));
             let renderableObject = renderableStrip.getRenderableObject();
             renderableObject.y = i * (this.stripHeight + this.stripGapSize);
             this.stage.addChild(renderableObject);
@@ -68,6 +68,7 @@ export class PixiGridComponent implements OnInit {
     onCanvasMouseUp() {
         if (true === this.grid.paused) {
             this.grid.start();
+            this.stage.interactive = false;
         }
     }
 }

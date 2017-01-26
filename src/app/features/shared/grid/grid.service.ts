@@ -154,6 +154,8 @@ export class GridService {
   }
 
   onToggle(stripIndex: number, beatIndex: number) {
+    console.log(stripIndex);
+    console.log(beatIndex);
     if (this.state === State.Count || this.state === State.Victory) {
       return;
     }
