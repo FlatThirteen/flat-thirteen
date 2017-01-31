@@ -1,3 +1,5 @@
 <header></header>
-<html-grid></html-grid>
+<html-grid *ngIf="renderer==='html'"></html-grid>
+<pixi-grid *ngIf="renderer==='pixi'"></pixi-grid>
 <stage-panel></stage-panel>
+

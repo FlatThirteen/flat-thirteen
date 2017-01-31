@@ -72,6 +72,7 @@
     "build:dev": "npm run clean:dist && npm run sass && webpack",
     "build:dll": "npm run clean:dll && npm run sass && webpack",
     "build:prod": "npm run clean:dist && npm run sass && webpack",
+    "build:prod:deploy": "npm run clean:dist && npm run sass && webpack",
     "build:prod:e2e": "npm run clean:dist && npm run sass && webpack",
     "build:universal": "npm run build:universal:prod",
     "build:universal:aot": "npm run build:universal:aot:prod",
@@ -125,6 +126,7 @@
     "methods": "1.1.2",
     "ngrx-store-freeze": "0.1.6",
     "ngrx-store-logger": "0.1.7",
+    "pixi.js": "^4.3.3",
     "rxjs": "^5.0.3",
     "tone": "^0.9.0",
     "zone.js": "^0.7.6"
@@ -142,6 +144,7 @@
     "@types/lodash": "^4.14.50",
     "@types/mime": "~0.0.29",
     "@types/node": "~6.0.52",
+    "@types/pixi.js": "^4.3.1",
     "@types/selenium-webdriver": "~2.44.29",
     "@types/serve-static": "~1.7.31",
     "@types/tone": "git+https://github.com/FlatThirteen/Tonejs-TypeScript",

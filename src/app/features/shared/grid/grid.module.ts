@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { BeatComponent } from "./beat.component";
 import { HtmlGridComponent } from './html-grid.component';
+import { PixiGridComponent } from './pixi/pixiGrid.component';
 
 
 @NgModule({
@@ -11,12 +12,13 @@ import { HtmlGridComponent } from './html-grid.component';
   ],
   declarations: [
     BeatComponent,
-    HtmlGridComponent
+    HtmlGridComponent,
+    PixiGridComponent
   ],
   exports: [
-    HtmlGridComponent
+    HtmlGridComponent,
+    PixiGridComponent
   ]
 })
 
 export class GridModule {}
-

@@ -79,6 +79,10 @@ export class GridService {
   onKeyDown(key: string) {
     return this.shortcutMap[key] && this.shortcutMap[key]();
   }
+
+  getStripCount() {
+    return this.numStrips;
+  }
 }
 
 let shortcuts = [['q', 'w', 'e', 'r'], ['a', 's', 'd', 'f'], ['z', 'x', 'c', 'v']];
