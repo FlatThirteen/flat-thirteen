@@ -6,6 +6,8 @@ import { GridService } from "../shared/grid/grid.service";
 
 let requestAnimationFrameId: number;
 
+import { PixiGridComponent } from '../shared/grid/pixi/pixiGrid.component';
+
 /**
  * This class represents the lazy loaded A1Component.
  */

@@ -100,8 +100,28 @@ export class GridService {
     }
   }
 
-  stateName() {
+  public stateName() {
     return State[this.state];
+  }
+
+  public getStateName() {
+    let name = '';
+    switch(this.state) {
+      case State.Count:
+        name = 'count';
+        break;
+      case State.Victory:
+        name = 'victory';
+        break;
+      case State.Demo:
+        name = 'demo';
+        break;
+      case State.Play:
+        name = 'play';
+        break;
+    }
+
+    return name;
   }
 
   showOverlay() {
@@ -110,5 +130,9 @@ export class GridService {
 
   showPosition() {
     return this.state === State.Demo || this.state === State.Play;
+  }
+
+  getStripCount() {
+    return this.numStrips;
   }
 }
