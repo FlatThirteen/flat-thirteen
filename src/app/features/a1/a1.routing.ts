@@ -6,5 +6,9 @@ export const routes: Routes = [
   {
     path: '',
     component: A1Component
+  }, {
+    path: 'pixi',
+    component: A1Component,
+    data: {renderer: 'pixi'}
   }
 ];

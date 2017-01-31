@@ -1,8 +1,5 @@
 <header></header>
-<!--<html-grid></html-grid>-->
-<div class="info">
-  Round: {{grid.round}}
-  GoalNotes: {{goal.numNotes()}}
-</div>
+<html-grid *ngIf="renderer==='html'"></html-grid>
+<pixi-grid *ngIf="renderer==='pixi'"></pixi-grid>
+<stage-panel></stage-panel>
 
-<pixi-grid-component></pixi-grid-component>

@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { HtmlGridComponent } from './htmlGrid.component';
-import { PixiGridComponent } from './pixi/pixiGrid.component';
+import { BeatComponent } from "./html/beat.component";
+import { HtmlGridComponent } from './html/html-grid.component';
+import { PixiGridComponent } from './pixi/pixi-grid.component';
 
 
 @NgModule({
@@ -10,6 +11,7 @@ import { PixiGridComponent } from './pixi/pixiGrid.component';
     CommonModule
   ],
   declarations: [
+    BeatComponent,
     HtmlGridComponent,
     PixiGridComponent
   ],
@@ -20,4 +22,3 @@ import { PixiGridComponent } from './pixi/pixiGrid.component';
 })
 
 export class GridModule {}
-

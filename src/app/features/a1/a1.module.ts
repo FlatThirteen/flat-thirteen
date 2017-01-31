@@ -3,17 +3,21 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { routes } from './a1.routing';
 
+import { GridModule } from '../shared/grid/grid.module';
+import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
+
 import { A1Component } from './a1.component';
 import { BeatService } from '../shared/beat.service';
-import { GridModule } from '../shared/grid/index';
 import { GridService } from '../shared/grid/grid.service';
 import { GoalService } from "../shared/goal.service";
+import { StageService } from "../shared/stage.service";
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    GridModule
+    GridModule,
+    StagePanelModule
   ],
   declarations: [
     A1Component
@@ -21,7 +25,8 @@ import { GoalService } from "../shared/goal.service";
   providers: [
     BeatService,
     GoalService,
-    GridService
+    GridService,
+    StageService
   ]
 })
 

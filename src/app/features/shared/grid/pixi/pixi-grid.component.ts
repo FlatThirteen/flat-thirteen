@@ -1,16 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { KickSound, SnareSound } from "../../sounds/sound";
 import { GridService } from '../grid.service';
 import { BeatService } from "../../beat.service";
+import { StageService } from "../../stage.service";
 import * as PIXI from 'pixi.js'
 import { RenderableStrip } from './renderableStrip';
 import { RenderableBar } from './renderableBar';
- 
+
 @Component({
-    selector: 'pixi-grid-component',
-    templateUrl: 'pixiGrid.component.html'
+    selector: 'pixi-grid',
+    templateUrl: 'pixi-grid.component.html',
+    styleUrls: ['pixi-grid.component.css'],
 })
- 
+
 export class PixiGridComponent implements OnInit {
     renderer: PIXI.SystemRenderer;
     stage: PIXI.Container;
@@ -24,20 +26,19 @@ export class PixiGridComponent implements OnInit {
     renderableStrips: RenderableStrip[];
     renderableBar: RenderableBar;
 
-    constructor(private beat: BeatService, private grid: GridService) {
-        
+    constructor(private beat: BeatService, private grid: GridService, private stageService: StageService) {
+
     }
 
     ngOnInit() {
-        this.beat.reset();
         this.grid.resetStage([new SnareSound(), new KickSound]);
 
         let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
         this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
         document.getElementById('canvas-container').appendChild(this.renderer.view);
-        
+
         this.stage = new PIXI.Container();
-        
+
         this.renderableStrips = [];
         for (let i = 0; i < this.instrumentCount; ++i)
         {
@@ -59,7 +60,7 @@ export class PixiGridComponent implements OnInit {
     }
 
     render() {
-        if (true === this.grid.showPosition()) {
+        if (true === this.stageService.shouldShowPosition()) {
             this.renderableBar.getRenderableObject().visible = true;
         }
         this.renderer.render(this.stage);
@@ -68,7 +69,7 @@ export class PixiGridComponent implements OnInit {
             this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
         }
 
-        let name = this.grid.getStateName();
+        let name = this.stageService.stateName();
         let active = false;
         switch(name) {
             case "demo":
