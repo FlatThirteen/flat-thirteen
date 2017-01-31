@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { KickSound, SnareSound } from "../sounds/sound";
-import { BeatService } from "../beat.service";
-import { GridService } from './grid.service';
-import { StageService } from "../stage.service";
+import { KickSound, SnareSound } from "../../sounds/sound";
+import { BeatService } from "../../beat.service";
+import { GridService } from '../grid.service';
+import { StageService } from "../../stage.service";
 
 /**
  * This class represents the HTML version of the Grid Component.

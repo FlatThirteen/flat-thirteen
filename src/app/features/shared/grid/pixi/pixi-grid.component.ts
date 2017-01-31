@@ -9,8 +9,8 @@ import { RenderableBar } from './renderableBar';
 
 @Component({
     selector: 'pixi-grid',
-    templateUrl: 'pixiGrid.component.html',
-    styleUrls: ['pixiGrid.component.css'],
+    templateUrl: 'pixi-grid.component.html',
+    styleUrls: ['pixi-grid.component.css'],
 })
 
 export class PixiGridComponent implements OnInit {

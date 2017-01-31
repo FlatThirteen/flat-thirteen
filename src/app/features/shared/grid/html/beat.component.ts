@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
-import { BeatService } from "../beat.service";
-import { GridService } from './grid.service';
-import { StageService } from "../stage.service";
+import { BeatService } from "../../beat.service";
+import { GridService } from '../grid.service';
+import { StageService } from "../../stage.service";
 
 /**
  * This class represents the Beat Component used by html-grid.
