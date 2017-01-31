@@ -1,0 +1,7 @@
+<div class="quarter note" *ngIf="state === 1"></div>
+<div class="controls">
+  <div class="quarter note" (click)="onQuarter()">{{shortcutKey}}</div>
+  <div class="subdivisions" *ngIf="subdivisions.length > 1">
+    <div class="hint" *ngFor="let i of subdivisions" (click)="setSubdivision(i);$event.stopPropagation()">{{i}}</div>
+  </div>
+</div>

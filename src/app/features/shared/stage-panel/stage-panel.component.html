@@ -1,0 +1,8 @@
+<div class="container">
+  <div *ngIf="beat.paused" (click)="onStart()" class="start">Click to start</div>
+  <div *ngIf="!beat.paused" (click)="onPause()" class="pause">Pause</div>
+  <div class="info">
+    Round: {{stage.getRound()}}
+    GoalNotes: {{goal.numNotes()}}
+  </div>
+</div>

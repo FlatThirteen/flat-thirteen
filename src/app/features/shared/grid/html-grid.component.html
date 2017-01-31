@@ -1,0 +1,15 @@
+<div class="grid" ngClass="{{stage.stateName() | lowercase }}">
+  <div class="strip" *ngFor="let stripValues of grid.gridValues; let i = index">
+    <div *ngFor="let beatState of stripValues; let j = index" class="beat"
+         [ngClass]="{current: beat.current(j), selected: selected === grid.shortcutKey(i, j)}"
+         [subdivisions]="[1]"
+         [state]="beatState" [selected]="selected"
+         (stateChange)="onToggle(i, j)" (selectChange)="select(i, j, $event)"
+         [shortcutKey]="grid.shortcutKey(i, j)">
+    </div>
+  </div>
+  <div class="overlay" *ngIf="stage.shouldShowCount()">
+    <div class="counter" *ngIf="!beat.paused">{{beat.count()}}</div>
+  </div>
+  <div class="position" *ngIf="stage.shouldShowPosition()" [style.left]="(beat.progress() * 100) + '%'"></div>
+</div>

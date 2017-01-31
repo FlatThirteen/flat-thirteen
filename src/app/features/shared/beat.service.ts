@@ -99,8 +99,11 @@ export class BeatService {
     Tone.Transport.start();
   }
 
-  stop(shouldDestroy: boolean) {
+  stop(shouldDestroy: boolean = false) {
     this.paused = true;
+    this.measure = 0;
+    this.beat = 0;
+    this.pulse = 0;
     Tone.Transport.stop();
     if (shouldDestroy) {
       this.loop.dispose();
@@ -113,6 +116,10 @@ export class BeatService {
 
   count() {
     return this.beat || this.beatsPerMeasure[this.measure - 1];
+  }
+
+  current(beat: number) {
+    return this.beatIndex === beat + 1 && this.loop.progress < livePlayWithin;
   }
 
   progress() {
