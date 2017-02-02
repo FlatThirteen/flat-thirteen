@@ -6,6 +6,7 @@ import { StageService } from "../../stage.service";
 import * as PIXI from 'pixi.js'
 import { RenderableStrip } from './renderableStrip';
 import { RenderableBar } from './renderableBar';
+import { CounterOverlay } from './counter-Overlay';
 
 @Component({
     selector: 'pixi-grid',
@@ -25,6 +26,7 @@ export class PixiGridComponent implements OnInit {
 
     renderableStrips: RenderableStrip[];
     renderableBar: RenderableBar;
+    counterOverlay: CounterOverlay;
 
     constructor(private beat: BeatService, private grid: GridService, private stageService: StageService) {
 
@@ -52,6 +54,13 @@ export class PixiGridComponent implements OnInit {
         this.renderableBar.getRenderableObject().visible = false;
         this.stage.addChild(this.renderableBar.getRenderableObject());
 
+        this.counterOverlay = new CounterOverlay((this.beatWidth * this.beatCount) / 3, (this.stripHeight * this.instrumentCount) / 3);
+        let counterOverlay = this.counterOverlay.getRenderableObject();
+        counterOverlay.visible = false;
+        counterOverlay.x = (this.beatWidth * this.beatCount) / 2;
+        counterOverlay.y = (this.stripHeight * this.instrumentCount) / 2;
+        this.stage.addChild(counterOverlay);
+
         this.stage.interactive = true;
         this.stage
             .on('mouseup', this.onCanvasMouseUp.bind(this));
@@ -72,15 +81,24 @@ export class PixiGridComponent implements OnInit {
         let name = this.stageService.stateName();
         let active = false;
         switch(name) {
-            case "demo":
+            case "Demo":
                 active = false;
                 break;
-            case "play":
+            case "Play":
                 active = true;
+                break;
+            case "Victory":
+                this.processVictoryState();
                 break;
         }
         for (let i = 0; i < this.instrumentCount; ++i) {
             this.renderableStrips[i].setRenderActive(active);
+        }
+
+        if (!this.beat.paused && (undefined != this.beat.count()))
+        {
+            this.counterOverlay.setCounterValue(this.beat.count());
+            this.counterOverlay.getRenderableObject().visible = this.stageService.shouldShowCount();
         }
 
         requestAnimationFrame(this.render.bind(this));
@@ -91,5 +109,11 @@ export class PixiGridComponent implements OnInit {
             this.beat.start();
             this.stage.interactive = false;
         }
+    }
+
+    processVictoryState() {
+        this.renderableStrips.forEach(element => {
+            element.clearBeats();
+        });
     }
 }

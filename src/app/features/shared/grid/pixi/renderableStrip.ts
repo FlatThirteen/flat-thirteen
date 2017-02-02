@@ -112,4 +112,10 @@ export class RenderableStrip {
     onMousedown(sprite: PIXI.Sprite, id: number, col: number) {
         this.beats[col].visible = (true === this.beats[col].visible) ? false : true;
     }
+
+    clearBeats() {
+        this.beats.forEach(element => {
+            element.visible = false;
+        });
+    }
 }
