@@ -6,11 +6,14 @@ export class RenderableStrip {
     inactiveRects: PIXI.Sprite[];
     beats: PIXI.Graphics[]
 
+    interactionRects: PIXI.Sprite[];
+
     constructor(private id, stripHeight: number, private beatWidth: number, private beatCount: number, onclickCallback: any) {
         this.container = new PIXI.Container();
 
         this.activeRects = [];
         this.inactiveRects = [];
+        this.interactionRects = [];
         this.beats = [];
         let borderSize = 12;
 
@@ -42,7 +45,7 @@ export class RenderableStrip {
             this.createInactiveRects(col, inactiveRectTexture);
             this.container.addChild(this.inactiveRects[col]);
 
-            this.createActiveRects(col, activeRectTexture, onclickCallback);
+            this.createActiveRects(col, activeRectTexture);
             this.container.addChild(this.activeRects[col]);
 
             if (col > 0 && col < beatCount) {
@@ -61,17 +64,23 @@ export class RenderableStrip {
 
         //--Currently there's no easy way to change the z order so need another loop here
         for (let col = 0; col < beatCount; ++col) {
-            this.beats[col] = new PIXI.Graphics();
-            this.beats[col].beginFill(0x000000);
-            this.beats[col].drawCircle(0, 0, ((beatWidth - 64) / 2));
-            this.beats[col].endFill();
-
-            this.beats[col].x = (col * beatWidth) + (beatWidth / 2);
-            this.beats[col].y = beatWidth / 2;
-            this.beats[col].visible = false;
+            this.createBeatCircles(col);
             this.container.addChild(this.beats[col]);
         }
         //--
+
+        rectangle = new PIXI.Graphics();
+        rectangle.beginFill(0xFFFFFFFF, 0);
+        //Currently it doesn't draw right. The right and bottom outline is twice the size and the counterparts
+        //rectangle.lineStyle(borderSize, 0x007FFF, 1);
+        rectangle.drawRect(0, 0, beatWidth, stripHeight);
+        rectangle.endFill();
+        var interactionRectTexture = rectangle.generateCanvasTexture();
+
+        for (let col = 0; col < beatCount; ++col) {
+            this.createInteractionRects(col, interactionRectTexture, onclickCallback);
+            this.container.addChild(this.interactionRects[col]);
+        }
     }
 
     createInactiveRects(index: number, texture: PIXI.Texture) {
@@ -81,21 +90,41 @@ export class RenderableStrip {
         this.inactiveRects[index].y = (this.beatWidth / 2);
     }
 
-    createActiveRects(index: number, texture: PIXI.Texture, onclickCallback: any) {
+    createActiveRects(index: number, texture: PIXI.Texture) {
         this.activeRects[index] = new PIXI.Sprite(texture);
-            
-        this.activeRects[index].interactive = true;
         this.activeRects[index].anchor.set(0.5, 0.5);
-        this.activeRects[index]
-            .on('mousedown', function(e) {
-                this.onMousedown(this.activeRects[index], this.id, index);
-                onclickCallback(this.id, index);
-            }.bind(this));
-
         this.activeRects[index].x = (index * this.beatWidth) + (this.beatWidth / 2);
         this.activeRects[index].y = (this.beatWidth / 2);
 
         this.activeRects[index].visible = false;
+    }
+
+    createBeatCircles(index: number) {
+        this.beats[index] = new PIXI.Graphics();
+        this.beats[index].beginFill(0x000000);
+        this.beats[index].drawCircle(0, 0, ((this.beatWidth - 64) / 2));
+        this.beats[index].endFill();
+
+        this.beats[index].x = (index * this.beatWidth) + (this.beatWidth / 2);
+        this.beats[index].y = this.beatWidth / 2;
+        this.beats[index].visible = false;
+    }
+
+    createInteractionRects(index:number, texture: PIXI.Texture, onclickCallback: any) {
+        this.interactionRects[index] = new PIXI.Sprite(texture);
+            
+        this.interactionRects[index].interactive = true;
+        this.interactionRects[index].anchor.set(0.5, 0.5);
+        this.interactionRects[index]
+            .on('mousedown', function(e) {
+                this.onMousedown(index);
+                onclickCallback(this.id, index);
+            }.bind(this));
+
+        this.interactionRects[index].x = (index * this.beatWidth) + (this.beatWidth / 2);
+        this.interactionRects[index].y = (this.beatWidth / 2);
+
+        this.interactionRects[index].visible = false;
     }
 
     getRenderableObject() {
@@ -105,12 +134,13 @@ export class RenderableStrip {
     setRenderActive(active: boolean) {
         for (let i = 0; i < this.beatCount; ++i) {
             this.activeRects[i].visible = active;
+            this.interactionRects[i].visible = active;
             this.inactiveRects[i].visible = !active;
         }
     }
 
-    onMousedown(sprite: PIXI.Sprite, id: number, col: number) {
-        this.beats[col].visible = (true === this.beats[col].visible) ? false : true;
+    onMousedown(index: number) {
+        this.beats[index].visible = (true === this.beats[index].visible) ? false : true;
     }
 
     clearBeats() {

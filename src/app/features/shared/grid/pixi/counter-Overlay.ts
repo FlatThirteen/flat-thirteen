@@ -14,8 +14,8 @@ export class CounterOverlay {
         this.container.addChild(graphics)
 
         var style = new PIXI.TextStyle({
-                fontFamily: 'Arial',
-                fontSize: 36,
+                fontFamily: 'Courier',
+                fontSize: 144,
                 fontStyle: 'italic',
                 fontWeight: 'bold',
                 fill: ['#ffffff', '#00ff99'], // gradient
@@ -31,6 +31,8 @@ export class CounterOverlay {
             });
 
         this.text = new PIXI.Text("", style);
+        this.text.x = this.text.x - (width / 6);
+        this.text.y = this.text.y - (width / 6);
         this.container.addChild(this.text);
     }
 
