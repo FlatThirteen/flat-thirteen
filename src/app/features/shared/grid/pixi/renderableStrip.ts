@@ -117,7 +117,6 @@ export class RenderableStrip {
         this.interactionRects[index].anchor.set(0.5, 0.5);
         this.interactionRects[index]
             .on('mousedown', function(e) {
-                this.onMousedown(index);
                 onclickCallback(this.id, index);
             }.bind(this));
 
@@ -139,8 +138,8 @@ export class RenderableStrip {
         }
     }
 
-    onMousedown(index: number) {
-        this.beats[index].visible = (true === this.beats[index].visible) ? false : true;
+    updateBeatStatus(beat: number, value: number) {
+        this.beats[beat].visible = value ? true : false;
     }
 
     clearBeats() {

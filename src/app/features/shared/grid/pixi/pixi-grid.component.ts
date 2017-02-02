@@ -61,10 +61,6 @@ export class PixiGridComponent implements OnInit {
         counterOverlay.y = (this.stripHeight * this.instrumentCount) / 2;
         this.stage.addChild(counterOverlay);
 
-        this.stage.interactive = true;
-        this.stage
-            .on('mouseup', this.onCanvasMouseUp.bind(this));
-
         this.render();
     }
 
@@ -93,6 +89,9 @@ export class PixiGridComponent implements OnInit {
         }
         for (let i = 0; i < this.instrumentCount; ++i) {
             this.renderableStrips[i].setRenderActive(active);
+            for (let beat = 0; beat < this.beatCount; ++beat) {
+                this.renderableStrips[i].updateBeatStatus(beat, this.grid.getGridValue(i, beat));
+            }
         }
 
         if (!this.beat.paused && (undefined != this.beat.count()))
@@ -102,13 +101,6 @@ export class PixiGridComponent implements OnInit {
         }
 
         requestAnimationFrame(this.render.bind(this));
-    }
-
-    onCanvasMouseUp() {
-        if (true === this.beat.paused) {
-            this.beat.start();
-            this.stage.interactive = false;
-        }
     }
 
     processVictoryState() {
