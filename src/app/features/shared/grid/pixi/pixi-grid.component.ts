@@ -6,7 +6,7 @@ import { StageService } from "../../stage.service";
 import * as PIXI from 'pixi.js'
 import { RenderableStrip } from './renderableStrip';
 import { RenderableBar } from './renderableBar';
-import { CounterOverlay } from './counter-Overlay';
+import { TextOverlay } from './text-Overlay';
 
 @Component({
     selector: 'pixi-grid',
@@ -26,7 +26,7 @@ export class PixiGridComponent implements OnInit {
 
     renderableStrips: RenderableStrip[];
     renderableBar: RenderableBar;
-    counterOverlay: CounterOverlay;
+    counterOverlay: TextOverlay;
 
     constructor(private beat: BeatService, private grid: GridService, private stageService: StageService) {
 
@@ -44,7 +44,7 @@ export class PixiGridComponent implements OnInit {
         this.renderableStrips = [];
         for (let i = 0; i < this.instrumentCount; ++i)
         {
-            this.renderableStrips[i] = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid));
+            this.renderableStrips[i] = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid), this.grid.shortcutKeyArray(i));
             let renderableObject = this.renderableStrips[i].getRenderableObject();
             renderableObject.y = i * (this.stripHeight + this.stripGapSize);
             this.stage.addChild(renderableObject);
@@ -54,14 +54,35 @@ export class PixiGridComponent implements OnInit {
         this.renderableBar.getRenderableObject().visible = false;
         this.stage.addChild(this.renderableBar.getRenderableObject());
 
-        this.counterOverlay = new CounterOverlay((this.beatWidth * this.beatCount) / 3, (this.stripHeight * this.instrumentCount) / 3);
+        this.setupCounterOverlay();
+        this.stage.addChild(this.counterOverlay.getRenderableObject());
+
+        this.render();
+    }
+
+    setupCounterOverlay() {
+        var style = new PIXI.TextStyle({
+                fontFamily: 'Courier',
+                fontSize: 144,
+                fontStyle: 'italic',
+                fontWeight: 'bold',
+                fill: ['#ffffff', '#00ff99'], // gradient
+                stroke: '#4a1850',
+                strokeThickness: 5,
+                dropShadow: true,
+                dropShadowColor: '#000000',
+                dropShadowBlur: 4,
+                dropShadowAngle: Math.PI / 6,
+                dropShadowDistance: 6,
+                wordWrap: true,
+                wordWrapWidth: 440
+            });
+
+        this.counterOverlay = new TextOverlay((this.beatWidth * this.beatCount) / 3, (this.stripHeight * this.instrumentCount) / 3, 0xFFFFFFFF, 1, style);
         let counterOverlay = this.counterOverlay.getRenderableObject();
         counterOverlay.visible = false;
         counterOverlay.x = (this.beatWidth * this.beatCount) / 2;
         counterOverlay.y = (this.stripHeight * this.instrumentCount) / 2;
-        this.stage.addChild(counterOverlay);
-
-        this.render();
     }
 
     render() {
@@ -96,7 +117,7 @@ export class PixiGridComponent implements OnInit {
 
         if (!this.beat.paused && (undefined != this.beat.count()))
         {
-            this.counterOverlay.setCounterValue(this.beat.count());
+            this.counterOverlay.setText(this.beat.count().toString());
             this.counterOverlay.getRenderableObject().visible = this.stageService.shouldShowCount();
         }
 

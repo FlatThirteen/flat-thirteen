@@ -1,14 +1,18 @@
 import * as PIXI from 'pixi.js'
 
+import { TextOverlay } from './text-Overlay';
+
 export class RenderableStrip {
     container: PIXI.Container;
     activeRects: PIXI.Sprite[];
     inactiveRects: PIXI.Sprite[];
-    beats: PIXI.Graphics[]
+    shortcutKeyOverlays: TextOverlay[];
+    beats: PIXI.Graphics[];
 
     interactionRects: PIXI.Sprite[];
+    active: boolean;
 
-    constructor(private id, stripHeight: number, private beatWidth: number, private beatCount: number, onclickCallback: any) {
+    constructor(private id, stripHeight: number, private beatWidth: number, private beatCount: number, onclickCallback: any, shortcutKeys: string[]) {
         this.container = new PIXI.Container();
 
         this.activeRects = [];
@@ -77,10 +81,14 @@ export class RenderableStrip {
         rectangle.endFill();
         var interactionRectTexture = rectangle.generateCanvasTexture();
 
+        this.createShortcutKeyOverlays(shortcutKeys);
+
         for (let col = 0; col < beatCount; ++col) {
             this.createInteractionRects(col, interactionRectTexture, onclickCallback);
             this.container.addChild(this.interactionRects[col]);
         }
+
+        this.active = false;
     }
 
     createInactiveRects(index: number, texture: PIXI.Texture) {
@@ -117,13 +125,52 @@ export class RenderableStrip {
         this.interactionRects[index].anchor.set(0.5, 0.5);
         this.interactionRects[index]
             .on('mousedown', function(e) {
-                onclickCallback(this.id, index);
+                if (true == this.active) {
+                    onclickCallback(this.id, index);    
+                }
+            }.bind(this))
+            .on('pointerover', function(e) {
+                this.onPointerOver(index);
+            }.bind(this))
+            .on('pointerout', function(e) {
+                this.onPointerOut(index);
             }.bind(this));
 
         this.interactionRects[index].x = (index * this.beatWidth) + (this.beatWidth / 2);
         this.interactionRects[index].y = (this.beatWidth / 2);
 
         this.interactionRects[index].visible = false;
+    }
+
+    createShortcutKeyOverlays(shortcutKeys: string[]) {
+        this.shortcutKeyOverlays = [];
+
+        let style = new PIXI.TextStyle({
+                fontFamily: 'Courier',
+                fontSize: 72,
+                fontStyle: 'italic',
+                fontWeight: 'bold',
+                fill: ['#ffffff', '#00ff99'], // gradient
+                stroke: '#4a1850',
+                strokeThickness: 5,
+                dropShadow: true,
+                dropShadowColor: '#000000',
+                dropShadowBlur: 4,
+                dropShadowAngle: Math.PI / 6,
+                dropShadowDistance: 6,
+                wordWrap: true,
+                wordWrapWidth: 440
+            });
+
+        for (let i = 0; i < this.beatCount; ++i) {
+            this.shortcutKeyOverlays[i] = new TextOverlay(this.beatWidth / 2, this.beatWidth / 2, 0xaaaaaaaa, 0.5, style);
+            this.shortcutKeyOverlays[i].setText(shortcutKeys[i]);
+            let renderable = this.shortcutKeyOverlays[i].getRenderableObject();
+            renderable.x = (i * this.beatWidth) + (this.beatWidth / 2);
+            renderable.y = this.beatWidth / 2;
+            renderable.visible = false;
+            this.container.addChild(this.shortcutKeyOverlays[i].getRenderableObject());
+        }
     }
 
     getRenderableObject() {
@@ -136,6 +183,8 @@ export class RenderableStrip {
             this.interactionRects[i].visible = active;
             this.inactiveRects[i].visible = !active;
         }
+
+        this.active = active;
     }
 
     updateBeatStatus(beat: number, value: number) {
@@ -146,5 +195,13 @@ export class RenderableStrip {
         this.beats.forEach(element => {
             element.visible = false;
         });
+    }
+
+    onPointerOver(index: number) {
+        this.shortcutKeyOverlays[index].getRenderableObject().visible = true;
+    }
+
+    onPointerOut(index: number) {
+        this.shortcutKeyOverlays[index].getRenderableObject().visible = false;
     }
 }

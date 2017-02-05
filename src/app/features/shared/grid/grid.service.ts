@@ -80,6 +80,10 @@ export class GridService {
     return shortcuts[strip][beat];
   }
 
+  shortcutKeyArray(strip: number) {
+    return shortcuts[strip];
+  }
+
   onKeyDown(key: string) {
     return this.shortcutMap[key] && this.shortcutMap[key]();
   }
