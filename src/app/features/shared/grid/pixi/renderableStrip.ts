@@ -125,9 +125,7 @@ export class RenderableStrip {
         this.interactionRects[index].anchor.set(0.5, 0.5);
         this.interactionRects[index]
             .on('mousedown', function(e) {
-                if (true == this.active) {
-                    onclickCallback(this.id, index);    
-                }
+                onclickCallback(this.id, index);    
             }.bind(this))
             .on('pointerover', function(e) {
                 this.onPointerOver(index);
