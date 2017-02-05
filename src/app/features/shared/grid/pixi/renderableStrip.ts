@@ -139,7 +139,7 @@ export class RenderableStrip {
         this.interactionRects[index].x = (index * this.beatWidth) + (this.beatWidth / 2);
         this.interactionRects[index].y = (this.beatWidth / 2);
 
-        this.interactionRects[index].visible = false;
+        this.interactionRects[index].visible = true;
     }
 
     createShortcutKeyOverlays(shortcutKeys: string[]) {
@@ -180,7 +180,6 @@ export class RenderableStrip {
     setRenderActive(active: boolean) {
         for (let i = 0; i < this.beatCount; ++i) {
             this.activeRects[i].visible = active;
-            this.interactionRects[i].visible = active;
             this.inactiveRects[i].visible = !active;
         }
 
