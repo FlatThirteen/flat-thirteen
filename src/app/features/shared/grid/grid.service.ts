@@ -72,8 +72,16 @@ export class GridService {
     }
   }
 
+  getGridValue(strip: number, beat: number) {
+    return this.gridValues[strip][beat];
+  }
+
   shortcutKey(strip: number, beat: number) {
     return shortcuts[strip][beat];
+  }
+
+  shortcutKeyArray(strip: number) {
+    return shortcuts[strip];
   }
 
   onKeyDown(key: string) {
