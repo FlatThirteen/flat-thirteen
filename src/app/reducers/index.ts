@@ -4,6 +4,7 @@ import { storeFreeze } from 'ngrx-store-freeze';
 import { storeLogger } from 'ngrx-store-logger';
 import { routerReducer, RouterState } from '@ngrx/router-store';
 
+import { PlayerState } from "../player/player.reducer";
 import * as fromUser from '../user/user.reducer';
 
 const modules = {
@@ -11,11 +12,13 @@ const modules = {
 };
 
 export interface AppState {
+  player: PlayerState;
   router: RouterState;
   user: fromUser.UserState;
 }
 
 export const reducers = {
+  player: PlayerState.reducer,
   router: routerReducer,
   user: fromUser.userReducer
 };

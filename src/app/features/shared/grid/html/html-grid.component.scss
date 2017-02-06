@@ -47,8 +47,16 @@
   background-color: #777;
 }
 
+.beat {
+  transition: background-color 150ms ease-in-out;
+}
+
 .goal .beat {
   background-color: #888;
+
+  &.current {
+    background-color: #999;
+  }
 }
 
 .beat:not(:last-child):after {

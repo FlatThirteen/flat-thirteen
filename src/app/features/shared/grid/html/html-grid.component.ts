@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import { KickSound, SnareSound } from "../../sounds/sound";
 import { BeatService } from "../../beat.service";
-import { GridService } from '../grid.service';
+import { Grid } from "../grid";
+import { PlayerService } from "../../../../player/player.service";
 import { StageService } from "../../stage.service";
 
 /**
@@ -14,30 +14,14 @@ import { StageService } from "../../stage.service";
   styleUrls: ['html-grid.component.css'],
 })
 export class HtmlGridComponent implements OnInit {
-  private selected: string;
+  @Input() private grid: Grid;
 
-  /**
-   * Creates an instance of the A1Component.
-   */
-  constructor(private beat: BeatService,
-              private grid: GridService,
+  constructor(private beat: BeatService, private player: PlayerService,
               private stage: StageService) {}
 
-  /**
-   * Get the names OnInit
-   */
   ngOnInit() {
-    this.grid.resetStage([new SnareSound(), new KickSound]);
+    if (!this.grid) {
+      throw new Error('Missing grid');
+    }
   }
-
-  select(stripIndex: number, beatIndex: number, shortcutKey: string) {
-    // console.log('Selected', stripIndex, beatIndex, shortcutKey, 'was', this.selected);
-    this.selected = shortcutKey;
-  }
-
-  onToggle(stripIndex: number, beatIndex: number) {
-    // console.log('Toggle', stripIndex, beatIndex, ' selected is ', this.selected);
-    this.grid.onToggle(stripIndex, beatIndex); // Replace with ACTION
-  }
-
 }

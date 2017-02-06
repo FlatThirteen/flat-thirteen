@@ -1,8 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
+import { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
 
+import { createSelector } from 'reselect';
+
+import { AppState } from "../../../../reducers/index";
 import { BeatService } from "../../beat.service";
-import { GridService } from '../grid.service';
-import { StageService } from "../../stage.service";
+import { PlayerService } from "../../../../player/player.service";
 
 /**
  * This class represents the Beat Component used by html-grid.
@@ -13,54 +17,41 @@ import { StageService } from "../../stage.service";
   styleUrls: ['beat.component.css'],
 
 })
-export class BeatComponent implements OnInit {
-  @Input() private subdivisions: number[] = [1];
-  @Input() private shortcutKey: string;
-  @Input() private state: number;
-  @Input() private selected: string;
-  @Output() private stateChange = new EventEmitter<number>();
-  @Output() private selectChange = new EventEmitter<string>();
+export class BeatComponent {
+  @Input() private pulsesRange: number[] = [1];
+  @Input() private key: string;
 
+  private value$: Observable<number | number[]>;
 
   /**
    * Creates an instance of the A1Component.
    */
   constructor(private beat: BeatService,
-              private grid: GridService,
-              private stage: StageService) {}
-
-  /**
-   * Get the names OnInit
-   */
-  ngOnInit() {
-
+              private store: Store<AppState>,
+              private player: PlayerService) {
+    let getBeatData = createSelector(PlayerService.getData, data => data[this.key]);
+    let getBeatValue = createSelector(getBeatData, beatData => beatData.value);
+    this.value$ = this.store.select(getBeatValue);
   }
 
   @HostListener('mouseenter') onMouseEnter() {
-    // console.log('Enter', this.shortcutKey, 'from', this.selected);
-    this.selectChange.emit(this.shortcutKey);
+    this.player.select(this.key);
   }
 
   @HostListener('mouseleave') onMouseLeave() {
-    // console.log('Leave', this.shortcutKey, 'from', this.selected);
-    if (this.shortcutKey === this.selected) {
-      this.selectChange.emit();
-    } else {
-      // This doesn't have any impact so long as the controls inside the beat
-      // component don't have any exit animation.  If we do add it though, we
-      // get other beat components showing the exit animation when we toggle
-      // a beat box.  This bug happened even when using only :hover to trigger
-      // the controls, instead of the "selected" variable in HtmlGrid.
-      console.log('WTF, we supposedly left ' + this.shortcutKey + ' even though we\'re actually in ' + this.selected);
-    }
+    this.player.unselect(this.key);
   }
 
   onQuarter() {
-    this.stateChange.emit(this.state ? 0 : 1);
+    this.player.toggle(this.key);
   }
 
-  setSubdivision(subdivision: number) {
-    // TODO
-    console.log('Set subdivision ' + subdivision);
+  setPulses(pulses: number) {
+    console.log('Set pulses ' + pulses);
+    if (pulses in this.pulsesRange) {
+      this.player.pulses(this.key, pulses);
+    } else {
+      console.log('Invalid pulses');
+    }
   }
 }

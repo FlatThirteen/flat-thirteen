@@ -1,11 +1,20 @@
 import * as Tone from 'tone';
 
-export enum Variation {
-  Normal, Light, Heavy
-}
+export type SoundName = 'click' | 'kick' | 'snare';
+export type Variation = 'normal' | 'light' | 'heavy';
 
 export interface Sound {
   play(time?: number, variation?: Variation): any;
+}
+
+export class Note {
+  constructor(public readonly soundName: SoundName,
+              public readonly variation?: Variation) {}
+
+  toString(): string {
+    let accent = this.variation === 'heavy' ? '>' : this.variation === 'light' ? '*' : '';
+    return this.soundName + accent;
+  }
 }
 
 const membraneEnvelopeOptions = {
@@ -79,17 +88,16 @@ export class ClickSound implements Sound {
     this.click.connect(Tone.Master);
   }
 
-  play(time?: number, variation: Variation = Variation.Normal) {
+  play(time?: number, variation: Variation = 'normal') {
     switch (variation) {
-      case Variation.Heavy:
+      case 'heavy':
         this.click.triggerAttackRelease('A6', '16n', time);
         break;
-      case Variation.Normal:
+      case 'normal':
         this.click.triggerAttackRelease('A5', '16n', time);
         break;
-      case Variation.Light:
+      case 'light':
         this.click.triggerAttackRelease('A5', '16n', time, 0.5);
     }
-
   }
 }

@@ -44,7 +44,7 @@ export class RenderableStrip {
     rectangle.drawRect(borderSize/2, borderSize/2, beatWidth - borderSize, stripHeight - borderSize);
     rectangle.endFill();
     let inactiveRectTexture = rectangle.generateCanvasTexture();
-    
+
     for (let col = 0; col < beatCount; ++col) {
       this.createInactiveRects(col, inactiveRectTexture);
       this.container.addChild(this.inactiveRects[col]);
@@ -77,12 +77,12 @@ export class RenderableStrip {
     //rectangle.lineStyle(borderSize, 0x007FFF, 1);
     rectangle.drawRect(0, 0, beatWidth, stripHeight);
     rectangle.endFill();
-    var interactionRectTexture = rectangle.generateCanvasTexture();
+    let interactionRectTexture = rectangle.generateCanvasTexture();
 
     this.createShortcutKeyOverlays(shortcutKeys);
 
     for (let col = 0; col < beatCount; ++col) {
-      this.createInteractionRects(col, interactionRectTexture, onclickCallback);
+      this.createInteractionRects(col, interactionRectTexture, onclickCallback, shortcutKeys);
       this.container.addChild(this.interactionRects[col]);
     }
 
@@ -116,14 +116,14 @@ export class RenderableStrip {
     this.beats[index].visible = false;
   }
 
-  createInteractionRects(index:number, texture: PIXI.Texture, onclickCallback: any) {
+  createInteractionRects(index:number, texture: PIXI.Texture, onclickCallback: any, keys: string[]) {
     this.interactionRects[index] = new PIXI.Sprite(texture);
-        
+
     this.interactionRects[index].interactive = true;
     this.interactionRects[index].anchor.set(0.5, 0.5);
     this.interactionRects[index]
       .on('mousedown', function(e) {
-        onclickCallback(this.id, index);    
+        onclickCallback(keys[index]);
       }.bind(this))
       .on('pointerover', function(e) {
         this.onPointerOver(index);

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { KickSound, SnareSound } from "../../sounds/sound";
-import { GridService } from '../grid.service';
-import { BeatService } from "../../beat.service";
-import { StageService } from "../../stage.service";
+import { Component, Input, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
-import { RenderableStrip } from './renderableStrip';
+
+import { PlayerService } from "../../../../player/player.service";
+import { BeatService } from "../../beat.service";
 import { RenderableBar } from './renderableBar';
+import { RenderableStrip } from './renderableStrip';
+import { StageService } from "../../stage.service";
 import { TextOverlay } from './text-Overlay';
+import { Grid } from "../grid";
 
 @Component({
   selector: 'pixi-grid',
@@ -15,6 +16,7 @@ import { TextOverlay } from './text-Overlay';
 })
 
 export class PixiGridComponent implements OnInit {
+  @Input() private grid: Grid;
   renderer: PIXI.SystemRenderer;
   stage: PIXI.Container;
 
@@ -28,13 +30,13 @@ export class PixiGridComponent implements OnInit {
   renderableBar: RenderableBar;
   counterOverlay: TextOverlay;
 
-  constructor(private beat: BeatService, private grid: GridService, private stageService: StageService) {
-
-  }
+    constructor(private beat: BeatService, private player: PlayerService,
+                private stageService: StageService) {}
 
   ngOnInit() {
-    this.grid.resetStage([new SnareSound(), new KickSound]);
-
+    if (!this.grid) {
+      throw new Error('Missing grid');
+    }
     let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
     this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
     document.getElementById('canvas-container').appendChild(this.renderer.view);
@@ -42,10 +44,10 @@ export class PixiGridComponent implements OnInit {
     this.stage = new PIXI.Container();
 
     this.renderableStrips = [];
-    for (let i = 0; i < this.instrumentCount; ++i)
-    {
-      this.renderableStrips[i] = 
-        new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid), this.grid.shortcutKeyArray(i));
+    for (let i = 0; i < this.instrumentCount; ++i) {
+      this.renderableStrips[i] =
+        new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount,
+          (key) => this.player.toggle(key), this.grid.keysForStrip(i));
       let renderableObject = this.renderableStrips[i].getRenderableObject();
       renderableObject.y = i * (this.stripHeight + this.stripGapSize);
       this.stage.addChild(renderableObject);
@@ -62,7 +64,7 @@ export class PixiGridComponent implements OnInit {
   }
 
   setupCounterOverlay() {
-    var style = new PIXI.TextStyle({
+    let style = new PIXI.TextStyle({
       fontFamily: 'Courier',
       fontSize: 144,
       fontStyle: 'italic',
@@ -87,12 +89,12 @@ export class PixiGridComponent implements OnInit {
   }
 
   render() {
-    if (true === this.stageService.shouldShowPosition()) {
+    if (this.stageService.shouldShowPosition()) {
       this.renderableBar.getRenderableObject().visible = true;
     }
     this.renderer.render(this.stage);
 
-    if (false === this.beat.paused) {
+    if (!this.beat.paused) {
       this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
     }
 
@@ -112,12 +114,11 @@ export class PixiGridComponent implements OnInit {
     for (let i = 0; i < this.instrumentCount; ++i) {
       this.renderableStrips[i].setRenderActive(active);
       for (let beat = 0; beat < this.beatCount; ++beat) {
-        this.renderableStrips[i].updateBeatStatus(beat, this.grid.getGridValue(i, beat));
+        this.renderableStrips[i].updateBeatStatus(beat, this.player.getValue(this.grid.keysForStrip(i)[beat]));
       }
     }
 
-    if (!this.beat.paused && (undefined != this.beat.count()))
-    {
+    if (!this.beat.paused && (undefined != this.beat.count())) {
       this.counterOverlay.setText(this.beat.count().toString());
       this.counterOverlay.getRenderableObject().visible = this.stageService.shouldShowCount();
     }
