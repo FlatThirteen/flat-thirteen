@@ -3,6 +3,9 @@ import * as _ from 'lodash';
 import { Note, SoundName } from "../sound/sound";
 import { Surface } from "../surface";
 
+const off: number[] = [0];
+const on: number[] = [1];
+
 export class Grid implements Surface {
   readonly shortcutKeysBySound: _.Dictionary<string[]>;
   readonly soundNames: SoundName[];
@@ -23,7 +26,7 @@ export class Grid implements Surface {
     }, <_.Dictionary<GridInfo>>{});
     this.initialData = _.transform(shortcuts, (result, keys, sound) => {
       _.forEach(keys, (key) => {
-        result[key] = new GridData(<SoundName>sound, 0, 1);
+        result[key] = new GridData(<SoundName>sound, off, 1);
       });
     }, <_.Dictionary<GridData>>{});
   }
@@ -40,12 +43,16 @@ export class Grid implements Surface {
     return <string[]>_.map(this.shortcutKeysBySound, _.property(beat));
   }
 
+  keysForStrip(index: number) {
+    return this.shortcutKeysBySound[this.soundNames[index]];
+  }
+
   set(key: string, data: GridData): _.Dictionary<GridData> {
-    return _.fromPairs([[key, new GridData(data.sound, 1, data.pulses)]]);
+    return _.fromPairs([[key, new GridData(data.sound, on, data.pulses)]]);
   }
 
   unset(key: string, data: GridData): _.Dictionary<GridData> {
-    return _.fromPairs([[key, new GridData(data.sound, 0, data.pulses)]]);
+    return _.fromPairs([[key, new GridData(data.sound, off, data.pulses)]]);
   }
 
   setPulses(key: string, pulses: number, data: GridData) {
@@ -64,10 +71,10 @@ export class GridInfo implements Surface.Info {
 
 export class GridData implements Surface.Data {
   constructor(readonly sound: SoundName,
-              readonly value: number | number[], readonly pulses: number) {}
+              readonly value: number[], readonly pulses: number) {}
 
   noteAt(pulse: number): Note {
-    if (this.value === 1) {
+    if (this.value === on) {
       return new Note(this.sound);
     }
   }

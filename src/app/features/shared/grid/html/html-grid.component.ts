@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { BeatService } from "../../beat.service";
 import { Grid } from "../grid";
@@ -13,9 +13,15 @@ import { StageService } from "../../stage.service";
   templateUrl: 'html-grid.component.html',
   styleUrls: ['html-grid.component.css'],
 })
-export class HtmlGridComponent {
+export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
 
   constructor(private beat: BeatService, private player: PlayerService,
               private stage: StageService) {}
+
+  ngOnInit() {
+    if (!this.grid) {
+      throw new Error('Missing grid');
+    }
+  }
 }

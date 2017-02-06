@@ -22,7 +22,7 @@ export declare namespace Surface {
   }
 
   export interface Data {
-    readonly value: number | number[];
+    readonly value: number[];
     readonly pulses: number;
 
     noteAt(pulse: number): Note;

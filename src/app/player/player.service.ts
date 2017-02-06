@@ -72,11 +72,12 @@ export class PlayerService {
     this.store.dispatch(this.player.pulses(key, pulses));
   }
 
-  getValue(key: string) {
-    return this.data[key].value;
+  getValue(key: string, cursor: number = 0): number {
+    return this.data[key].value[cursor];
   }
 
   toggle(key: string) {
+    console.log('Toggle', key)
     if (this.getValue(key)) {
       this.unset(key);
     } else {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
 
 import { PlayerService } from "../../../../player/player.service";
@@ -6,88 +6,129 @@ import { BeatService } from "../../beat.service";
 import { RenderableBar } from './renderableBar';
 import { RenderableStrip } from './renderableStrip';
 import { StageService } from "../../stage.service";
+import { TextOverlay } from './text-Overlay';
+import { Grid } from "../grid";
 
 @Component({
-    selector: 'pixi-grid',
-    templateUrl: 'pixi-grid.component.html',
-    styleUrls: ['pixi-grid.component.css'],
+  selector: 'pixi-grid',
+  templateUrl: 'pixi-grid.component.html',
+  styleUrls: ['pixi-grid.component.css'],
 })
 
 export class PixiGridComponent implements OnInit {
-    renderer: PIXI.SystemRenderer;
-    stage: PIXI.Container;
+  @Input() private grid: Grid;
+  renderer: PIXI.SystemRenderer;
+  stage: PIXI.Container;
 
-    stripHeight: number = 256;
-    beatWidth: number = 256;
-    stripGapSize: number = 16;
-    beatCount: number = 4;
-    instrumentCount = 2;
+  stripHeight: number = 256;
+  beatWidth: number = 256;
+  stripGapSize: number = 16;
+  beatCount: number = 4;
+  instrumentCount = 2;
 
-    renderableStrips: RenderableStrip[];
-    renderableBar: RenderableBar;
+  renderableStrips: RenderableStrip[];
+  renderableBar: RenderableBar;
+  counterOverlay: TextOverlay;
 
-    constructor(private beat: BeatService,
-                private a1: PlayerService,
+    constructor(private beat: BeatService, private player: PlayerService,
                 private stageService: StageService) {}
 
-    ngOnInit() {
-        let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
-        this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
-        document.getElementById('canvas-container').appendChild(this.renderer.view);
+  ngOnInit() {
+    if (!this.grid) {
+      throw new Error('Missing grid');
+    }
+    let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
+    this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
+    document.getElementById('canvas-container').appendChild(this.renderer.view);
 
-        this.stage = new PIXI.Container();
+    this.stage = new PIXI.Container();
 
-        this.renderableStrips = [];
-        for (let i = 0; i < this.instrumentCount; ++i)
-        {
-            this.renderableStrips[i] = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, () => {/*toggle*/});
-            let renderableObject = this.renderableStrips[i].getRenderableObject();
-            renderableObject.y = i * (this.stripHeight + this.stripGapSize);
-            this.stage.addChild(renderableObject);
-        }
-
-        this.renderableBar = new RenderableBar(8, canvasHeight);
-        this.renderableBar.getRenderableObject().visible = false;
-        this.stage.addChild(this.renderableBar.getRenderableObject());
-
-        this.stage.interactive = true;
-        this.stage
-            .on('mouseup', this.onCanvasMouseUp.bind(this));
-
-        this.render();
+    this.renderableStrips = [];
+    for (let i = 0; i < this.instrumentCount; ++i) {
+      this.renderableStrips[i] =
+        new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount,
+          (key) => this.player.toggle(key), this.grid.keysForStrip(i));
+      let renderableObject = this.renderableStrips[i].getRenderableObject();
+      renderableObject.y = i * (this.stripHeight + this.stripGapSize);
+      this.stage.addChild(renderableObject);
     }
 
-    render() {
-        if (true === this.stageService.shouldShowPosition()) {
-            this.renderableBar.getRenderableObject().visible = true;
-        }
-        this.renderer.render(this.stage);
+    this.renderableBar = new RenderableBar(8, canvasHeight);
+    this.renderableBar.getRenderableObject().visible = false;
+    this.stage.addChild(this.renderableBar.getRenderableObject());
 
-        if (false === this.beat.paused) {
-            this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
-        }
+    this.setupCounterOverlay();
+    this.stage.addChild(this.counterOverlay.getRenderableObject());
 
-        let name = this.stageService.stateName();
-        let active = false;
-        switch(name) {
-            case "demo":
-                active = false;
-                break;
-            case "play":
-                active = true;
-                break;
-        }
-        for (let i = 0; i < this.instrumentCount; ++i) {
-            this.renderableStrips[i].setRenderActive(active);
-        }
+    this.render();
+  }
 
-        requestAnimationFrame(this.render.bind(this));
+  setupCounterOverlay() {
+    let style = new PIXI.TextStyle({
+      fontFamily: 'Courier',
+      fontSize: 144,
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      fill: ['#ffffff', '#00ff99'], // gradient
+      stroke: '#4a1850',
+      strokeThickness: 5,
+      dropShadow: true,
+      dropShadowColor: '#000000',
+      dropShadowBlur: 4,
+      dropShadowAngle: Math.PI / 6,
+      dropShadowDistance: 6,
+      wordWrap: true,
+      wordWrapWidth: 440
+    });
+
+    this.counterOverlay = new TextOverlay((this.beatWidth * this.beatCount) / 3, (this.stripHeight * this.instrumentCount) / 3, 0xFFFFFFFF, 1, style);
+    let counterOverlay = this.counterOverlay.getRenderableObject();
+    counterOverlay.visible = false;
+    counterOverlay.x = (this.beatWidth * this.beatCount) / 2;
+    counterOverlay.y = (this.stripHeight * this.instrumentCount) / 2;
+  }
+
+  render() {
+    if (this.stageService.shouldShowPosition()) {
+      this.renderableBar.getRenderableObject().visible = true;
+    }
+    this.renderer.render(this.stage);
+
+    if (!this.beat.paused) {
+      this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
     }
 
-    onCanvasMouseUp() {
-        if (true === this.beat.paused) {
-            this.beat.start();
-            this.stage.interactive = false;
-        }
+    let name = this.stageService.stateName();
+    let active = false;
+    switch(name) {
+      case "Demo":
+        active = false;
+        break;
+      case "Play":
+        active = true;
+        break;
+      case "Victory":
+        this.processVictoryState();
+        break;
     }
+    for (let i = 0; i < this.instrumentCount; ++i) {
+      this.renderableStrips[i].setRenderActive(active);
+      for (let beat = 0; beat < this.beatCount; ++beat) {
+        this.renderableStrips[i].updateBeatStatus(beat, this.player.getValue(this.grid.keysForStrip(i)[beat]));
+      }
+    }
+
+    if (!this.beat.paused && (undefined != this.beat.count())) {
+      this.counterOverlay.setText(this.beat.count().toString());
+      this.counterOverlay.getRenderableObject().visible = this.stageService.shouldShowCount();
+    }
+
+    requestAnimationFrame(this.render.bind(this));
+  }
+
+  processVictoryState() {
+    this.renderableStrips.forEach(element => {
+      element.clearBeats();
+    });
+  }
 }

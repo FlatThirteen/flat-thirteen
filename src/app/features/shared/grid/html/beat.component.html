@@ -1,6 +1,6 @@
-<div class="quarter note" *ngIf="(value$ | async) === 1"></div>
+<div class="quarter note" *ngIf="(value$ | async)[0] === 1"></div>
 <div class="controls">
-  <div class="quarter note" [ngClass]="{on: (value$ | async) === 1, cursor: player.cursor === 0}"
+  <div class="quarter note" [ngClass]="{on: (value$ | async)[0] === 1, cursor: player.cursor === 0}"
        (click)="onQuarter()">{{key}}</div>
   <div class="pulses" *ngIf="pulsesRange.length > 1">
     <div class="hint" *ngFor="let i of pulsesRange" (click)="setPulses(i);$event.stopPropagation()">{{i}}</div>
