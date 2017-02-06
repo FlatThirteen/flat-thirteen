@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import * as Tone from 'tone';
 
-import {Sound, ClickSound, Variation} from "./sounds/sound";
+import { SoundService } from "./sound/sound.service";
 
 const loopTimes = {
   1: '4n',
@@ -31,9 +31,9 @@ export class BeatService {
   onTopId: number;
   onPulse: (time: number, measure: number, beat: number, pulse: number) => any;
 
-  clickSound: Sound = new ClickSound();
-
   paused: boolean = true;
+
+  constructor(private sound: SoundService) {}
 
   reset(beatsPerMeasure: number[] = [4],
         pulsesPerBeat: number = 1) {
@@ -54,8 +54,7 @@ export class BeatService {
       throw new Error('invalid pulsesPerBeat ' + pulsesPerBeat);
     }
     this.loop = new Tone.Loop((time: number) => {
-      let variation = this.pulse ? Variation.Light : this.beat ? Variation.Normal : Variation.Heavy;
-      this.clickSound.play(time, variation);
+      this.sound.play('click', time, this.pulse ? 'light' : this.beat ? 'normal' : 'heavy');
 
       if (this.onPulse) {
         this.onPulse(time, this.measure, this.beat, this.pulse);
@@ -119,7 +118,7 @@ export class BeatService {
   }
 
   current(beat: number) {
-    return this.beatIndex === beat + 1 && this.loop.progress < livePlayWithin;
+    return !this.paused && this.beatIndex === beat + 1 && this.loop.progress < livePlayWithin;
   }
 
   progress() {

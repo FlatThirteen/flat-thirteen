@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
-import { Sound } from "./sounds/sound";
-import { Note } from "./note";
+import { SoundName, Note } from "./sound/sound";
 
 
 export class Phrase {
@@ -32,7 +31,10 @@ export class Phrase {
     } else {
       return this.notes[pulseIndex] ? this.notes[pulseIndex].length : 0;
     }
+  }
 
+  toString(): string {
+    return _.toString(_.toPairs(this.notes));
   }
 }
 
@@ -46,7 +48,7 @@ export interface PhraseBuilder {
  * Other values are ignored.
  */
 export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
-  constructor(private sounds: Sound[],
+  constructor(private soundNames: SoundName[],
               private timing: _.List<number>,
               private minNotes: number = 2,
               private maxNotes: number = 4) {
@@ -62,8 +64,8 @@ export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
     let generate = (generationStrategy: (pulseIndex: number) => number) => {
       for (let pulseIndex in this.timing) {
         if (generationStrategy(Number(pulseIndex))) {
-          let soundIndex = _.random(this.sounds.length - 1);
-          phrase.add(Number(pulseIndex), new Note(this.sounds[soundIndex]));
+          let soundIndex = _.random(this.soundNames.length - 1);
+          phrase.add(Number(pulseIndex), new Note(this.soundNames[soundIndex]));
         }
         if (phrase.numNotes() === this.maxNotes) {
           break;

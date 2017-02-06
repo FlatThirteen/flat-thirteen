@@ -1,5 +1,7 @@
 <header></header>
-<html-grid *ngIf="renderer==='html'"></html-grid>
-<pixi-grid *ngIf="renderer==='pixi'"></pixi-grid>
+<div class="surface" *ngFor="let surface of surfaces; let i = index">
+  <html-grid *ngIf="isGrid(surface) && renderer==='html'" [grid]="surface"></html-grid>
+  <pixi-grid *ngIf="isGrid(surface) && renderer==='pixi'"></pixi-grid>
+</div>
 <stage-panel></stage-panel>
 

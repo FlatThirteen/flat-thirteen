@@ -10,12 +10,16 @@
   width: 25%;
 }
 
+:host(.current) {
+  background-color: #009FFF;
+}
+
 :host(.selected) .controls {
   opacity: 1;
 
   transition: opacity 350ms ease-in-out;
 
-  .subdivisions {
+  .pulses {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
@@ -32,8 +36,7 @@
   height: 100%;
   opacity: 0;
   position: absolute;
-  // Set transition to see artifact described in beat.component WTF
-  transition: opacity 0ms ease-in-out;
+  transition: opacity 150ms ease-in-out;
   width: 100%;
 
   .hint {
@@ -45,7 +48,7 @@
     padding: 5px;
   }
 
-  .subdivisions {
+  .pulses {
     display: inline-flex;
     flex: 1;
     justify-content: space-between;
@@ -69,14 +72,14 @@
 
   .quarter {
     background-color: rgba(0,0,0,0.1);
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(0,0,0,0.5);
     font-size: 100px;
     line-height: 180px;
     transition: background-color 150ms ease-in-out;
+  }
 
-    &:hover {
-      background-color: rgba(0,0,0,0.3);
-    }
+  .note {
+    transform: scale(0.9);
   }
 }
 
@@ -85,6 +88,37 @@
   height: 80%;
   margin: auto;
   width: 80%;
+}
+
+:host(.selected) .note {
+  background-color: rgba(0,0,0,0.3);
+  position: relative;
+
+  &.on {
+    background-color: rgba(0,0,0,0.5);
+
+    &.cursor {
+      color: rgba(255,255,255,0.5);
+
+      &:after {
+        content: '';
+        background-color: rgba(255, 255, 255, 0.5);
+        bottom: 20%;
+        font-size: 10px;
+        height: 10px;
+        left: 25%;
+        line-height: 10px;
+        position: absolute;
+        text-align: center;
+        width: 50%;
+      }
+    }
+  }
+}
+
+:host(.selected) .quarter.on:hover:after {
+  content: 'space';
+  color: #000;
 }
 
 .note {

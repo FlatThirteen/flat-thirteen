@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { KickSound, SnareSound } from "../../sounds/sound";
-import { GridService } from '../grid.service';
-import { BeatService } from "../../beat.service";
-import { StageService } from "../../stage.service";
 import * as PIXI from 'pixi.js'
-import { RenderableStrip } from './renderableStrip';
+
+import { PlayerService } from "../../../../player/player.service";
+import { BeatService } from "../../beat.service";
 import { RenderableBar } from './renderableBar';
+import { RenderableStrip } from './renderableStrip';
+import { StageService } from "../../stage.service";
 
 @Component({
     selector: 'pixi-grid',
@@ -26,13 +26,11 @@ export class PixiGridComponent implements OnInit {
     renderableStrips: RenderableStrip[];
     renderableBar: RenderableBar;
 
-    constructor(private beat: BeatService, private grid: GridService, private stageService: StageService) {
-
-    }
+    constructor(private beat: BeatService,
+                private a1: PlayerService,
+                private stageService: StageService) {}
 
     ngOnInit() {
-        this.grid.resetStage([new SnareSound(), new KickSound]);
-
         let canvasHeight = (this.stripHeight * this.instrumentCount) + (this.stripGapSize * (this.instrumentCount - 1));
         this.renderer = PIXI.autoDetectRenderer(this.beatWidth * this.beatCount, canvasHeight);
         document.getElementById('canvas-container').appendChild(this.renderer.view);
@@ -42,7 +40,7 @@ export class PixiGridComponent implements OnInit {
         this.renderableStrips = [];
         for (let i = 0; i < this.instrumentCount; ++i)
         {
-            this.renderableStrips[i] = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, this.grid.onToggle.bind(this.grid));
+            this.renderableStrips[i] = new RenderableStrip(i, this.stripHeight, this.beatWidth, this.beatCount, () => {/*toggle*/});
             let renderableObject = this.renderableStrips[i].getRenderableObject();
             renderableObject.y = i * (this.stripHeight + this.stripGapSize);
             this.stage.addChild(renderableObject);

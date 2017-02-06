@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BeatService } from "../beat.service";
 import { GoalService } from "../goal.service";
-import { StageService, State } from "../stage.service";
+import { StageService } from "../stage.service";
 
 /**
  * This class represents the lazy loaded A1Component.
@@ -12,7 +12,7 @@ import { StageService, State } from "../stage.service";
   templateUrl: 'stage-panel.component.html',
   styleUrls: ['stage-panel.component.css'],
 })
-export class StagePanelComponent implements OnInit {
+export class StagePanelComponent {
 
   /**
    * Creates an instance of the A1Component.
@@ -21,18 +21,11 @@ export class StagePanelComponent implements OnInit {
               private goal: GoalService,
               private stage: StageService) {}
 
-  /**
-   * Get the names OnInit
-   */
-  ngOnInit() {
-
-  }
-
   onStart() {
     this.beat.start();
   }
 
-  onPause() {
+  onStop() {
     this.beat.stop();
     this.stage.reset();
   }

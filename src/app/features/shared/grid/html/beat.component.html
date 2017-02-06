@@ -1,7 +1,8 @@
-<div class="quarter note" *ngIf="state === 1"></div>
+<div class="quarter note" *ngIf="(value$ | async) === 1"></div>
 <div class="controls">
-  <div class="quarter note" (click)="onQuarter()">{{shortcutKey}}</div>
-  <div class="subdivisions" *ngIf="subdivisions.length > 1">
-    <div class="hint" *ngFor="let i of subdivisions" (click)="setSubdivision(i);$event.stopPropagation()">{{i}}</div>
+  <div class="quarter note" [ngClass]="{on: (value$ | async) === 1, cursor: player.cursor === 0}"
+       (click)="onQuarter()">{{key}}</div>
+  <div class="pulses" *ngIf="pulsesRange.length > 1">
+    <div class="hint" *ngFor="let i of pulsesRange" (click)="setPulses(i);$event.stopPropagation()">{{i}}</div>
   </div>
 </div>
