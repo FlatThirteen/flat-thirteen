@@ -14,7 +14,6 @@ export class GoalService {
   constructor(private sound: SoundService) {}
 
   newGoal(phraseBuilder: PhraseBuilder) {
-
     this.goalPhrase = phraseBuilder.build();
     this.playedPhrase = new Phrase();
   }

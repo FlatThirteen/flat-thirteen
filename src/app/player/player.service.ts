@@ -77,7 +77,6 @@ export class PlayerService {
   }
 
   toggle(key: string) {
-    console.log('Toggle', key)
     if (this.getValue(key)) {
       this.unset(key);
     } else {

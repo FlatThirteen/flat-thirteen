@@ -26,7 +26,6 @@ export class SurfaceService {
     this._initialData = _.reduce(surfaces, (result, surface) => {
       return _.merge(result, surface.initialData);
     }, {});
-    console.log('Combined keyMap of surfaces:', this.keyMap);
   }
 
   forKey(key: string) {
