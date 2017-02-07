@@ -41,7 +41,7 @@ export class A1Component implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.beatsPerMeasure = 4;
-    this.supportedPulses = [1, 2, 3, 4];
+    this.supportedPulses = [1];
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
     this.beat.reset([this.beatsPerMeasure], this.supportedPulses);
 
