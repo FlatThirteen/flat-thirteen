@@ -9,7 +9,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { AppState } from "../reducers/index";
 import { Observable } from "rxjs";
 import { PlayerActions } from "./player.actions";
-import { Surface } from "../features/shared/surface";
+import { Surface } from "../features/shared/surface.model";
 
 @Injectable()
 export class PlayerService {

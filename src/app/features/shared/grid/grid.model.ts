@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
-import { Note, SoundName } from "../sound/sound";
-import { Surface } from "../surface";
+import { Note, SoundName } from "../../../sound/sound";
+import { Surface } from "../surface.model";
 
 const off: number[] = [0];
 const on: number[] = [1];

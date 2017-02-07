@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import { Note } from "./sound/sound";
-import { Phrase, PhraseBuilder } from "./phrase";
-import { SoundService } from "./sound/sound.service";
+import { Note } from "../../sound/sound";
+import { Phrase, PhraseBuilder } from "./phrase.model";
+import { SoundService } from "../../sound/sound.service";
 
 @Injectable()
 export class GoalService {

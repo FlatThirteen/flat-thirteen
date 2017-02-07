@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { BeatService } from "../../beat.service";
-import { Grid } from "../grid";
+import { Grid } from "../grid.model";
 import { PlayerService } from "../../../../player/player.service";
 import { StageService } from "../../stage.service";
 

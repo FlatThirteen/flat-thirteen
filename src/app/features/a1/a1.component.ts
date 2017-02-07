@@ -4,11 +4,11 @@ import { ActivatedRoute } from "@angular/router";
 
 import { BeatService } from "../shared/beat.service";
 import { GoalService } from "../shared/goal.service";
-import { Grid } from "../shared/grid/grid";
-import { MonophonicMonotonePhraseBuilder } from "../shared/phrase";
+import { Grid } from "../shared/grid/grid.model";
+import { MonophonicMonotonePhraseBuilder } from "../shared/phrase.model";
 import { PlayerService } from "../../player/player.service";
 import { StageService } from "../shared/stage.service";
-import { Surface } from "../shared/surface";
+import { Surface } from "../shared/surface.model";
 import { SurfaceService } from "../shared/surface.service";
 
 let requestAnimationFrameId: number;

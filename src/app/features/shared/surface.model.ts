@@ -1,4 +1,4 @@
-import { Note, SoundName } from "./sound/sound";
+import { Note, SoundName } from "../../sound/sound";
 
 export interface Surface {
   readonly infoByKey: _.Dictionary<Surface.Info>;

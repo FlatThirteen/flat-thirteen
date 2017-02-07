@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { SoundName, Note } from "./sound/sound";
+import { SoundName, Note } from "../../sound/sound";
 
 
 export class Phrase {

@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import 'rxjs/add/operator/ignoreElements';
 
-import { PlayerActions } from "./player.actions";
-import { GoalService } from "../features/shared/goal.service";
 import { BeatService } from "../features/shared/beat.service";
+import { GoalService } from "../features/shared/goal.service";
+import { Note } from "../sound/sound";
+import { PlayerActions } from "./player.actions";
 import { StageService } from "../features/shared/stage.service";
-import { SoundService } from "../features/shared/sound/sound.service";
-import { Note } from "../features/shared/sound/sound";
+import { SoundService } from "../sound/sound.service";
 
 @Injectable()
 export class PlayerEffects {

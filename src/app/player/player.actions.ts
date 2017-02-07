@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { Surface } from "../features/shared/surface";
+import { Surface } from "../features/shared/surface.model";
 import { SurfaceService } from "../features/shared/surface.service";
 
 @Injectable()

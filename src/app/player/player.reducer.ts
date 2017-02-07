@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { Action } from '@ngrx/store';
 
 import { PlayerActions } from './player.actions';
-import { Surface } from "../features/shared/surface";
+import { Surface } from "../features/shared/surface.model";
 
 export class PlayerState {
   readonly selected?: string;

@@ -2,8 +2,8 @@ import * as _ from 'lodash';
 
 import { Injectable } from '@angular/core';
 
-import { SoundName } from "./sound/sound";
-import { Surface } from "./surface";
+import { SoundName } from "../../sound/sound";
+import { Surface } from "./surface.model";
 
 @Injectable()
 export class SurfaceService {

@@ -7,13 +7,13 @@ import { routes } from './a1.routing';
 import { GridModule } from '../shared/grid/grid.module';
 import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
 
-import { PlayerActions } from "../../player/player.actions";
 import { A1Component } from './a1.component';
-import { PlayerEffects } from "../../player/player.effects";
-import { PlayerService } from "../../player/player.service";
 import { BeatService } from '../shared/beat.service';
 import { GoalService } from "../shared/goal.service";
-import { SoundService } from "../shared/sound/sound.service";
+import { PlayerActions } from "../../player/player.actions";
+import { PlayerEffects } from "../../player/player.effects";
+import { PlayerService } from "../../player/player.service";
+import { SoundService } from "../../sound/sound.service";
 import { StageService } from "../shared/stage.service";
 import { SurfaceService } from "../shared/surface.service";
 

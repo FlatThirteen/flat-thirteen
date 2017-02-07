@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import * as Tone from 'tone';
 
-import { SoundService } from "./sound/sound.service";
+import { SoundService } from "../../sound/sound.service";
 
 export const ticksPerBeat = Tone.Transport.PPQ; // 192
 const livePlayWithin: number = 0.3;
