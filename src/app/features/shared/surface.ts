@@ -1,7 +1,7 @@
 import { Note, SoundName } from "./sound/sound";
 
 export interface Surface {
-  readonly shortcutMap: _.Dictionary<Surface.Info>;
+  readonly infoByKey: _.Dictionary<Surface.Info>;
   readonly initialData: _.Dictionary<Surface.Data>;
   readonly beats: number;
 
@@ -25,6 +25,6 @@ export declare namespace Surface {
     readonly value: number[];
     readonly pulses: number;
 
-    noteAt(pulse: number): Note;
+    noteAt(beat: number, tick: number): Note;
   }
 }

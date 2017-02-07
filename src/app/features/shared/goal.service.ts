@@ -22,8 +22,8 @@ export class GoalService {
     this.playedPhrase = new Phrase();
   }
 
-  playGoal(time: number, pulseIndex: number) {
-    let notes = this.goalPhrase.getNotes(pulseIndex);
+  playGoal(time: number, beat: number, tick: number) {
+    let notes = this.goalPhrase.getNotes(beat, tick);
     for (let note of notes) {
       this.sound.play(note.soundName, time);
     }

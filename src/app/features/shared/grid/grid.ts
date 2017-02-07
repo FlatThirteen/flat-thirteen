@@ -7,24 +7,25 @@ const off: number[] = [0];
 const on: number[] = [1];
 
 export class Grid implements Surface {
-  readonly shortcutKeysBySound: _.Dictionary<string[]>;
+  readonly keysBySound: _.Dictionary<string[]>;
   readonly soundNames: SoundName[];
   readonly beats: number;
-  readonly pulsesPerBeat: number;
-  readonly shortcutMap: _.Dictionary<GridInfo>;
+  readonly supportPulses: number[];
+  readonly infoByKey: _.Dictionary<GridInfo>;
   readonly initialData: _.Dictionary<GridData>;
 
-  constructor(shortcuts: _.Dictionary<string[]>, beats: number, pulsesPerBeat: number) {
-    this.shortcutKeysBySound = shortcuts;
-    this.soundNames = <SoundName[]>_.keys(shortcuts);
+  constructor(shortcutKeysBySound: _.Dictionary<string[]>, beats: number,
+              supportPulses: number[]) {
+    this.keysBySound = shortcutKeysBySound;
+    this.soundNames = <SoundName[]>_.keys(shortcutKeysBySound);
     this.beats = beats;
-    this.pulsesPerBeat = pulsesPerBeat;
-    this.shortcutMap = _.transform(shortcuts, (result, keys, sound) => {
+    this.supportPulses = supportPulses;
+    this.infoByKey = _.transform(shortcutKeysBySound, (result, keys, sound) => {
       _.forEach(keys, (key, beat) => {
         result[key] = new GridInfo(key, <SoundName>sound, beat)
       });
     }, <_.Dictionary<GridInfo>>{});
-    this.initialData = _.transform(shortcuts, (result, keys, sound) => {
+    this.initialData = _.transform(shortcutKeysBySound, (result, keys, sound) => {
       _.forEach(keys, (key) => {
         result[key] = new GridData(<SoundName>sound, off, 1);
       });
@@ -32,19 +33,19 @@ export class Grid implements Surface {
   }
 
   listens(key: string): boolean {
-    return !!this.shortcutMap[key];
+    return !!this.infoByKey[key];
   }
 
   get(key): GridInfo {
-    return this.shortcutMap[key];
+    return this.infoByKey[key];
   }
 
   keysAt(beat: number) {
-    return <string[]>_.map(this.shortcutKeysBySound, _.property(beat));
+    return <string[]>_.map(this.keysBySound, _.property(beat));
   }
 
   keysForStrip(index: number) {
-    return this.shortcutKeysBySound[this.soundNames[index]];
+    return this.keysBySound[this.soundNames[index]];
   }
 
   set(key: string, data: GridData): _.Dictionary<GridData> {
@@ -61,7 +62,7 @@ export class Grid implements Surface {
 
   toString(): string {
     return _.toString(this.soundNames) + ':' +
-      _.toString(_.values(this.shortcutKeysBySound));
+      _.toString(_.values(this.keysBySound));
   }
 }
 
@@ -73,8 +74,10 @@ export class GridData implements Surface.Data {
   constructor(readonly sound: SoundName,
               readonly value: number[], readonly pulses: number) {}
 
-  noteAt(pulse: number): Note {
-    if (this.value === on) {
+  noteAt(beat: number, tick: number): Note {
+    if (tick) {
+      return null;
+    } else if (this.value === on) {
       return new Note(this.sound);
     }
   }

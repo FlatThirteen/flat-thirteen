@@ -21,8 +21,11 @@ export class Phrase {
     this.noteCount++;
   }
 
-  getNotes(pulseIndex): Note[] {
-    return this.notes[pulseIndex] || [];
+  getNotes(beat: number, tick: number): Note[] {
+    if (tick) {
+      return [];
+    }
+    return this.notes[beat] || [];
   }
 
   numNotes(pulseIndex?: number): number {

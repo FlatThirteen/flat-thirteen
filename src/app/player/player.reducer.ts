@@ -7,10 +7,12 @@ import { Surface } from "../features/shared/surface";
 
 export class PlayerState {
   readonly selected?: string;
+  readonly beat?: number;
   readonly cursor: number;
 
   constructor(readonly data: _.Dictionary<Surface.Data>) {
     this.selected = null;
+    this.beat = null;
     this.cursor = 0;
   }
 
@@ -24,14 +26,18 @@ export class PlayerState {
         return new PlayerState(action.payload);
       }
       case PlayerActions.SELECT: {
-        let key = action.payload;
-        return <PlayerState>_.defaults({ selected: key, cursor: 0 }, state);
+        let [key, surface] = action.payload;
+        return <PlayerState>_.defaults({
+          selected: key,
+          beat: surface.get(key).beat,
+          cursor: 0
+        }, state);
       }
       case PlayerActions.UNSELECT: {
         if (!state.selected) {
           return state;
         } else {
-          return _.defaults({ selected: null }, state);
+          return _.defaults({ selected: null, beat: null }, state);
         }
       }
       case PlayerActions.SET: {
@@ -39,6 +45,7 @@ export class PlayerState {
         if (surface) {
           return <PlayerState>_.defaultsDeep({
             selected: key,
+            beat: surface.get(key).beat,
             data: surface.set(key, state.data[key])
           }, state.cursorAdvance(key), state);
         } else {

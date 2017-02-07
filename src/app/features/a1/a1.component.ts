@@ -26,7 +26,7 @@ export class A1Component implements OnInit, OnDestroy {
   private renderer: string;
   private surfaces: Surface[];
   private beatsPerMeasure: number;
-  private pulsesPerBeat: number;
+  private supportedPulses: number[];
 
   /**
    * Creates an instance of the A1Component.
@@ -41,16 +41,16 @@ export class A1Component implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.beatsPerMeasure = 4;
-    this.pulsesPerBeat = 1;
+    this.supportedPulses = [1, 2, 3, 4];
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
-    this.beat.reset([this.beatsPerMeasure], this.pulsesPerBeat);
+    this.beat.reset([this.beatsPerMeasure], this.supportedPulses);
 
-    let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']}, this.beatsPerMeasure, this.pulsesPerBeat);
+    let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']}, this.beatsPerMeasure, this.supportedPulses);
     this.surfaces = [grid];
     this.player.init(this.surfaces);
 
-    this.beat.setOnTop((time: number) => this.onTop());
-    this.beat.setOnPulse((time: number, measure: number, beat: number, pulse: number) => this.onPulse(time, beat, pulse));
+    this.beat.setOnTop((time) => this.onTop());
+    this.beat.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
@@ -74,13 +74,13 @@ export class A1Component implements OnInit, OnDestroy {
     }
   }
 
-  onPulse(time: number, beat: number, pulse: number) {
+  onPulse(time: number, beat: number, tick: number) {
     if (this.stage.isGoal()) {
-      this.goal.playGoal(time, beat);
+      this.goal.playGoal(time, beat, tick);
     } else if (this.stage.isPlay()) {
       let dataForBeat = _.map(this.surface.keysByBeat[beat], key => this.player.data[key]);
       _.forEach(<Surface.Data[]>dataForBeat, data => {
-        this.goal.playSound(beat, data.noteAt(beat), time);
+        this.goal.playSound(beat, data.noteAt(beat, tick), time);
       });
     }
   }
@@ -98,7 +98,7 @@ export class A1Component implements OnInit, OnDestroy {
       this.player.unset(this.player.selected);
     } else {
       let numKey = _.parseInt(event.key);
-      if (numKey > 0 && numKey <= this.pulsesPerBeat) {
+      if (_.includes(this.supportedPulses, numKey)) {
         this.player.pulses(this.player.selected, numKey);
       } else {
         this.player.set(event.key);
