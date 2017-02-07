@@ -1,7 +1,7 @@
 <div class="grid" ngClass="{{stage.stateName() | lowercase }}">
-  <div class="strip" *ngFor="let soundName of grid.soundNames; let i = index">
-    <div *ngFor="let key of grid.shortcutKeysBySound[soundName]; let j = index" class="beat"
-         [ngClass]="{current: beat.current(j), selected: player.selected === key}"
+  <div class="strip" *ngFor="let soundName of grid.soundNames">
+    <div *ngFor="let key of grid.keysBySound[soundName]; let j = index" class="beat"
+         [ngClass]="{current: beat.current(j), selected: player.beat === j}"
          [pulsesRange]="[1]" [key]="key">
     </div>
   </div>

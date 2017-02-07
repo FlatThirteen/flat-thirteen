@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
 
-import { PlayerService } from "../../../../player/player.service";
 import { BeatService } from "../../beat.service";
+import { Grid } from "../grid.model";
+import { PlayerService } from "../../../../player/player.service";
 import { RenderableBar } from './renderableBar';
 import { RenderableStrip } from './renderableStrip';
 import { StageService } from "../../stage.service";
 import { TextOverlay } from './text-Overlay';
-import { Grid } from "../grid";
 
 @Component({
   selector: 'pixi-grid',

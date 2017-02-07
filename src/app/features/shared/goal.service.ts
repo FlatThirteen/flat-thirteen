@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import { Note } from "./sound/sound";
-import { Phrase, PhraseBuilder } from "./phrase";
-import { SoundService } from "./sound/sound.service";
+import { Note } from "../../sound/sound";
+import { Phrase, PhraseBuilder } from "./phrase.model";
+import { SoundService } from "../../sound/sound.service";
 
 @Injectable()
 export class GoalService {
@@ -14,7 +14,6 @@ export class GoalService {
   constructor(private sound: SoundService) {}
 
   newGoal(phraseBuilder: PhraseBuilder) {
-
     this.goalPhrase = phraseBuilder.build();
     this.playedPhrase = new Phrase();
   }
@@ -23,8 +22,8 @@ export class GoalService {
     this.playedPhrase = new Phrase();
   }
 
-  playGoal(time: number, pulseIndex: number) {
-    let notes = this.goalPhrase.getNotes(pulseIndex);
+  playGoal(time: number, beat: number, tick: number) {
+    let notes = this.goalPhrase.getNotes(beat, tick);
     for (let note of notes) {
       this.sound.play(note.soundName, time);
     }

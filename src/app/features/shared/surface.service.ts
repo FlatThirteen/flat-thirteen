@@ -2,8 +2,8 @@ import * as _ from 'lodash';
 
 import { Injectable } from '@angular/core';
 
-import { SoundName } from "../shared/sound/sound";
-import { Surface } from "../shared/surface";
+import { SoundName } from "../../sound/sound";
+import { Surface } from "./surface.model";
 
 @Injectable()
 export class SurfaceService {
@@ -21,12 +21,11 @@ export class SurfaceService {
       return <string[]>_.flatten(_.map(this.surfaces, _.method('keysAt', beat)));
     });
     this.keyMap = _.reduce(surfaces, (result, surface) => {
-      return _.merge(result, surface.shortcutMap);
+      return _.merge(result, surface.infoByKey);
     }, {});
     this._initialData = _.reduce(surfaces, (result, surface) => {
       return _.merge(result, surface.initialData);
     }, {});
-    console.log('Combined keyMap of surfaces:', this.keyMap);
   }
 
   forKey(key: string) {

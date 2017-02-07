@@ -179,8 +179,8 @@
     "@types/mime" "*"
 
 "@types/tone@git+https://github.com/FlatThirteen/Tonejs-TypeScript":
-  version "0.9.0"
-  resolved "git+https://github.com/FlatThirteen/Tonejs-TypeScript#bc2bbe938ad90b6b41e7c6e49d64c8bd3242fabf"
+  version "0.9.1"
+  resolved "git+https://github.com/FlatThirteen/Tonejs-TypeScript#38be22765f0b833b96a6ab7afadbaf25d4614511"
 
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"

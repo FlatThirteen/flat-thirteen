@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { Surface } from "../features/shared/surface";
+import { Surface } from "../features/shared/surface.model";
 import { SurfaceService } from "../features/shared/surface.service";
 
 @Injectable()
@@ -20,9 +20,10 @@ export class PlayerActions {
 
   static SELECT = '[PLAYER] Select';
   select(key: string): Action {
-    return {
+    let surface = this.surface.forKey(key);
+    return !surface ? noAction : {
       type: PlayerActions.SELECT,
-      payload: this.surface.forKey(key) ? key : null
+      payload: [key, surface]
     };
   }
 
@@ -36,25 +37,29 @@ export class PlayerActions {
 
   static SET = '[PLAYER] Set';
   set(key: string): Action {
-    return {
+    let surface = this.surface.forKey(key);
+    return !surface ? noAction : {
       type: PlayerActions.SET,
       payload: [key, this.surface.forKey(key)]
-    }
+    };
   }
 
   static UNSET = '[PLAYER] Unset';
-  unset(key: string) {
-    return {
+  unset(key: string): Action {
+    let surface = this.surface.forKey(key);
+    return !surface ? noAction : {
       type: PlayerActions.UNSET,
       payload: [key, this.surface.forKey(key)]
     };
   }
 
   static PULSES = '[PLAYER] Pulses';
-  pulses(key: string, pulses: number) {
-    return {
+  pulses(key: string, pulses: number): Action {
+    return !key ? noAction : {
       type: PlayerActions.PULSES,
-      pulses: [key, pulses, this.surface.forKey(key)]
+      payload: [key, pulses, this.surface.forKey(key)]
     };
   }
 }
+
+const noAction = { type: null };
