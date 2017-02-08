@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
 
-import { BeatService } from "../../beat.service";
+import { BeatService } from "../../../features/shared/beat.service";
 import { Grid } from "../grid.model";
-import { PlayerService } from "../../../../player/player.service";
+import { PlayerService } from "../../../player/player.service";
 import { RenderableBar } from './renderableBar';
 import { RenderableStrip } from './renderableStrip';
-import { StageService } from "../../stage.service";
+import { StageService } from "../../../features/shared/stage.service";
 import { TextOverlay } from './text-Overlay';
 
 @Component({
@@ -114,7 +114,7 @@ export class PixiGridComponent implements OnInit {
     for (let i = 0; i < this.instrumentCount; ++i) {
       this.renderableStrips[i].setRenderActive(active);
       for (let beat = 0; beat < this.beatCount; ++beat) {
-        this.renderableStrips[i].updateBeatStatus(beat, this.player.getValue(this.grid.keysForStrip(i)[beat]));
+        this.renderableStrips[i].updateBeatStatus(beat, this.player.value(this.grid.keysForStrip(i)[beat]));
       }
     }
 

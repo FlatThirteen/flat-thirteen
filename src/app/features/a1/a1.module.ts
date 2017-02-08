@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { EffectsModule } from "@ngrx/effects";
 
 import { routes } from './a1.routing';
-import { GridModule } from '../shared/grid/grid.module';
+import { GridModule } from '../../surface/grid/grid.module';
 import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
 
 import { A1Component } from './a1.component';
@@ -15,7 +15,7 @@ import { PlayerEffects } from "../../player/player.effects";
 import { PlayerService } from "../../player/player.service";
 import { SoundService } from "../../sound/sound.service";
 import { StageService } from "../shared/stage.service";
-import { SurfaceService } from "../shared/surface.service";
+import { SurfaceService } from "../../surface/surface.service";
 
 @NgModule({
   imports: [

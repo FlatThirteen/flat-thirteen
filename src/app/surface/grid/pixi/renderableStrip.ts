@@ -182,8 +182,8 @@ export class RenderableStrip {
     this.active = active;
   }
 
-  updateBeatStatus(beat: number, value: number) {
-    this.beats[beat].visible = value ? true : false;
+  updateBeatStatus(beat: number, value: boolean) {
+    this.beats[beat].visible = value;
   }
 
   clearBeats() {

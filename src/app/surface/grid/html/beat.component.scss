@@ -75,11 +75,15 @@
     color: rgba(0,0,0,0.5);
     font-size: 100px;
     line-height: 180px;
-    transition: background-color 150ms ease-in-out;
   }
 
   .note {
     transform: scale(0.9);
+    transition: all 150ms ease-in-out;
+
+    :not:host(.current) & {
+      transition: none;
+    }
   }
 }
 
@@ -99,14 +103,19 @@
   }
 
   &.on {
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,1);
+    transform: scale(1);
+
+    &:hover {
+      background-color: rgba(0,0,0,0.8);
+    }
 
     &.cursor {
       color: rgba(255,255,255,0.5);
 
       &:after {
         content: '';
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255,255,255,0.5);
         bottom: 20%;
         font-size: 10px;
         height: 10px;
@@ -130,9 +139,21 @@
   cursor: pointer;
 }
 
-:host-context(.demo) .note, :host-context(.play) :host(.current) .note {
+:host-context(.demo) .note, :host(.current) .note {
   animation: active;
   animation-duration: 250ms;
+
+  &.on {
+    background-color: rgba(0,0,0,1);
+  }
+}
+
+:host(.current) .controls .note {
+  animation: none;
+
+  &.on {
+    opacity: 0.1;
+  }
 }
 
 @keyframes active {

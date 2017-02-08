@@ -25,9 +25,7 @@ export class PlayerEffects {
     .map(action => action.payload)
     .filter(([key, surface]) => surface)
     .do(([key, surface]) => {
-      let info = surface.get(key);
-      this.stage.setActive();
-
+      let info = surface.infoFor(key);
       if (this.stage.isDemo()) {
         this.sound.play(info.sound);
       } else if (this.beat.canLivePlay(info.beat)) {
