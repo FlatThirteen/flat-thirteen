@@ -4,12 +4,12 @@ import { ActivatedRoute } from "@angular/router";
 
 import { BeatService } from "../shared/beat.service";
 import { GoalService } from "../shared/goal.service";
-import { Grid } from "../shared/grid/grid.model";
+import { Grid } from "../../surface/grid/grid.model";
 import { MonophonicMonotonePhraseBuilder } from "../shared/phrase.model";
 import { PlayerService } from "../../player/player.service";
 import { StageService } from "../shared/stage.service";
-import { Surface } from "../shared/surface.model";
-import { SurfaceService } from "../shared/surface.service";
+import { Surface } from "../../surface/surface.model";
+import { SurfaceService } from "../../surface/surface.service";
 
 let requestAnimationFrameId: number;
 
@@ -45,7 +45,8 @@ export class A1Component implements OnInit, OnDestroy {
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
     this.beat.reset([this.beatsPerMeasure], this.supportedPulses);
 
-    let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']}, this.beatsPerMeasure, this.supportedPulses);
+    let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']},
+      this.beatsPerMeasure, this.supportedPulses);
     this.surfaces = [grid];
     this.player.init(this.surfaces);
 
@@ -78,9 +79,8 @@ export class A1Component implements OnInit, OnDestroy {
     if (this.stage.isGoal()) {
       this.goal.playGoal(time, beat, tick);
     } else if (this.stage.isPlay()) {
-      let dataForBeat = _.map(this.surface.keysByBeat[beat], key => this.player.data[key]);
-      _.forEach(<Surface.Data[]>dataForBeat, data => {
-        this.goal.playSound(beat, data.noteAt(beat, tick), time);
+      _.forEach(this.player.notesAt(beat, tick), note => {
+        this.goal.playSound(beat, note, time);
       });
     }
   }
@@ -94,6 +94,8 @@ export class A1Component implements OnInit, OnDestroy {
         this.beat.stop();
         this.stage.reset();
       }
+    } else if (event.key === 'Escape') {
+      this.player.unselect();
     } else if (event.key === ' ') {
       this.player.unset(this.player.selected);
     } else {

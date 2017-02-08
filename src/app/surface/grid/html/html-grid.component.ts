@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { BeatService } from "../../beat.service";
+import { BeatService } from "../../../features/shared/beat.service";
 import { Grid } from "../grid.model";
-import { PlayerService } from "../../../../player/player.service";
-import { StageService } from "../../stage.service";
+import { PlayerService } from "../../../player/player.service";
+import { StageService } from "../../../features/shared/stage.service";
 
 /**
  * This class represents the HTML version of the Grid Component.

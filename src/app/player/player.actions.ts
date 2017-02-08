@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { Surface } from "../features/shared/surface.model";
-import { SurfaceService } from "../features/shared/surface.service";
+import { Surface } from "../surface/surface.model";
+import { SurfaceService } from "../surface/surface.service";
+import { StageService } from "../features/shared/stage.service";
 
 @Injectable()
 export class PlayerActions {
 
-  constructor(private surface: SurfaceService) {}
+  constructor(private stage: StageService, private surface: SurfaceService) {}
 
   static INIT = '[PLAYER] Init';
   init(surfaces: Surface[]): Action {
@@ -28,15 +29,15 @@ export class PlayerActions {
   }
 
   static UNSELECT = '[PLAYER] Unselect';
-  unselect(key: string): Action {
+  unselect(): Action {
     return {
-      type: PlayerActions.UNSELECT,
-      payload: key
+      type: PlayerActions.UNSELECT
     }
   }
 
   static SET = '[PLAYER] Set';
   set(key: string): Action {
+    this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
@@ -46,6 +47,7 @@ export class PlayerActions {
 
   static UNSET = '[PLAYER] Unset';
   unset(key: string): Action {
+    this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.UNSET,
@@ -55,9 +57,10 @@ export class PlayerActions {
 
   static PULSES = '[PLAYER] Pulses';
   pulses(key: string, pulses: number): Action {
+    this.stage.setActive();
     return !key ? noAction : {
       type: PlayerActions.PULSES,
-      payload: [key, pulses, this.surface.forKey(key)]
+      payload: [key, this.surface.forKey(key), pulses]
     };
   }
 }

@@ -1,0 +1,10 @@
+<div class="quarter note" *ngIf="player.value(key)"></div>
+<div class="controls">
+  <div class="quarter note"
+       [ngClass]="{on: player.value(key), cursor: player.cursor === 0}"
+       (click)="onQuarter()">{{key}}</div>
+  <div class="pulses" *ngIf="supportedPulses.length > 1">
+    <div class="hint" *ngFor="let i of supportedPulses"
+         (click)="setPulses(i);$event.stopPropagation()">{{i}}</div>
+  </div>
+</div>
