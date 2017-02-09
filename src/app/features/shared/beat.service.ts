@@ -14,7 +14,6 @@ export class BeatService {
   pulsesPart: Tone.Part;
 
   beatsPerMeasure: number[];
-
   numBeats: number;
 
   measure: number = 0;
@@ -31,8 +30,7 @@ export class BeatService {
   reset(beatsPerMeasure: number[] = [4],
         supportedPulses: number[] = [1]) {
     this.beatsPerMeasure = beatsPerMeasure;
-
-    this.numBeats = _.reduce(beatsPerMeasure, (sum: number, n: number) => sum + n);
+    this.numBeats = _.sum(beatsPerMeasure);
 
     this.measure = 0;
     this.beat = 0;
@@ -115,8 +113,8 @@ export class BeatService {
     return this.beat || this.beatsPerMeasure[this.measure - 1];
   }
 
-  current(beat: number) {
-    return !this.paused && beat === this.beatIndex && this.quarterLoop.progress < livePlayWithin;
+  counts() {
+    return _.times(this.numBeats);
   }
 
   progress() {
@@ -125,6 +123,13 @@ export class BeatService {
 
   transportPosition() {
     return Tone.Transport.position.replace(/\:[.\d]+$/, '');
+  }
+
+  active(beat?: number, pulse: number = 0, pulses: number = 1) {
+    let start = pulse / pulses;
+    let end = beat !== undefined ? (pulse + 1) / pulses : 0.9;
+    return !this.paused && (beat === this.beatIndex || beat === undefined) &&
+      _.inRange(this.quarterLoop.progress, start, end);
   }
 
   canLivePlay(beatIndex) {

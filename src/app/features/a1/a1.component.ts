@@ -41,7 +41,7 @@ export class A1Component implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.beatsPerMeasure = 4;
-    this.supportedPulses = [1];
+    this.supportedPulses = [1, 2, 3, 4];
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
     this.beat.reset([this.beatsPerMeasure], this.supportedPulses);
 
@@ -87,23 +87,23 @@ export class A1Component implements OnInit, OnDestroy {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter') { // Enter: Start/stop
       if (this.beat.paused) {
         this.beat.start();
       } else {
         this.beat.stop();
         this.stage.reset();
       }
-    } else if (event.key === 'Escape') {
+    } else if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();
-    } else if (event.key === ' ') {
-      this.player.unset(this.player.selected);
+    } else if (event.key === ' ') { // Space: Unset
+      this.player.unset(this.player.selected, this.player.cursor);
     } else {
-      let numKey = _.parseInt(event.key);
+      let numKey = _.parseInt(event.key); // Number: Pulses
       if (_.includes(this.supportedPulses, numKey)) {
         this.player.pulses(this.player.selected, numKey);
-      } else {
-        this.player.set(event.key);
+      } else { // Key: Set
+        this.player.set(event.key, this.player.cursor);
       }
     }
     return false;

@@ -1,9 +1,9 @@
 .container {
   background-color: #EEE;
   margin: auto;
-  padding: 20px;
+  padding: 2vw;
   position: relative;
-  width: 1000px;
+  width: 80vw;
   text-align: center;
 }
 
@@ -12,7 +12,7 @@
   border: solid 1px #000;
   color: #888;
   cursor: pointer;
-  padding: 25px;
+  padding: 1vw 4vw;
   text-align: center;
   user-select: none;
 
@@ -22,11 +22,11 @@
 }
 
 .start {
-  font-size: 100px;
+  font-size: 10vw;
 }
 
 .stop {
-  font-size: 20px;
+  font-size: 5vw;
 }
 
 .info {

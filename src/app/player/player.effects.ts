@@ -23,8 +23,8 @@ export class PlayerEffects {
   @Effect() play$ = this.actions$
     .ofType(PlayerActions.SET)
     .map(action => action.payload)
-    .filter(([key, surface]) => surface)
-    .do(([key, surface]) => {
+    .filter(([surface, key]) => surface)
+    .do(([surface, key]) => {
       let info = surface.infoFor(key);
       if (this.stage.isDemo()) {
         this.sound.play(info.sound);

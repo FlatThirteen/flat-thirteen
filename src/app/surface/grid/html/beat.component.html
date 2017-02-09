@@ -1,10 +1,8 @@
-<div class="quarter note" *ngIf="player.value(key)"></div>
-<div class="controls">
-  <div class="quarter note"
-       [ngClass]="{on: player.value(key), cursor: player.cursor === 0}"
-       (click)="onQuarter()">{{key}}</div>
-  <div class="pulses" *ngIf="supportedPulses.length > 1">
-    <div class="hint" *ngFor="let i of supportedPulses"
-         (click)="setPulses(i);$event.stopPropagation()">{{i}}</div>
+<div class="pulse" *ngFor="let pulse of pulseCounts()"
+     [ngClass]="{active: beat.active(thisBeat, pulse, pulses), selected: player.isSelected(thisBeat)}">
+  <div class="actual note" [ngClass]="noteType()" *ngIf="player.value(key, pulse)"></div>
+  <div class="controls">
+    <div class="note" [ngClass]="controlNoteClasses(pulse)"
+         (click)="onNote(pulse)">{{player.cursor === pulse ? key : ''}}</div>
   </div>
 </div>
