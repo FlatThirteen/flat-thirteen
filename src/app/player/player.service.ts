@@ -65,20 +65,36 @@ export class PlayerService {
     this.store.dispatch(this.player.unselect());
   }
 
-  set(key: string) {
-    this.store.dispatch(this.player.set(key));
+  set(key: string, cursor?: number) {
+    this.store.dispatch(this.player.set(key, cursor));
   }
 
-  unset(key: string) {
-    this.store.dispatch(this.player.unset(key));
+  unset(key: string, cursor?: number) {
+    this.store.dispatch(this.player.unset(key, cursor));
   }
 
-  pulses(key: string, pulses: number) {
-    this.store.dispatch(this.player.pulses(key, pulses));
+  pulses(key: string, pulses?: number) {
+    if (pulses) {
+      this.store.dispatch(this.player.pulses(key, pulses));
+    } else {
+      let surface = this.surface.forKey(key);
+      if (surface instanceof Grid) {
+        let data = surface.infoDataFor(key, this._data)[1];
+        return data.pulses;
+      }
+    }
   }
 
   isSelected(beat: number) {
     return this._beat === beat;
+  }
+
+  isPulses(beat: number, pulses: number) {
+    let surface = this.surface.forKey(this._selected);
+    if (surface instanceof Grid) {
+      let [info, data] = surface.infoDataFor(this._selected, this._data);
+      return info.beat === beat && data.pulses === pulses;
+    }
   }
 
   value(key: string, cursor: number = 0): boolean {
@@ -93,11 +109,11 @@ export class PlayerService {
     return _.map(_.values(this._data), (data: GridData[]) => data[beat].noteAt(tick));
   }
 
-  toggle(key: string) {
-    if (this.value(key)) {
-      this.unset(key);
+  toggle(key: string, cursor?: number) {
+    if (this.value(key, cursor)) {
+      this.unset(key, cursor);
     } else {
-      this.set(key);
+      this.set(key, cursor);
     }
   }
 }

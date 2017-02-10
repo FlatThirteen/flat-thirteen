@@ -3,98 +3,101 @@
   background-color: #008FFF;
   display: inline-flex;
   flex: 1;
-  height: 240px;
+  height: 20vw;
   margin: 5px;
   position: relative;
   text-align: center;
   width: 25%;
 }
 
-:host(.current) {
+.active {
   background-color: #009FFF;
-}
 
-:host(.selected) .controls {
-  opacity: 1;
-
-  transition: opacity 350ms ease-in-out;
-
-  .pulses {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  :host-context(.goal) & {
+    background-color: #999;
   }
 }
 
-:host-context(.goal) :host(.selected) .controls {
-  opacity: 0;
+.pulse {
+  &:not(:last-child) {
+    border-right: dotted 3px #007FFF;
+  }
+  display: inline-flex;
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+.selected {
+  .controls {
+    opacity: 1;
+    transition: opacity 350ms ease-in-out;
+  }
+
+  :host-context(.goal) .controls {
+    opacity: 0;
+  }
+}
+
+.quarter {
+  font-size: 10vw;
+  line-height: 15vw;
+  height: 16vw;
+  width: 16vw;
+}
+
+.eighth {
+  font-size: 6vw;
+  line-height: 8vw;
+  height: 9vw;
+  width: 9vw;
+}
+
+.triplet {
+  font-size: 4vw;
+  line-height: 6vw;
+  height: 6vw;
+  width: 6vw;
+}
+
+.sixteenth {
+  font-size: 2vw;
+  line-height: 4vw;
+  height: 4vw;
+  width: 4vw;
+}
+
+.note {
+  background-color: #000;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: auto;
 }
 
 .controls {
   align-items: center;
   display: inline-flex;
-  flex: 1;
   height: 100%;
+  left: 0;
   opacity: 0;
   position: absolute;
+  top: 0;
   transition: opacity 150ms ease-in-out;
   width: 100%;
 
-  .hint {
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 40%;
-    cursor: pointer;
-    font-size: 30px;
-    margin: 5px;
-    padding: 5px;
-  }
-
-  .pulses {
-    display: inline-flex;
-    flex: 1;
-    justify-content: space-between;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    transition: all 150ms ease-in-out;
-    transition-delay: 350ms;
-    transform: translateY(-10px) scale(1.3);
-    width: 100%;
-
-    .hint {
-      width: 20%;
-      transition: background-color 150ms ease-in-out;
-
-      &:hover {
-        background-color: rgba(255,255,255,0.5);
-      }
-    }
-  }
-
-  .quarter {
+  .note {
     background-color: rgba(0,0,0,0.1);
     color: rgba(0,0,0,0.5);
-    font-size: 100px;
-    line-height: 180px;
-  }
-
-  .note {
     transform: scale(0.9);
     transition: all 150ms ease-in-out;
 
-    :not:host(.current) & {
+    :not(.active) & {
       transition: none;
     }
   }
 }
 
-.quarter {
-  background-color: #000;
-  height: 80%;
-  margin: auto;
-  width: 80%;
-}
-
-:host(.selected) .note {
+.selected .controls .note {
   background-color: rgba(0,0,0,0.1);
   position: relative;
 
@@ -107,7 +110,7 @@
     transform: scale(1);
 
     &:hover {
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(0,0,0,0.7);
     }
 
     &.cursor {
@@ -116,9 +119,8 @@
       &:after {
         content: '';
         background-color: rgba(255,255,255,0.5);
-        bottom: 20%;
+
         font-size: 10px;
-        height: 10px;
         left: 25%;
         line-height: 10px;
         position: absolute;
@@ -129,17 +131,36 @@
   }
 }
 
-:host(.selected) .quarter.on:hover:after {
-  content: 'space';
-  color: #000;
+.selected .controls {
+  .quarter.on {
+    &:after {
+      bottom: 19%;
+      height: 10px;
+    }
+
+    &:hover:after {
+      content: 'space';
+      color: #000;
+    }
+  }
+
+  .eighth.on:after {
+    bottom: 18%;
+    height: 5px;
+  }
+
+  .triplet.on:after {
+    bottom: 13%;
+    height: 4px;
+  }
+
+  .sixteenth.on:after {
+    bottom: 13%;
+    height: 3px;
+  }
 }
 
-.note {
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-:host-context(.demo) .note, :host(.current) .note {
+:host-context(.demo) .actual.note, :host-context(.play) .active .actual.note {
   animation: active;
   animation-duration: 250ms;
 
@@ -148,24 +169,16 @@
   }
 }
 
-:host(.current) .controls .note {
-  animation: none;
-
-  &.on {
-    opacity: 0.1;
-  }
-}
-
 @keyframes active {
   0% {
     transform: scale(1);
   }
 
-  33% {
+  40% {
     transform: scale(1.1);
   }
 
-  66% {
+  70% {
     transform: scale(0.9);
   }
 

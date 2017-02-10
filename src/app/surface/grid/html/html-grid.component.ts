@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import * as _ from 'lodash';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 
 import { BeatService } from "../../../features/shared/beat.service";
 import { Grid } from "../grid.model";
@@ -22,6 +23,16 @@ export class HtmlGridComponent implements OnInit {
   ngOnInit() {
     if (!this.grid) {
       throw new Error('Missing grid');
+    }
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.player.unselect();
+  }
+
+  setPulses(pulses: number) {
+    if (_.includes(this.grid.supportedPulses, pulses)) {
+      this.player.pulses(this.player.selected, pulses);
     }
   }
 }

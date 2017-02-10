@@ -24,7 +24,7 @@ export class PlayerActions {
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SELECT,
-      payload: [key, surface]
+      payload: [surface, key]
     };
   }
 
@@ -36,22 +36,22 @@ export class PlayerActions {
   }
 
   static SET = '[PLAYER] Set';
-  set(key: string): Action {
+  set(key: string, cursor: number): Action {
     this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
-      payload: [key, this.surface.forKey(key)]
+      payload: [this.surface.forKey(key), key, cursor]
     };
   }
 
   static UNSET = '[PLAYER] Unset';
-  unset(key: string): Action {
+  unset(key: string, cursor: number): Action {
     this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.UNSET,
-      payload: [key, this.surface.forKey(key)]
+      payload: [this.surface.forKey(key), key, cursor]
     };
   }
 
@@ -60,7 +60,7 @@ export class PlayerActions {
     this.stage.setActive();
     return !key ? noAction : {
       type: PlayerActions.PULSES,
-      payload: [key, this.surface.forKey(key), pulses]
+      payload: [this.surface.forKey(key), key, pulses]
     };
   }
 }

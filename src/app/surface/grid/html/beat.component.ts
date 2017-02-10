@@ -13,10 +13,10 @@ import { PlayerService } from "../../../player/player.service";
   selector: '.beat',
   templateUrl: 'beat.component.html',
   styleUrls: ['beat.component.css'],
-
 })
 export class BeatComponent {
-  @Input() private supportedPulses: number[] = [1];
+  @Input() private pulses: number;
+  @Input('beat') private thisBeat: number;
   @Input() private key: string;
 
   constructor(private beat: BeatService, private player: PlayerService) {}
@@ -25,17 +25,29 @@ export class BeatComponent {
     this.player.select(this.key);
   }
 
-  @HostListener('mouseleave') onMouseLeave() {
-    this.player.unselect();
+  pulseCounts() {
+    return _.times(this.pulses);
   }
 
-  onQuarter() {
-    this.player.toggle(this.key);
+  noteType() {
+    return noteTypes[this.pulses];
   }
 
-  setPulses(pulses: number) {
-    if (_.includes(this.supportedPulses, pulses)) {
-      this.player.pulses(this.key, pulses);
-    }
+  controlNoteClasses(pulse: number) {
+    return _.assign({
+      on: this.player.value(this.key, pulse),
+      cursor: this.player.cursor === pulse
+    }, _.fromPairs([[this.noteType(), true]]));
+  }
+
+  onNote(pulse: number) {
+    this.player.toggle(this.key, pulse);
   }
 }
+
+const noteTypes = {
+  1: 'quarter',
+  2: 'eighth',
+  3: 'triplet',
+  4: 'sixteenth'
+};

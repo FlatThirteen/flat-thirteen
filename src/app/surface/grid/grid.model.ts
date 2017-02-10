@@ -12,17 +12,17 @@ export class Grid implements Surface {
   readonly keysBySound: _.Dictionary<string[]>;
   readonly soundNames: SoundName[];
   readonly beats: number;
-  readonly supportPulses: number[];
+  readonly supportedPulses: number[];
   readonly infoByKey: _.Dictionary<GridInfo>;
   readonly initialData: GridData[];
 
   constructor(shortcutKeysBySound: _.Dictionary<string[]>, beats: number,
-              supportPulses: number[]) {
+              supportedPulses: number[]) {
     this.id = 'grid' + nextId++;
     this.keysBySound = shortcutKeysBySound;
     this.soundNames = <SoundName[]>_.keys(shortcutKeysBySound);
     this.beats = beats;
-    this.supportPulses = supportPulses;
+    this.supportedPulses = supportedPulses;
     this.infoByKey = _.transform(shortcutKeysBySound, (result, keys, sound) => {
       _.forEach(keys, (key, beat) => {
         result[key] = new GridInfo(<SoundName>sound, beat)
@@ -49,7 +49,7 @@ export class Grid implements Surface {
   }
 
   advanceCursor(data: GridData, cursor: number) {
-    return Math.min(cursor + 1, data.pulses - 1);
+    return cursor === data.pulses - 1 ? 0 : cursor + 1;
   }
 
   set(info: GridInfo, data: GridData, cursor: number = 0) {
