@@ -54,7 +54,7 @@ export class StageService {
   }
 
   reset() {
-    this.store.dispatch(this.stage.reset(StageService.StateDemo, null, 0, false, 0));
+    this.store.dispatch(this.stage.reset(StageService.StateDemo, StageService.StateCount, 0, false, 0));
   }
 
   activate() {
