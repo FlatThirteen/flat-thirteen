@@ -5,6 +5,7 @@ import { storeLogger } from 'ngrx-store-logger';
 import { routerReducer, RouterState } from '@ngrx/router-store';
 
 import { PlayerState } from "../player/player.reducer";
+import { StageState } from "../stage/stage.reducer";
 import * as fromUser from '../user/user.reducer';
 
 const modules = {
@@ -13,6 +14,7 @@ const modules = {
 
 export interface AppState {
   player: PlayerState;
+  stage: StageState;
   router: RouterState;
   user: fromUser.UserState;
 }

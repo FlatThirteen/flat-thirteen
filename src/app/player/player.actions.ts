@@ -3,7 +3,7 @@ import { Action } from '@ngrx/store';
 
 import { Surface } from "../surface/surface.model";
 import { SurfaceService } from "../surface/surface.service";
-import { StageService } from "../features/shared/stage.service";
+import { StageService } from "../stage/stage.service";
 
 @Injectable()
 export class PlayerActions {
@@ -37,7 +37,7 @@ export class PlayerActions {
 
   static SET = '[PLAYER] Set';
   set(key: string, cursor: number): Action {
-    this.stage.setActive();
+    this.stage.activate();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
@@ -47,7 +47,7 @@ export class PlayerActions {
 
   static UNSET = '[PLAYER] Unset';
   unset(key: string, cursor: number): Action {
-    this.stage.setActive();
+    this.stage.activate();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.UNSET,
@@ -57,7 +57,7 @@ export class PlayerActions {
 
   static PULSES = '[PLAYER] Pulses';
   pulses(key: string, pulses: number): Action {
-    this.stage.setActive();
+    this.stage.activate();
     return !key ? noAction : {
       type: PlayerActions.PULSES,
       payload: [this.surface.forKey(key), key, pulses]
