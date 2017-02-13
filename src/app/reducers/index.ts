@@ -21,6 +21,7 @@ export interface AppState {
 
 export const reducers = {
   player: PlayerState.reducer,
+  stage: StageState.reducer,
   router: routerReducer,
   user: fromUser.userReducer
 };

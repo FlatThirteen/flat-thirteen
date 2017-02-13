@@ -13,6 +13,7 @@ export class PlayerActions {
   static INIT = '[PLAYER] Init';
   init(surfaces: Surface[]): Action {
     this.surface.init(surfaces);
+    this.stage.init();
     return {
       type: PlayerActions.INIT,
       payload: this.surface.initialData

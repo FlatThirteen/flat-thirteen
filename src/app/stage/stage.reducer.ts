@@ -4,11 +4,11 @@ import { Action } from '@ngrx/store';
 import { StageActions } from './stage.actions';
 
 export class StageState {
-  readonly _state?: string;
-  readonly _nextState?: string;
-  readonly _round?: number;
-  readonly _active?: boolean;
-  readonly _inactiveRounds?: number;
+  readonly _state: string;
+  readonly _nextState: string;
+  readonly _round: number;
+  readonly _active: boolean;
+  readonly _inactiveRounds: number;
 
   //constructor(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number) {
   constructor() {
@@ -37,7 +37,11 @@ export class StageState {
       case StageActions.ACTIVATE: {
         let active = action.payload;
         return <StageState>_.defaultsDeep({
-          _active: active
+          _state: state._state,
+          _nextState: state._nextState,
+          _round: state._round,
+          _active: active,
+          _inactiveRounds: state._inactiveRounds
         }, state);
       }
     }
