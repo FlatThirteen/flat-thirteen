@@ -67,7 +67,9 @@ export class A1Component implements OnInit, OnDestroy {
   onTop() {
     if (this.goal.playedGoal()) {
       this.goal.newGoal(new MonophonicMonotonePhraseBuilder(this.surface.soundNames, [1, 0, 0, 0]));
-      this.stage.nextRound(true);
+      if (this.stage.isActive()){
+        this.stage.nextRound(true);
+      }
       this.player.init(this.surfaces);
     } else {
       this.stage.nextRound(false);

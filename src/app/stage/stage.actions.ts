@@ -8,10 +8,10 @@ export class StageActions {
   constructor() {}
 
   static INIT = '[STAGE] Init';
-  init(): Action {
+  init(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number): Action {
     return {
       type: StageActions.INIT,
-      payload: []
+      payload: [state, nextState, round, active, inactiveRounds]
     };
   }
 

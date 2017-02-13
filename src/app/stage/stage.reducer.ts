@@ -10,10 +10,9 @@ export class StageState {
   readonly _active: boolean;
   readonly _inactiveRounds: number;
 
-  //constructor(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number) {
-  constructor() {
-    this._state = null;
-    this._nextState = null;
+  constructor(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number) {
+    this._state = state;
+    this._nextState = nextState;
     this._round = 0;
     this._active = false;
     this._inactiveRounds = 0;
@@ -22,7 +21,8 @@ export class StageState {
   static reducer(state: StageState, action: Action): StageState {
     switch (action.type) {
       case StageActions.INIT: {
-        return new StageState();
+        let [stageState, nextState, round, active, inactiveRounds] = action.payload;
+        return new StageState(stageState, nextState, round, active, inactiveRounds);
       }
       case StageActions.RESET: {
         let [stageState, nextState, round, active, inactiveRounds] = action.payload;
