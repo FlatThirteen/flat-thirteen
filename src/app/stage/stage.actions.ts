@@ -23,10 +23,10 @@ export class StageActions {
     };
   }
 
-  static ACTIVATE = '[STAGE] Activate';
-  activate(): Action {
+  static SETACTIVE = '[STAGE] SetActive';
+  setActive(): Action {
     return {
-      type: StageActions.ACTIVATE,
+      type: StageActions.SETACTIVE,
       payload: [true]
     };
   }

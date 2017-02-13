@@ -37,7 +37,7 @@ export class PlayerActions {
 
   static SET = '[PLAYER] Set';
   set(key: string, cursor: number): Action {
-    this.stage.activate();
+    this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
@@ -47,7 +47,7 @@ export class PlayerActions {
 
   static UNSET = '[PLAYER] Unset';
   unset(key: string, cursor: number): Action {
-    this.stage.activate();
+    this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.UNSET,
@@ -57,7 +57,7 @@ export class PlayerActions {
 
   static PULSES = '[PLAYER] Pulses';
   pulses(key: string, pulses: number): Action {
-    this.stage.activate();
+    this.stage.setActive();
     return !key ? noAction : {
       type: PlayerActions.PULSES,
       payload: [this.surface.forKey(key), key, pulses]

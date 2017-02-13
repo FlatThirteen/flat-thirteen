@@ -34,7 +34,7 @@ export class StageState {
             _inactiveRounds: inactiveRounds
           }, state);
       }
-      case StageActions.ACTIVATE: {
+      case StageActions.SETACTIVE: {
         let active = action.payload;
         return <StageState>_.defaultsDeep({
           _state: state._state,
