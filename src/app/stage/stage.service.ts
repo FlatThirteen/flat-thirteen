@@ -50,7 +50,7 @@ export class StageService {
   }
 
   init() {
-    this.store.dispatch(this.stage.init(StageService.StateDemo, StageService.StateCount, 0, false, 0));
+    this.store.dispatch(this.stage.init(StageService.StateCount, StageService.StateDemo, 0, false, 0));
   }
 
   reset() {
@@ -109,10 +109,6 @@ export class StageService {
 
   stateName() {
     return this._state;
-  }
-
-  isActive() {
-    return this._active;
   }
 
   isDemo() {
