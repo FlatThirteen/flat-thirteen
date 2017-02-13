@@ -44,6 +44,19 @@ export class StageState {
           _inactiveRounds: state._inactiveRounds
         }, state);
       }
+      case StageActions.NEXTROUND: {
+        let [stageState, nextState, round, active, inactiveRounds] = action.payload;
+        return <StageState>_.defaultsDeep({
+            _state: stageState,
+            _nextState: nextState,
+            _round: round,
+            _active: active,
+            _inactiveRounds: inactiveRounds
+          }, state);
+      }
+      default: {
+        return state;
+      }
     }
   }
 }
