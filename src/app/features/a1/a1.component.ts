@@ -49,6 +49,7 @@ export class A1Component implements OnInit, OnDestroy {
       this.beatsPerMeasure, this.supportedPulses);
     this.surfaces = [grid];
     this.player.init(this.surfaces);
+    this.stage.init();
 
     this.beat.setOnTop((time) => this.onTop());
     this.beat.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
