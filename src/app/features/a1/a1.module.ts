@@ -14,8 +14,7 @@ import { PlayerActions } from "../../player/player.actions";
 import { PlayerEffects } from "../../player/player.effects";
 import { PlayerService } from "../../player/player.service";
 import { SoundService } from "../../sound/sound.service";
-import { StageActions } from "../../stage/stage.actions";
-import { StageService } from "../../stage/stage.service";
+import { StageService } from "../shared/stage.service";
 import { SurfaceService } from "../../surface/surface.service";
 
 @NgModule({
@@ -36,7 +35,6 @@ import { SurfaceService } from "../../surface/surface.service";
     BeatService,
     GoalService,
     SoundService,
-    StageActions,
     StageService,
     SurfaceService
   ]

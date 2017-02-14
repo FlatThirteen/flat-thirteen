@@ -3,7 +3,7 @@ import { Action } from '@ngrx/store';
 
 import { Surface } from "../surface/surface.model";
 import { SurfaceService } from "../surface/surface.service";
-import { StageService } from "../stage/stage.service";
+import { StageService } from "../features/shared/stage.service";
 
 @Injectable()
 export class PlayerActions {

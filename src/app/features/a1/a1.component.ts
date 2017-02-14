@@ -7,7 +7,7 @@ import { GoalService } from "../shared/goal.service";
 import { Grid } from "../../surface/grid/grid.model";
 import { MonophonicMonotonePhraseBuilder } from "../shared/phrase.model";
 import { PlayerService } from "../../player/player.service";
-import { StageService } from "../../stage/stage.service";
+import { StageService } from "../shared/stage.service";
 import { Surface } from "../../surface/surface.model";
 import { SurfaceService } from "../../surface/surface.service";
 
@@ -49,7 +49,6 @@ export class A1Component implements OnInit, OnDestroy {
       this.beatsPerMeasure, this.supportedPulses);
     this.surfaces = [grid];
     this.player.init(this.surfaces);
-    this.stage.init();
 
     this.beat.setOnTop((time) => this.onTop());
     this.beat.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
