@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { BeatService } from "../beat.service";
 import { GoalService } from "../goal.service";
-import { StageService } from "../stage.service";
+import { StageService } from "../../../stage/stage.service";
 
 /**
  * This class represents the lazy loaded A1Component.

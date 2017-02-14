@@ -6,7 +6,7 @@ import { Grid } from "../grid.model";
 import { PlayerService } from "../../../player/player.service";
 import { RenderableBar } from './renderableBar';
 import { RenderableStrip } from './renderableStrip';
-import { StageService } from "../../../features/shared/stage.service";
+import { StageService } from "../../../stage/stage.service";
 import { TextOverlay } from './text-Overlay';
 
 @Component({
