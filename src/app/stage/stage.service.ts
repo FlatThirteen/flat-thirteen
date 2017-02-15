@@ -6,6 +6,7 @@ import { createSelector } from 'reselect';
 
 import { AppState } from "../reducers/index";
 
+import { StageState } from "./stage.reducer";
 import { StageActions } from "./stage.actions";
 
 @Injectable()
@@ -16,12 +17,6 @@ export class StageService {
   static getRound = createSelector(StageService.getStage, stage => stage && stage._round);
   static getActive = createSelector(StageService.getStage, stage => stage && stage._active);
   static getInactiveRounds = createSelector(StageService.getStage, stage => stage && stage._inactiveRounds);
-
-  static StateDemo = "Demo";
-  static StateCount = "Count";
-  static StateGoal = "Goal";
-  static StatePlay = "Play";
-  static StateVictory = "Victory";
 
   private state$: Observable<string>;
   private nextState$: Observable<string>;
@@ -50,57 +45,19 @@ export class StageService {
   }
 
   init() {
-    this.store.dispatch(this.stage.init(StageService.StateCount, StageService.StateDemo, 0, false, 0));
+    this.store.dispatch(this.stage.init());
   }
 
   reset() {
-    this.store.dispatch(this.stage.reset(StageService.StateDemo, StageService.StateCount, 0, false, 0));
+    this.store.dispatch(this.stage.reset());
   }
 
   setActive() {
     this.store.dispatch(this.stage.setActive());
   }
 
-  nextRound(playedGoal: boolean = false) {
-    let state = this._state;
-    let nextState = this._nextState;
-    let round = this._round;
-    let active = this._active;
-    let inactiveRounds = this._inactiveRounds;
-
-    if (playedGoal) {
-      nextState = StageService.StateVictory;
-    } else {
-      if (active) {
-        inactiveRounds = 0;
-      } else if (inactiveRounds >= 3) {
-        nextState = StageService.StateGoal;
-      }
-    }
-
-    state = nextState;
-    active = false;
-    switch(state) {
-      case StageService.StateCount:
-      case StageService.StateVictory:
-        nextState = StageService.StateGoal;
-        round = 0;
-
-        break;
-      case StageService.StateGoal:
-        nextState = StageService.StatePlay;
-        inactiveRounds = 0;
-        break;
-      case StageService.StatePlay:
-        round++;
-        if (!active) {
-          inactiveRounds++;
-        } else {
-          inactiveRounds = 0;
-        }
-    }
-    
-    this.store.dispatch(this.stage.nextRound(state, nextState, round, active, inactiveRounds));
+  nextRound(playedGoal: boolean = false) {   
+    this.store.dispatch(this.stage.nextRound(playedGoal));
   }
 
   getRound() {
@@ -112,22 +69,22 @@ export class StageService {
   }
 
   isDemo() {
-    return this._state === StageService.StateDemo;
+    return this._state === StageState.StateDemo;
   }
 
   isGoal() {
-    return this._state === StageService.StateGoal;
+    return this._state === StageState.StateGoal;
   }
 
   isPlay() {
-    return this._state === StageService.StatePlay;
+    return this._state === StageState.StatePlay;
   }
 
   shouldShowCount() {
-    return this._state === StageService.StateCount || this._state === StageService.StateVictory;
+    return this._state === StageState.StateCount || this._state === StageState.StateVictory;
   }
 
   shouldShowPosition() {
-    return this._state === StageService.StateGoal || this._state === StageService.StatePlay;
+    return this._state === StageState.StateGoal || this._state === StageState.StatePlay;
   }
 }

@@ -8,18 +8,18 @@ export class StageActions {
   constructor() {}
 
   static INIT = '[STAGE] Init';
-  init(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number): Action {
+  init(): Action {
     return {
       type: StageActions.INIT,
-      payload: [state, nextState, round, active, inactiveRounds]
+      payload: []
     };
   }
 
   static RESET = '[STAGE] Reset';
-  reset(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number): Action {
+  reset(): Action {
     return {
       type: StageActions.RESET,
-      payload: [state, nextState, round, active, inactiveRounds]
+      payload: []
     };
   }
 
@@ -27,15 +27,15 @@ export class StageActions {
   setActive(): Action {
     return {
       type: StageActions.SETACTIVE,
-      payload: [true]
+      payload: []
     };
   }
 
   static NEXTROUND = '[STAGE] NextRound';
-  nextRound(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number): Action {
+  nextRound(playedGoal: boolean): Action {
     return {
       type: StageActions.NEXTROUND,
-      payload: [state, nextState, round, active, inactiveRounds]
+      payload: [playedGoal]
     };
   }
 }
