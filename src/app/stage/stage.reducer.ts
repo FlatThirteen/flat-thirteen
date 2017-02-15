@@ -27,12 +27,12 @@ export class StageState {
   static reducer(state: StageState, action: Action): StageState {
     switch (action.type) {
       case StageActions.INIT: {
-        return new StageState(StageState.StateCount, StageState.StateDemo, 0, false, 0);
+        return new StageState(StageState.StateDemo, StageState.StateCount, 0, false, 0);
       }
       case StageActions.RESET: {
         return <StageState>_.defaultsDeep({
-            _state: StageState.StateCount,
-            _nextState: StageState.StateDemo,
+            _state: StageState.StateDemo,
+            _nextState: StageState.StateCount,
             _round: 0,
             _active: false,
             _inactiveRounds: 0
