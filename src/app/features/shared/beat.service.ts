@@ -8,6 +8,10 @@ import { SoundService } from "../../sound/sound.service";
 export const ticksPerBeat = Tone.Transport.PPQ; // 192
 const livePlayWithin: number = 0.3;
 
+export function ticks(pulse: number, pulses: number) {
+  return pulse * ticksPerBeat / pulses;
+}
+
 @Injectable()
 export class BeatService {
   quarterLoop: Tone.Loop;
@@ -15,6 +19,7 @@ export class BeatService {
 
   beatsPerMeasure: number[];
   numBeats: number;
+  supportedTicks: number[];
 
   measure: number = 0;
   beat: number = 0;
@@ -62,6 +67,7 @@ export class BeatService {
         result[time] = ticks * (i + 1);
       });
     }, {});
+    this.supportedTicks = <number[]>_.sortBy(_.values(tickEvents));
     this.pulsesPart = new Tone.Part((time: number, tick) => {
       if (this.onPulse) {
         this.onPulse(time, this.beatIndex, tick);
@@ -132,7 +138,27 @@ export class BeatService {
       _.inRange(this.quarterLoop.progress, start, end);
   }
 
-  canLivePlay(beatIndex) {
-    return beatIndex === this.beatIndex && this.quarterLoop.progress < livePlayWithin;
+  canLivePlay(beatIndex: number, pulse: number = 0, pulses: number = 1) {
+    if (beatIndex !== this.beatIndex) {
+      return false;
+    } else if (pulses !== 1) {
+      let playedTick = ticks(pulse, pulses);
+      let currentTick = this.quarterLoop.progress * ticksPerBeat;
+      return playedTick < currentTick && currentTick - playedTick < livePlayWithin * ticksPerBeat / pulses;
+    } else {
+      return this.quarterLoop.progress < livePlayWithin;
+    }
+  }
+
+  liveTick(beatIndex?: number): number | null {
+    if (_.isNumber(beatIndex) && this.supportedTicks.length === 0) {
+      return beatIndex === this.beatIndex && this.quarterLoop.progress < livePlayWithin ? 0 : null;
+    }
+    let tick = this.quarterLoop.progress * ticksPerBeat;
+    let tickIndex = _.sortedIndex(this.supportedTicks, tick);
+    let low = tickIndex ? this.supportedTicks[tickIndex - 1] : 0;
+    let high = tickIndex !== this.supportedTicks.length ?
+      this.supportedTicks[tickIndex] : ticksPerBeat;
+    return tick - low < high - tick ? low : high !== ticksPerBeat ? high : null;
   }
 }

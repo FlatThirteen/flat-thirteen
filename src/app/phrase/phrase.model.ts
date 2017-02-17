@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 
-import { SoundName, Note } from "../../sound/sound";
-
+import { SoundName, Note } from "../sound/sound";
+import { Rhythm, BeatTick, mapKey } from "./rhythm.model";
 
 export class Phrase {
-  private notes: _.NumericDictionary<Note[]>;
+  private notes: _.Dictionary<Note[]>;
   private noteCount: number;
 
   constructor() {
@@ -12,27 +12,27 @@ export class Phrase {
     this.noteCount = 0;
   }
 
-  add(pulseIndex: number, note: Note) {
-    if (this.notes[pulseIndex]) {
-      this.notes[pulseIndex].push(note);
+  add(note: Note, beatTick: BeatTick | number, tick?: number) {
+    if (_.isNumber(beatTick)) {
+      beatTick = mapKey(beatTick, tick);
+    }
+    if (this.notes[beatTick]) {
+      this.notes[beatTick].push(note);
     } else {
-      this.notes[pulseIndex] = [note];
+      this.notes[beatTick] = [note];
     }
     this.noteCount++;
   }
 
-  getNotes(beat: number, tick: number): Note[] {
-    if (tick) {
-      return [];
-    }
-    return this.notes[beat] || [];
+  getNotes(beat: number, tick: number = 0): Note[] {
+    return this.notes[mapKey(beat, tick)] || [];
   }
 
-  numNotes(pulseIndex?: number): number {
-    if (pulseIndex === undefined) {
+  numNotes(beatTick?: BeatTick): number {
+    if (beatTick === undefined) {
       return this.noteCount;
     } else {
-      return this.notes[pulseIndex] ? this.notes[pulseIndex].length : 0;
+      return this.notes[beatTick] ? this.notes[beatTick].length : 0;
     }
   }
 
@@ -52,23 +52,23 @@ export interface PhraseBuilder {
  */
 export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
   constructor(private soundNames: SoundName[],
-              private timing: _.List<number>,
+              private rhythm: Rhythm,
               private minNotes: number = 2,
               private maxNotes: number = 4) {
     if (minNotes > maxNotes) {
       throw new Error('minNotes should not be bigger than maxNotes');
-    } else if (minNotes > timing.length) {
-      throw new Error('minNotes should not be bigger than length of timing');
+    } else if (minNotes > rhythm.length) {
+      throw new Error('minNotes should not be bigger than length of rhythm');
     }
   }
 
   build(): Phrase {
     let phrase = new Phrase();
-    let generate = (generationStrategy: (pulseIndex: number) => number) => {
-      for (let pulseIndex in this.timing) {
-        if (generationStrategy(Number(pulseIndex))) {
+    let generate = (generationStrategy: (beatTick: BeatTick, priority: number) => number) => {
+      for (let [beatTick, probability] of this.rhythm.pulseProbabilities()) {
+        if (generationStrategy(beatTick, probability)) {
           let soundIndex = _.random(this.soundNames.length - 1);
-          phrase.add(Number(pulseIndex), new Note(this.soundNames[soundIndex]));
+          phrase.add(new Note(this.soundNames[soundIndex]), beatTick);
         }
         if (phrase.numNotes() === this.maxNotes) {
           break;
@@ -76,11 +76,11 @@ export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
       }
     };
     // Always place a note if the timing parameter is 1 for the current pulse.
-    generate((pulseIndex: number) => this.timing[pulseIndex] === 1 ? 1 : _.random(1));
+    generate((beatTick: BeatTick, priority: number) => priority === 1 ? 1 : _.random(1));
     // If we didn't place enough notes, do it again until we do, this time ignoring
     // the timing parameter and only avoiding pulses that already have notes.
     while (phrase.numNotes() < this.minNotes) {
-      generate((pulseIndex: number) => phrase.numNotes(pulseIndex) ? 0 : _.random(1));
+      generate((beatTick: BeatTick) => phrase.numNotes(beatTick) ? 0 : _.random(1));
     }
     return phrase;
   }

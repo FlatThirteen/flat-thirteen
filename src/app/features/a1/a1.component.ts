@@ -5,8 +5,9 @@ import { ActivatedRoute } from "@angular/router";
 import { BeatService } from "../shared/beat.service";
 import { GoalService } from "../shared/goal.service";
 import { Grid } from "../../surface/grid/grid.model";
-import { MonophonicMonotonePhraseBuilder } from "../shared/phrase.model";
+import { MonophonicMonotonePhraseBuilder, PhraseBuilder } from "../../phrase/phrase.model";
 import { PlayerService } from "../../player/player.service";
+import { Rhythm } from "../../phrase/rhythm.model";
 import { StageService } from "../shared/stage.service";
 import { Surface } from "../../surface/surface.model";
 import { SurfaceService } from "../../surface/surface.service";
@@ -27,6 +28,7 @@ export class A1Component implements OnInit, OnDestroy {
   private surfaces: Surface[];
   private beatsPerMeasure: number;
   private supportedPulses: number[];
+  private phraseBuilder: PhraseBuilder;
 
   /**
    * Creates an instance of the A1Component.
@@ -41,7 +43,7 @@ export class A1Component implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.beatsPerMeasure = 4;
-    this.supportedPulses = [1, 2, 3, 4];
+    this.supportedPulses = [1, 2];
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
     this.beat.reset([this.beatsPerMeasure], this.supportedPulses);
 
@@ -50,6 +52,8 @@ export class A1Component implements OnInit, OnDestroy {
     this.surfaces = [grid];
     this.player.init(this.surfaces);
 
+    this.phraseBuilder = new MonophonicMonotonePhraseBuilder(this.surface.soundNames,
+      new Rhythm([[1, 0], [0.9, 0], [0.9, 0], [0.9, 0]]), 3, 7);
     this.beat.setOnTop((time) => this.onTop());
     this.beat.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
 
@@ -66,7 +70,7 @@ export class A1Component implements OnInit, OnDestroy {
 
   onTop() {
     if (this.goal.playedGoal()) {
-      this.goal.newGoal(new MonophonicMonotonePhraseBuilder(this.surface.soundNames, [1, 0, 0, 0]));
+      this.goal.newGoal(this.phraseBuilder);
       this.stage.nextRound(true);
       this.player.init(this.surfaces);
     } else {
@@ -80,7 +84,7 @@ export class A1Component implements OnInit, OnDestroy {
       this.goal.playGoal(time, beat, tick);
     } else if (this.stage.isPlay()) {
       _.forEach(this.player.notesAt(beat, tick), note => {
-        this.goal.playSound(beat, note, time);
+        this.goal.playSound(note, beat, tick, time);
       });
     }
   }
@@ -90,6 +94,7 @@ export class A1Component implements OnInit, OnDestroy {
     if (event.key === 'Enter') { // Enter: Start/stop
       if (this.beat.paused) {
         this.beat.start();
+        this.player.init(this.surfaces);
       } else {
         this.beat.stop();
         this.stage.reset();

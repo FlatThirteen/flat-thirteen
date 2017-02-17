@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 import { Note } from "../../sound/sound";
-import { Phrase, PhraseBuilder } from "./phrase.model";
+import { Phrase, PhraseBuilder } from "../../phrase/phrase.model";
 import { SoundService } from "../../sound/sound.service";
 
 @Injectable()
@@ -29,9 +29,9 @@ export class GoalService {
     }
   }
 
-  playSound(pulseIndex: number, note: Note, time?: number) {
+  playSound(note: Note, beat: number, tick: number, time?: number) {
     if (note) {
-      this.playedPhrase.add(pulseIndex, note);
+      this.playedPhrase.add(note, beat, tick);
       this.sound.play(note.soundName, time);
     }
   }

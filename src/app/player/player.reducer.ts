@@ -46,8 +46,6 @@ export class PlayerState {
         let [surface, key, cursor] = action.payload;
         if (surface instanceof Grid) {
           let [info, data] = surface.infoDataFor(key, state.data);
-          cursor = state.beat !== info.beat ? 0 :
-            cursor !== undefined ? cursor : state.cursor;
           return <PlayerState>_.defaultsDeep({
             selected: key,
             beat: info.beat,
@@ -62,7 +60,6 @@ export class PlayerState {
         let [surface, key, cursor] = action.payload;
         if (surface instanceof Grid) {
           let [info, data] = surface.infoDataFor(key, state.data);
-          cursor = cursor !== undefined ? cursor : state.cursor;
           return <PlayerState>_.defaultsDeep({
             cursor: surface.advanceCursor(data, cursor),
             data: surface.unset(info, data, cursor)

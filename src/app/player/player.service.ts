@@ -65,11 +65,21 @@ export class PlayerService {
     this.store.dispatch(this.player.unselect());
   }
 
-  set(key: string, cursor?: number) {
-    this.store.dispatch(this.player.set(key, cursor));
+  set(key: string, cursor: number) {
+    let surface = this.surface.forKey(key);
+    let pulses = 1;
+    if (surface instanceof Grid) {
+      let [info, data] = surface.infoDataFor(key, this._data);
+      if (info.beat !== this._beat) {
+        // Reset cursor ahead of action dispatch so player effect gets it
+        cursor = 0;
+      }
+      pulses = data.pulses;
+    }
+    this.store.dispatch(this.player.set(key, cursor, pulses));
   }
 
-  unset(key: string, cursor?: number) {
+  unset(key: string, cursor: number) {
     this.store.dispatch(this.player.unset(key, cursor));
   }
 
