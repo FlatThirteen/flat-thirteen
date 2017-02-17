@@ -36,12 +36,12 @@ export class PlayerActions {
   }
 
   static SET = '[PLAYER] Set';
-  set(key: string, cursor: number): Action {
+  set(key: string, cursor: number, pulses: number): Action {
     this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
-      payload: [this.surface.forKey(key), key, cursor]
+      payload: [surface, key, cursor, pulses]
     };
   }
 
@@ -51,7 +51,7 @@ export class PlayerActions {
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.UNSET,
-      payload: [this.surface.forKey(key), key, cursor]
+      payload: [surface, key, cursor]
     };
   }
 

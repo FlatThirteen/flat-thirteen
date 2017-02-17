@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import 'rxjs/add/operator/ignoreElements';
 
-import { BeatService } from "../features/shared/beat.service";
+import { BeatService, ticks } from "../features/shared/beat.service";
 import { GoalService } from "../features/shared/goal.service";
 import { Note } from "../sound/sound";
 import { PlayerActions } from "./player.actions";
@@ -23,13 +23,13 @@ export class PlayerEffects {
   @Effect() play$ = this.actions$
     .ofType(PlayerActions.SET)
     .map(action => action.payload)
-    .filter(([surface, key]) => surface)
-    .do(([surface, key]) => {
+    .filter(([surface]) => surface)
+    .do(([surface, key, cursor, pulses]) => {
       let info = surface.infoFor(key);
       if (this.stage.isDemo()) {
         this.sound.play(info.sound);
-      } else if (this.beat.canLivePlay(info.beat)) {
-        this.goal.playSound(info.beat, new Note(info.sound));
+      } else if (this.beat.canLivePlay(info.beat, cursor, pulses)) {
+        this.goal.playSound(new Note(info.sound), info.beat, ticks(cursor, pulses));
       }
     }).ignoreElements();
 }
