@@ -10,16 +10,14 @@ export class StageActions {
   static INIT = '[STAGE] Init';
   init(): Action {
     return {
-      type: StageActions.INIT,
-      payload: []
+      type: StageActions.INIT
     };
   }
 
   static RESET = '[STAGE] Reset';
   reset(): Action {
     return {
-      type: StageActions.RESET,
-      payload: []
+      type: StageActions.RESET
     };
   }
 
@@ -27,7 +25,7 @@ export class StageActions {
   nextRound(playedGoal: boolean): Action {
     return {
       type: StageActions.NEXTROUND,
-      payload: [playedGoal]
+      payload: playedGoal
     };
   }
 }
