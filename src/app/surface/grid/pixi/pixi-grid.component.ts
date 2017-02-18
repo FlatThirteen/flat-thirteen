@@ -98,7 +98,7 @@ export class PixiGridComponent implements OnInit {
       this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
     }
 
-    let name = this.stageService.stateName();
+    let name = this.stageService.sceneName();
     let active = false;
     switch(name) {
       case "Demo":
