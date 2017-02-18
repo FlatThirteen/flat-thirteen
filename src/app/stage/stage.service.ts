@@ -12,14 +12,14 @@ import { StageActions } from "./stage.actions";
 @Injectable()
 export class StageService {
   static getStage = (state: AppState) => state.stage;
-  static getState = createSelector(StageService.getStage, stage => stage && stage.scene);
-  static getNextState = createSelector(StageService.getStage, stage => stage && stage.nextScene);
+  static getScene = createSelector(StageService.getStage, stage => stage && stage.scene);
+  static getNextScene = createSelector(StageService.getStage, stage => stage && stage.nextScene);
   static getRound = createSelector(StageService.getStage, stage => stage && stage.round);
   static getActive = createSelector(StageService.getStage, stage => stage && stage.active);
   static getInactiveRounds = createSelector(StageService.getStage, stage => stage && stage.inactiveRounds);
 
-  private state$: Observable<string>;
-  private nextState$: Observable<string>;
+  private scene$: Observable<string>;
+  private nextScene$: Observable<string>;
   private round$: Observable<number>;
   private active$: Observable<boolean>;
   private inactiveRounds$: Observable<number>;
@@ -31,14 +31,14 @@ export class StageService {
   private inactiveRounds: number;
 
   constructor(private store: Store<AppState>, private stage: StageActions) {
-    this.state$ = this.store.select(StageService.getState);
-    this.nextState$ = this.store.select(StageService.getNextState);
+    this.scene$ = this.store.select(StageService.getScene);
+    this.nextScene$ = this.store.select(StageService.getNextScene);
     this.round$ = this.store.select(StageService.getRound);
     this.active$ = this.store.select(StageService.getActive);
     this.inactiveRounds$ = this.store.select(StageService.getInactiveRounds);
 
-    this.state$.subscribe(scene => { this.scene = scene });
-    this.nextState$.subscribe(nextScene => { this.nextScene = nextScene });
+    this.scene$.subscribe(scene => { this.scene = scene });
+    this.nextScene$.subscribe(nextScene => { this.nextScene = nextScene });
     this.round$.subscribe(round => { this.round = round });
     this.active$.subscribe(active => { this.active = active });
     this.inactiveRounds$.subscribe(inactiveRounds => { this.inactiveRounds = inactiveRounds });
