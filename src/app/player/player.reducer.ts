@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import { Action } from '@ngrx/store';
 
-import { Grid } from "../surface/grid/grid.model";
+import { Grid } from "../features/a1/grid/grid.model";
 import { PlayerActions } from './player.actions';
 import { Surface } from "../surface/surface.model";
 

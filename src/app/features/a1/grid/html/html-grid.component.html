@@ -9,8 +9,10 @@
   </div>
   <div class="strip" *ngFor="let soundName of grid.soundNames">
     <div *ngFor="let key of grid.keysBySound[soundName]; let i = index" class="beat"
-
-         [key]="key" [beat]="i" [pulses]="player.pulses(key)">
+         [label]="key" [beat]="i" [pulses]="player.pulses(key)"
+         [selected]="player.isSelected(i)"
+         [values]="player.values(key)" [cursor]="player.cursor"
+         (toggle)="onNote(key, $event)" (mouseenter)="player.select(key);">
     </div>
   </div>
   <div class="overlay" *ngIf="stage.shouldShowCount()">

@@ -7,7 +7,7 @@ import { createSelector } from 'reselect';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 import { AppState } from "../reducers/index";
-import { Grid, GridData } from "../surface/grid/grid.model";
+import { Grid, GridData } from "../features/a1/grid/grid.model";
 import { Observable } from "rxjs";
 import { PlayerActions } from "./player.actions";
 import { Surface } from "../surface/surface.model";
@@ -112,6 +112,14 @@ export class PlayerService {
     if (surface instanceof Grid) {
       let [info, data] = surface.infoDataFor(key, this._data);
       return data.notes[cursor] === info.sound;
+    }
+  }
+
+  values(key: string): boolean[] {
+    let surface = this.surface.forKey(key);
+    if (surface instanceof Grid) {
+      let [info, data] = surface.infoDataFor(key, this._data);
+      return _.map(data.notes, (sound) => sound === info.sound);
     }
   }
 
