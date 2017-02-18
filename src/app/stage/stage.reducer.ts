@@ -4,47 +4,47 @@ import { Action } from '@ngrx/store';
 import { StageActions } from './stage.actions';
 
 export class StageState {
-  static StateDemo = "Demo";
-  static StateCount = "Count";
-  static StateGoal = "Goal";
-  static StatePlay = "Play";
-  static StateVictory = "Victory";
+  static SceneDemo = "Demo";
+  static SceneCount = "Count";
+  static SceneGoal = "Goal";
+  static ScenePlay = "Play";
+  static SceneVictory = "Victory";
 
-  readonly _state: string;
-  readonly _nextState: string;
-  readonly _round: number;
-  readonly _active: boolean;
-  readonly _inactiveRounds: number;
+  readonly scene: string;
+  readonly nextScene: string;
+  readonly round: number;
+  readonly active: boolean;
+  readonly inactiveRounds: number;
 
-  constructor(state: string, nextState: string, round: number, active: boolean, inactiveRounds: number) {
-    this._state = state;
-    this._nextState = nextState;
-    this._round = 0;
-    this._active = false;
-    this._inactiveRounds = 0;
+  constructor(scene: string, nextScene: string, round: number, active: boolean, inactiveRounds: number) {
+    this.scene = scene;
+    this.nextScene = nextScene;
+    this.round = 0;
+    this.active = false;
+    this.inactiveRounds = 0;
   }
 
   static reducer(state: StageState, action: Action): StageState {
     switch (action.type) {
       case StageActions.INIT: {
-        return new StageState(StageState.StateDemo, StageState.StateCount, 0, false, 0);
+        return new StageState(StageState.SceneDemo, StageState.SceneCount, 0, false, 0);
       }
       case StageActions.RESET: {
         return <StageState>_.defaultsDeep({
-            _state: StageState.StateDemo,
-            _nextState: StageState.StateCount,
-            _round: 0,
-            _active: false,
-            _inactiveRounds: 0
+            scene: StageState.SceneDemo,
+            nextScene: StageState.SceneCount,
+            round: 0,
+            active: false,
+            inactiveRounds: 0
           }, state);
       }
       case StageActions.SETACTIVE: {
         return <StageState>_.defaultsDeep({
-          _state: state._state,
-          _nextState: state._nextState,
-          _round: state._round,
-          _active: true,
-          _inactiveRounds: state._inactiveRounds
+          scene: state.scene,
+          nextScene: state.nextScene,
+          round: state.round,
+          active: true,
+          inactiveRounds: state.inactiveRounds
         }, state);
       }
       case StageActions.NEXTROUND: {
@@ -57,35 +57,35 @@ export class StageState {
     }
   }
 
-  static nextRound(stageState: StageState, playedGoal: boolean) {
-    let nextState = stageState._nextState;
-    let active = stageState._active;
-    let inactiveRounds = stageState._inactiveRounds;
+  static nextRound(state: StageState, playedGoal: boolean) {
+    let nextScene = state.nextScene;
+    let active = state.active;
+    let inactiveRounds = state.inactiveRounds;
 
     if (playedGoal) {
-      nextState = StageState.StateVictory;
+      nextScene = StageState.SceneVictory;
     } else {
       if (active) {
         inactiveRounds = 0;
       } else if (inactiveRounds >= 3) {
-        nextState = StageState.StateGoal;
+        nextScene = StageState.SceneGoal;
       }
     }
 
-    let round = stageState._round;
-    let state = nextState;
+    let round = state.round;
+    let scene = nextScene;
     active = false;
-    switch(state) {
-      case StageState.StateCount:
-      case StageState.StateVictory:
-        nextState = StageState.StateGoal;
+    switch(scene) {
+      case StageState.SceneCount:
+      case StageState.SceneVictory:
+        nextScene = StageState.SceneGoal;
         round = 0;
         break;
-      case StageState.StateGoal:
-        nextState = StageState.StatePlay;
+      case StageState.SceneGoal:
+        nextScene = StageState.ScenePlay;
         inactiveRounds = 0;
         break;
-      case StageState.StatePlay:
+      case StageState.ScenePlay:
         round++;
         if (!active) {
           inactiveRounds++;
@@ -95,11 +95,11 @@ export class StageState {
     }
 
     return <StageState>_.defaultsDeep({
-      _state: state,
-      _nextState: nextState,
-      _round: round,
-      _active: active,
-      _inactiveRounds: inactiveRounds
-    }, stageState);
+      scene: scene,
+      nextScene: nextScene,
+      round: round,
+      active: active,
+      inactiveRounds: inactiveRounds
+    }, state);
   }
 }
