@@ -40,7 +40,7 @@ export class StageState {
           }, state);
       }
       case StageActions.NEXTROUND: {
-        let [playedGoal] = action.payload;
+        let playedGoal = action.payload;
         return StageState.nextRound(state, playedGoal);
       }
       case PlayerActions.SET:
