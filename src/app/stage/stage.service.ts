@@ -52,10 +52,6 @@ export class StageService {
     this.store.dispatch(this.stage.reset());
   }
 
-  setActive() {
-    this.store.dispatch(this.stage.setActive());
-  }
-
   nextRound(playedGoal: boolean = false) {   
     this.store.dispatch(this.stage.nextRound(playedGoal));
   }

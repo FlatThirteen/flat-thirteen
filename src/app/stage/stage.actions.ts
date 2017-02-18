@@ -23,14 +23,6 @@ export class StageActions {
     };
   }
 
-  static SETACTIVE = '[STAGE] SetActive';
-  setActive(): Action {
-    return {
-      type: StageActions.SETACTIVE,
-      payload: []
-    };
-  }
-
   static NEXTROUND = '[STAGE] NextRound';
   nextRound(playedGoal: boolean): Action {
     return {
