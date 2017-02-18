@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { EffectsModule } from "@ngrx/effects";
 
 import { routes } from './a1.routing';
-import { GridModule } from '../../surface/grid/grid.module';
+import { GridModule } from './grid/grid.module';
 import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
 
 import { A1Component } from './a1.component';

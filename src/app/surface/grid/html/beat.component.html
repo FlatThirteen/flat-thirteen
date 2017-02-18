@@ -1,8 +1,0 @@
-<div class="pulse" *ngFor="let pulse of pulseCounts()"
-     [ngClass]="{active: beat.active(thisBeat, pulse, pulses), selected: player.isSelected(thisBeat)}">
-  <div class="actual note" [ngClass]="noteType()" *ngIf="player.value(key, pulse)"></div>
-  <div class="controls">
-    <div class="note" [ngClass]="controlNoteClasses(pulse)"
-         (click)="onNote(pulse)">{{player.cursor === pulse ? key : ''}}</div>
-  </div>
-</div>

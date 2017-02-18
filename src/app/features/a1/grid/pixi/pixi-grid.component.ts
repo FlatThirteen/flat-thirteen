@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
 
-import { BeatService } from "../../../features/shared/beat.service";
+import { BeatService } from "../../../shared/beat.service";
 import { Grid } from "../grid.model";
-import { PlayerService } from "../../../player/player.service";
+import { PlayerService } from "../../../../player/player.service";
 import { RenderableBar } from './renderableBar';
 import { RenderableStrip } from './renderableStrip';
-import { StageService } from "../../../features/shared/stage.service";
+import { StageService } from "../../../shared/stage.service";
 import { TextOverlay } from './text-Overlay';
 
 @Component({

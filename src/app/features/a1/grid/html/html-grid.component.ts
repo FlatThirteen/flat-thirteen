@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 
-import { BeatService } from "../../../features/shared/beat.service";
+import { BeatService } from "../../../shared/beat.service";
 import { Grid } from "../grid.model";
-import { PlayerService } from "../../../player/player.service";
-import { StageService } from "../../../features/shared/stage.service";
+import { PlayerService } from "../../../../player/player.service";
+import { StageService } from "../../../shared/stage.service";
 
 /**
  * This class represents the HTML version of the Grid Component.
@@ -34,5 +34,9 @@ export class HtmlGridComponent implements OnInit {
     if (_.includes(this.grid.supportedPulses, pulses)) {
       this.player.pulses(this.player.selected, pulses);
     }
+  }
+
+  onNote(key: string, pulse: number) {
+    this.player.toggle(key, pulse);
   }
 }

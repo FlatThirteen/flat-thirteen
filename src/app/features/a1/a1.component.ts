@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 
 import { BeatService } from "../shared/beat.service";
 import { GoalService } from "../shared/goal.service";
-import { Grid } from "../../surface/grid/grid.model";
+import { Grid } from "./grid/grid.model";
 import { MonophonicMonotonePhraseBuilder, PhraseBuilder } from "../../phrase/phrase.model";
 import { PlayerService } from "../../player/player.service";
 import { Rhythm } from "../../phrase/rhythm.model";
