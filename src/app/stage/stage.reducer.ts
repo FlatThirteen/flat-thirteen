@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import { Action } from '@ngrx/store';
 
 import { StageActions } from './stage.actions';
+import { PlayerActions } from '../player/player.actions';
 
 export class StageState {
   static SceneDemo = "Demo";
@@ -38,7 +39,13 @@ export class StageState {
             inactiveRounds: 0
           }, state);
       }
-      case StageActions.SETACTIVE: {
+      case StageActions.NEXTROUND: {
+        let [playedGoal] = action.payload;
+        return StageState.nextRound(state, playedGoal);
+      }
+      case PlayerActions.SET:
+      case PlayerActions.UNSET:
+      case PlayerActions.PULSES: {
         return <StageState>_.defaultsDeep({
           scene: state.scene,
           nextScene: state.nextScene,
@@ -46,10 +53,6 @@ export class StageState {
           active: true,
           inactiveRounds: state.inactiveRounds
         }, state);
-      }
-      case StageActions.NEXTROUND: {
-        let [playedGoal] = action.payload;
-        return StageState.nextRound(state, playedGoal);
       }
       default: {
         return state;
