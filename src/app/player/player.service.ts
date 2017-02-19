@@ -7,7 +7,8 @@ import { createSelector } from 'reselect';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 import { AppState } from "../reducers/index";
-import { Grid, GridData } from "../features/a1/grid/grid.model";
+import { Grid as A1Grid } from "../features/a1/grid/grid.model";
+import { Grid } from "../features/a2/grid/grid.model";
 import { Observable } from "rxjs";
 import { PlayerActions } from "./player.actions";
 import { Surface } from "../surface/surface.model";
@@ -57,8 +58,10 @@ export class PlayerService {
     this.store.dispatch(this.player.init(surfaces));
   }
 
-  select(key: string) {
-    this.store.dispatch(this.player.select(key));
+  select(key: string, cursor?: number) {
+    if (key) {
+      this.store.dispatch(this.player.select(key, cursor));
+    }
   }
 
   unselect() {
@@ -67,8 +70,11 @@ export class PlayerService {
 
   set(key: string, cursor: number) {
     let surface = this.surface.forKey(key);
-    let pulses = 1;
+    let pulses: number | number[] = 1;
     if (surface instanceof Grid) {
+      // Send pulsesByBeat so player effect knows cursor is calculated from
+      pulses = surface.pulsesByBeat;
+    } else if (surface instanceof A1Grid) {
       let [info, data] = surface.infoDataFor(key, this._data);
       if (info.beat !== this._beat) {
         // Reset cursor ahead of action dispatch so player effect gets it
@@ -76,7 +82,9 @@ export class PlayerService {
       }
       pulses = data.pulses;
     }
-    this.store.dispatch(this.player.set(key, cursor, pulses));
+    if (surface) {
+      this.store.dispatch(this.player.set(key, cursor, pulses));
+    }
   }
 
   unset(key: string, cursor: number) {
@@ -88,7 +96,7 @@ export class PlayerService {
       this.store.dispatch(this.player.pulses(key, pulses));
     } else {
       let surface = this.surface.forKey(key);
-      if (surface instanceof Grid) {
+      if (surface instanceof A1Grid) {
         let data = surface.infoDataFor(key, this._data)[1];
         return data.pulses;
       }
@@ -101,7 +109,7 @@ export class PlayerService {
 
   isPulses(beat: number, pulses: number) {
     let surface = this.surface.forKey(this._selected);
-    if (surface instanceof Grid) {
+    if (surface instanceof A1Grid) {
       let [info, data] = surface.infoDataFor(this._selected, this._data);
       return info.beat === beat && data.pulses === pulses;
     }
@@ -110,21 +118,28 @@ export class PlayerService {
   value(key: string, cursor: number = 0): boolean {
     let surface = this.surface.forKey(key);
     if (surface instanceof Grid) {
+      let [beat, pulse] = surface.beatPulseFor(cursor);
+      let data = surface.dataFor(beat, this._data);
+      return data.notes[pulse] === surface.soundByKey[key];
+    } else if (surface instanceof A1Grid) {
       let [info, data] = surface.infoDataFor(key, this._data);
       return data.notes[cursor] === info.sound;
     }
   }
 
-  values(key: string): boolean[] {
+  values(key: string, beat?: number): boolean[] {
     let surface = this.surface.forKey(key);
     if (surface instanceof Grid) {
+      let data = surface.dataFor(beat, this._data);
+      return _.map(data.notes, (sound) => sound === (<Grid>surface).soundByKey[key]);
+    } else if (surface instanceof A1Grid) {
       let [info, data] = surface.infoDataFor(key, this._data);
       return _.map(data.notes, (sound) => sound === info.sound);
     }
   }
 
   notesAt(beat: number, tick: number): Note[] {
-    return _.map(_.values(this._data), (data: GridData[]) => data[beat].noteAt(tick));
+    return _.map(_.values(this._data), (data: Surface.Data[]) => data[beat].noteAt(tick));
   }
 
   toggle(key: string, cursor?: number) {

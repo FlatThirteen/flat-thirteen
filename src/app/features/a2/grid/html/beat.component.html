@@ -1,0 +1,8 @@
+<div class="pulse" *ngFor="let pulse of pulses; let i = index" (mouseenter)="onEnter(pulse)"
+     [ngClass]="{active: beat.active(thisBeat, i, pulses.length), cursor: cursor === pulse}">
+  <div class="actual note" [ngClass]="noteClass()" *ngIf="values[i]"></div>
+  <div class="controls">
+    <div class="note" [ngClass]="controlNoteClass(pulse)"
+         (click)="onToggle(pulse)">{{cursor === pulse ? label : ''}}</div>
+  </div>
+</div>

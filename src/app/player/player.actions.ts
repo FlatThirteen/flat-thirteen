@@ -20,11 +20,11 @@ export class PlayerActions {
   }
 
   static SELECT = '[PLAYER] Select';
-  select(key: string): Action {
+  select(key: string, cursor?: number): Action {
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SELECT,
-      payload: [surface, key]
+      payload: [surface, key, cursor]
     };
   }
 
@@ -36,7 +36,7 @@ export class PlayerActions {
   }
 
   static SET = '[PLAYER] Set';
-  set(key: string, cursor: number, pulses: number): Action {
+  set(key: string, cursor: number, pulses: number | number[]): Action {
     this.stage.setActive();
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {

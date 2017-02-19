@@ -65,7 +65,7 @@ export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
   build(): Phrase {
     let phrase = new Phrase();
     let generate = (generationStrategy: (beatTick: BeatTick, priority: number) => number) => {
-      for (let [beatTick, probability] of this.rhythm.pulseProbabilities()) {
+      for (let [beatTick, probability] of this.rhythm.pulseProbabilities) {
         if (generationStrategy(beatTick, probability)) {
           let soundIndex = _.random(this.soundNames.length - 1);
           phrase.add(new Note(this.soundNames[soundIndex]), beatTick);

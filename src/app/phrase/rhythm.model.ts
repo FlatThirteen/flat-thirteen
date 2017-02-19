@@ -10,7 +10,9 @@ export function mapKey(beat: number, tick: number): BeatTick {
 
 export class Rhythm {
   private readonly map: _.Dictionary<number>;
-  private readonly orderedPulses: [BeatTick, number][];
+  readonly pulseProbabilities: [BeatTick, number][];
+  readonly pulsesByBeat: number[];
+  readonly supportedPulses: number[];
   readonly length: number;
 
   constructor(private readonly timing: _.List<number | number[]>) {
@@ -25,11 +27,9 @@ export class Rhythm {
       }
       return result;
     }, {});
-    this.orderedPulses = <[BeatTick, number][]>_.orderBy(_.toPairs(this.map), 1, 'desc');
+    this.pulseProbabilities = <[BeatTick, number][]>_.orderBy(_.toPairs(this.map), 1, 'desc');
+    this.pulsesByBeat = <number[]>_.map(timing, (timing) => _.isArray(timing) ? timing.length : 1);
+    this.supportedPulses = _.uniq(this.pulsesByBeat);
     this.length = _.flatten(timing).length;
-  }
-
-  pulseProbabilities() {
-    return this.orderedPulses;
   }
 }
