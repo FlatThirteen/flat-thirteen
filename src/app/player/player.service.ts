@@ -6,7 +6,7 @@ import { Store } from "@ngrx/store";
 import { createSelector } from 'reselect';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import { AppState } from "../reducers/index";
+import { AppState } from "../app.reducer";
 import { Grid as A1Grid } from "../features/a1/grid/grid.model";
 import { Grid } from "../features/a2/grid/grid.model";
 import { Observable } from "rxjs";

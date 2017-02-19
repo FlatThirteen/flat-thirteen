@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { createSelector } from 'reselect';
 
-import { AppState } from "../reducers/index";
+import { AppState } from "../app.reducer";
 
 import { StageScene } from "./stage.reducer";
 import { StageActions } from "./stage.actions";
