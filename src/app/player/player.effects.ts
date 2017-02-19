@@ -6,7 +6,7 @@ import { BeatService, ticks } from "../features/shared/beat.service";
 import { GoalService } from "../features/shared/goal.service";
 import { Note } from "../sound/sound";
 import { PlayerActions } from "./player.actions";
-import { StageService } from "../features/shared/stage.service";
+import { StageService } from "../stage/stage.service";
 import { SoundService } from "../sound/sound.service";
 
 @Injectable()
