@@ -1,4 +1,4 @@
-<div class="grid" ngClass="{{stage.sceneName() | lowercase }}">
+<div class="grid" ngClass="{{stage.getCurrentScene() | lowercase }}">
   <div class="controls" *ngIf="grid.supportedPulses.length > 1">
     <div class="pulses" *ngFor="let i of beat.counts()"
          [class.selected]="player.isSelected(i)">
