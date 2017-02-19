@@ -36,7 +36,7 @@ export class PlayerActions {
   }
 
   static SET = '[PLAYER] Set';
-  set(key: string, cursor: number): Action {
+  set(key: string, cursor: number, pulses: number): Action {
     let surface = this.surface.forKey(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
