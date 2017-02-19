@@ -4,7 +4,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { BeatService } from "../../../shared/beat.service";
 import { Grid } from "../grid.model";
 import { PlayerService } from "../../../../player/player.service";
-import { StageService } from "../../../shared/stage.service";
+import { StageService } from "../../../../stage/stage.service";
 
 /**
  * This class represents the HTML version of the Grid Component.
@@ -29,7 +29,7 @@ export class HtmlGridComponent implements OnInit {
   gridClass() {
     return _.assign({
       selected: this.grid.listens(this.player.selected)
-    }, _.fromPairs([[this.stage.stateName().toLowerCase(), true]]));
+    }, _.fromPairs([[this.stage.getCurrentScene().toLowerCase(), true]]));
   }
 
   pulsesFor(beat: number) {

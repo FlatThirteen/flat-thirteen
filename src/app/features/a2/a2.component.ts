@@ -7,7 +7,7 @@ import { Grid } from "./grid/grid.model";
 import { MonophonicMonotonePhraseBuilder, PhraseBuilder } from "../../phrase/phrase.model";
 import { PlayerService } from "../../player/player.service";
 import { Rhythm } from "../../phrase/rhythm.model";
-import { StageService } from "../shared/stage.service";
+import { StageService } from "../../stage/stage.service";
 import { Surface } from "../../surface/surface.model";
 import { SurfaceService } from "../../surface/surface.service";
 
@@ -48,6 +48,7 @@ export class A2Component implements OnInit, OnDestroy {
     let grid = new Grid({q: 'snare', a: 'kick'}, this.pulsesByBeat);
     this.surfaces = [grid];
     this.player.init(this.surfaces);
+    this.stage.init();
 
     this.phraseBuilder = new MonophonicMonotonePhraseBuilder(this.surface.soundNames,
       rhythm, 3, 7);
