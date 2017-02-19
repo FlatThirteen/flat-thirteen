@@ -4,20 +4,16 @@ import { Action } from '@ngrx/store';
 import { StageActions } from './stage.actions';
 import { PlayerActions } from '../player/player.actions';
 
-export class StageState {
-  static SceneDemo = "Demo";
-  static SceneCount = "Count";
-  static SceneGoal = "Goal";
-  static ScenePlay = "Play";
-  static SceneVictory = "Victory";
+export type StageScene = 'Demo' | 'Count' | 'Goal' | 'Play' | 'Victory';
 
-  readonly scene: string;
-  readonly nextScene: string;
+export class StageState {
+  readonly scene: StageScene;
+  readonly nextScene: StageScene;
   readonly round: number;
   readonly active: boolean;
   readonly inactiveRounds: number;
 
-  constructor(scene: string, nextScene: string, round: number, active: boolean, inactiveRounds: number) {
+  constructor(scene: StageScene, nextScene: StageScene, round: number, active: boolean, inactiveRounds: number) {
     this.scene = scene;
     this.nextScene = nextScene;
     this.round = 0;
@@ -28,12 +24,12 @@ export class StageState {
   static reducer(state: StageState, action: Action): StageState {
     switch (action.type) {
       case StageActions.INIT: {
-        return new StageState(StageState.SceneDemo, StageState.SceneCount, 0, false, 0);
+        return new StageState('Demo', 'Count', 0, false, 0);
       }
       case StageActions.RESET: {
         return <StageState>_.defaultsDeep({
-            scene: StageState.SceneDemo,
-            nextScene: StageState.SceneCount,
+            scene: 'Demo',
+            nextScene: 'Count',
             round: 0,
             active: false,
             inactiveRounds: 0
@@ -66,12 +62,12 @@ export class StageState {
     let inactiveRounds = state.inactiveRounds;
 
     if (playedGoal) {
-      nextScene = StageState.SceneVictory;
+      nextScene = 'Victory';
     } else {
       if (active) {
         inactiveRounds = 0;
       } else if (inactiveRounds >= 3) {
-        nextScene = StageState.SceneGoal;
+        nextScene = 'Goal';
       }
     }
 
@@ -79,16 +75,16 @@ export class StageState {
     let scene = nextScene;
     active = false;
     switch(scene) {
-      case StageState.SceneCount:
-      case StageState.SceneVictory:
-        nextScene = StageState.SceneGoal;
+      case 'Count':
+      case 'Victory':
+        nextScene = 'Goal';
         round = 0;
         break;
-      case StageState.SceneGoal:
-        nextScene = StageState.ScenePlay;
+      case 'Goal':
+        nextScene = 'Play';
         inactiveRounds = 0;
         break;
-      case StageState.ScenePlay:
+      case 'Play':
         round++;
         if (!active) {
           inactiveRounds++;

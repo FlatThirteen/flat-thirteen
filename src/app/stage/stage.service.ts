@@ -6,7 +6,7 @@ import { createSelector } from 'reselect';
 
 import { AppState } from "../reducers/index";
 
-import { StageState } from "./stage.reducer";
+import { StageState, StageScene } from "./stage.reducer";
 import { StageActions } from "./stage.actions";
 
 @Injectable()
@@ -18,14 +18,14 @@ export class StageService {
   static getActive = createSelector(StageService.getStage, stage => stage && stage.active);
   static getInactiveRounds = createSelector(StageService.getStage, stage => stage && stage.inactiveRounds);
 
-  private scene$: Observable<string>;
-  private nextScene$: Observable<string>;
+  private scene$: Observable<StageScene>;
+  private nextScene$: Observable<StageScene>;
   private round$: Observable<number>;
   private active$: Observable<boolean>;
   private inactiveRounds$: Observable<number>;
 
-  private scene: string;
-  private nextScene: string;
+  private scene: StageScene;
+  private nextScene: StageScene;
   private round: number;
   private active: boolean;
   private inactiveRounds: number;
@@ -60,27 +60,27 @@ export class StageService {
     return this.round;
   }
 
-  sceneName() {
+  getCurrentScene() {
     return this.scene;
   }
 
   isDemo() {
-    return this.scene === StageState.SceneDemo;
+    return this.scene === 'Demo';
   }
 
   isGoal() {
-    return this.scene === StageState.SceneGoal;
+    return this.scene === 'Goal';
   }
 
   isPlay() {
-    return this.scene === StageState.ScenePlay;
+    return this.scene === 'Play';
   }
 
   shouldShowCount() {
-    return this.scene === StageState.SceneCount || this.scene === StageState.SceneVictory;
+    return this.scene === 'Count' || this.scene === 'Victory';
   }
 
   shouldShowPosition() {
-    return this.scene === StageState.SceneGoal || this.scene === StageState.ScenePlay;
+    return this.scene === 'Goal' || this.scene === 'Play';
   }
 }
