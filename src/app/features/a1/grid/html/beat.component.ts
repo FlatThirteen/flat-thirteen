@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-import { BeatService } from "../../../shared/beat.service";
+import { TransportService } from "../../../../core/transport.service";
 
 /**
  * The BeatComponent is used by html-grid to represent a single note box
@@ -23,7 +23,7 @@ export class BeatComponent {
 
   @Output() toggle = new EventEmitter<number>();
 
-  constructor(private beat: BeatService) {}
+  constructor(private transport: TransportService) {}
 
   pulseCounts() {
     return _.times(this.pulses);

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { ticks } from "../features/shared/beat.service";
+import { ticks } from "./transport.service";
 
 export type BeatTick = string; // 'b:ttt', e.g. '0:048', '3:096'
 

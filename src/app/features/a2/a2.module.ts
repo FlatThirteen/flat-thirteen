@@ -8,7 +8,6 @@ import { GridModule } from './grid/grid.module';
 import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
 
 import { A2Component } from './a2.component';
-import { BeatService } from '../shared/beat.service';
 import { GoalService } from "../shared/goal.service";
 import { PlayerActions } from "../../player/player.actions";
 import { PlayerEffects } from "../../player/player.effects";
@@ -17,6 +16,7 @@ import { SoundService } from "../../sound/sound.service";
 import { StageActions } from "../../stage/stage.actions";
 import { StageService } from "../../stage/stage.service";
 import { SurfaceService } from "../../surface/surface.service";
+import { TransportService } from '../../core/transport.service';
 
 @NgModule({
   imports: [
@@ -33,7 +33,7 @@ import { SurfaceService } from "../../surface/surface.service";
     PlayerActions,
     PlayerEffects,
     PlayerService,
-    BeatService,
+    TransportService,
     GoalService,
     SoundService,
     StageActions,

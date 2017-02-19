@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { Surface } from "../../../surface/surface.model";
 import { SoundName, Note } from "../../../sound/sound";
 
-import { ticksPerBeat } from "../../shared/beat.service";
+import { ticksPerBeat } from "../../../core/transport.service";
 
 let nextId = 0;
 

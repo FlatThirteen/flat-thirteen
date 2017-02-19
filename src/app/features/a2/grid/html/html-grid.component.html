@@ -9,9 +9,11 @@
     </div>
   </div>
   <div class="overlay" *ngIf="stage.shouldShowCount()">
-    <div class="counter" [class.active]="beat.active()" *ngIf="!beat.paused">{{beat.count()}}</div>
+    <div class="counter" [class.active]="transport.active()" *ngIf="!transport.paused">
+      {{transport.count()}}
+    </div>
   </div>
   <div class="position" *ngIf="stage.shouldShowPosition()"
-       [style.left]="(beat.progress() * 100) + '%'"></div>
+       [style.left]="(transport.progress() * 100) + '%'"></div>
   <div class="cursor"></div>
 </div>

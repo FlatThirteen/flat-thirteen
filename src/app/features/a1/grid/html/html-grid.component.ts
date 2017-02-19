@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 
-import { BeatService } from "../../../shared/beat.service";
 import { Grid } from "../grid.model";
 import { PlayerService } from "../../../../player/player.service";
 import { StageService } from "../../../../stage/stage.service";
+import { TransportService } from "../../../../core/transport.service";
 
 /**
  * This class represents the HTML version of the Grid Component.
@@ -17,7 +17,7 @@ import { StageService } from "../../../../stage/stage.service";
 export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
 
-  constructor(private beat: BeatService, private player: PlayerService,
+  constructor(private transport: TransportService, private player: PlayerService,
               private stage: StageService) {}
 
   ngOnInit() {

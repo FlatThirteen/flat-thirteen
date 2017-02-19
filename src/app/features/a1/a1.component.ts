@@ -2,15 +2,15 @@ import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 
-import { BeatService } from "../shared/beat.service";
 import { GoalService } from "../shared/goal.service";
 import { Grid } from "./grid/grid.model";
 import { MonophonicMonotonePhraseBuilder, PhraseBuilder } from "../../phrase/phrase.model";
 import { PlayerService } from "../../player/player.service";
-import { Rhythm } from "../../phrase/rhythm.model";
+import { Rhythm } from "../../core/rhythm.model";
 import { StageService } from "../../stage/stage.service";
 import { Surface } from "../../surface/surface.model";
 import { SurfaceService } from "../../surface/surface.service";
+import { TransportService } from "../../core/transport.service";
 
 let requestAnimationFrameId: number;
 
@@ -33,7 +33,7 @@ export class A1Component implements OnInit, OnDestroy {
   /**
    * Creates an instance of the A1Component.
    */
-  constructor(private route: ActivatedRoute, private beat: BeatService,
+  constructor(private route: ActivatedRoute, private transport: TransportService,
               private goal: GoalService, private player: PlayerService,
               private stage: StageService, private surface: SurfaceService) {}
 
@@ -45,7 +45,7 @@ export class A1Component implements OnInit, OnDestroy {
     this.beatsPerMeasure = 4;
     this.supportedPulses = [1, 2];
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
-    this.beat.reset([this.beatsPerMeasure], this.supportedPulses);
+    this.transport.reset([this.beatsPerMeasure], this.supportedPulses);
 
     let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']},
       this.beatsPerMeasure, this.supportedPulses);
@@ -55,8 +55,8 @@ export class A1Component implements OnInit, OnDestroy {
 
     this.phraseBuilder = new MonophonicMonotonePhraseBuilder(this.surface.soundNames,
       new Rhythm([[1, 0], [0.9, 0], [0.9, 0], [0.9, 0]]), 3, 7);
-    this.beat.setOnTop((time) => this.onTop());
-    this.beat.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
+    this.transport.setOnTop((time) => this.onTop());
+    this.transport.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
@@ -66,7 +66,7 @@ export class A1Component implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     window.cancelAnimationFrame(requestAnimationFrameId);
-    this.beat.stop(true);
+    this.transport.stop(true);
   }
 
   onTop() {
@@ -93,11 +93,11 @@ export class A1Component implements OnInit, OnDestroy {
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') { // Enter: Start/stop
-      if (this.beat.paused) {
-        this.beat.start();
+      if (this.transport.paused) {
+        this.transport.start();
         this.player.init(this.surfaces);
       } else {
-        this.beat.stop();
+        this.transport.stop();
         this.stage.reset();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect

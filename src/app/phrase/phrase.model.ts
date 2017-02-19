@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { SoundName, Note } from "../sound/sound";
-import { Rhythm, BeatTick, mapKey } from "./rhythm.model";
+import { Rhythm, BeatTick, mapKey } from "../core/rhythm.model";
 
 export class Phrase {
   private notes: _.Dictionary<Note[]>;

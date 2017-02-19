@@ -1,6 +1,6 @@
 <div class="grid" ngClass="{{stage.getCurrentScene() | lowercase }}">
   <div class="controls" *ngIf="grid.supportedPulses.length > 1">
-    <div class="pulses" *ngFor="let i of beat.counts()"
+    <div class="pulses" *ngFor="let i of transport.counts()"
          [class.selected]="player.isSelected(i)">
       <div class="hint" *ngFor="let j of grid.supportedPulses"
            [class.set]="player.isPulses(i, j)"
@@ -16,8 +16,10 @@
     </div>
   </div>
   <div class="overlay" *ngIf="stage.shouldShowCount()">
-    <div class="counter" [class.active]="beat.active()" *ngIf="!beat.paused">{{beat.count()}}</div>
+    <div class="counter" [class.active]="transport.active()" *ngIf="!transport.paused">
+      {{transport.count()}}
+    </div>
   </div>
   <div class="position" *ngIf="stage.shouldShowPosition()"
-       [style.left]="(beat.progress() * 100) + '%'"></div>
+       [style.left]="(transport.progress() * 100) + '%'"></div>
 </div>

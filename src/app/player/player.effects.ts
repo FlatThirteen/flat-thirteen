@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import 'rxjs/add/operator/ignoreElements';
 
-import { BeatService, ticks } from "../features/shared/beat.service";
 import { GoalService } from "../features/shared/goal.service";
-import { Note } from "../sound/sound";
-import { PlayerActions } from "./player.actions";
-import { StageService } from "../stage/stage.service";
-import { SoundService } from "../sound/sound.service";
 import { Grid as A1Grid } from "../features/a1/grid/grid.model";
 import { Grid } from "../features/a2/grid/grid.model";
+import { Note } from "../sound/sound";
+import { PlayerActions } from "./player.actions";
+import { SoundService } from "../sound/sound.service";
+import { StageService } from "../stage/stage.service";
+import { TransportService, ticks } from "../core/transport.service";
 
 @Injectable()
 export class PlayerEffects {
 
   constructor(
     private actions$: Actions,
-    private beat: BeatService,
+    private transport: TransportService,
     private goal: GoalService,
     private stage: StageService,
     private sound: SoundService
@@ -42,7 +42,7 @@ export class PlayerEffects {
       }
       if (this.stage.isDemo()) {
         this.sound.play(sound);
-      } else if (this.beat.canLivePlay(beat, cursor, pulses)) {
+      } else if (this.transport.canLivePlay(beat, cursor, pulses)) {
         this.goal.playSound(new Note(sound), beat, tick);
       }
     }).ignoreElements();
