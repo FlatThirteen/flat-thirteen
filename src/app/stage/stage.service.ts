@@ -4,9 +4,9 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { createSelector } from 'reselect';
 
-import { AppState } from "../reducers/index";
+import { AppState } from "../app.reducer";
 
-import { StageState, StageScene } from "./stage.reducer";
+import { StageScene } from "./stage.reducer";
 import { StageActions } from "./stage.actions";
 
 @Injectable()
@@ -52,7 +52,7 @@ export class StageService {
     this.store.dispatch(this.stage.reset());
   }
 
-  nextRound(playedGoal: boolean = false) {   
+  nextRound(playedGoal: boolean = false) {
     this.store.dispatch(this.stage.nextRound(playedGoal));
   }
 

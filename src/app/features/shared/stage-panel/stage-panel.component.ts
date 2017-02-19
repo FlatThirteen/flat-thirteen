@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
-import { BeatService } from "../beat.service";
 import { GoalService } from "../goal.service";
 import { StageService } from "../../../stage/stage.service";
+import { TransportService } from "../../../core/transport.service";
 
 /**
  * This class represents the lazy loaded A1Component.
@@ -17,16 +17,16 @@ export class StagePanelComponent {
   /**
    * Creates an instance of the A1Component.
    */
-  constructor(private beat: BeatService,
+  constructor(private transport: TransportService,
               private goal: GoalService,
               private stage: StageService) {}
 
   onStart() {
-    this.beat.start();
+    this.transport.start();
   }
 
   onStop() {
-    this.beat.stop();
+    this.transport.stop();
     this.stage.reset();
   }
 

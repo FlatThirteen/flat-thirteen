@@ -9,6 +9,6 @@ export interface Surface {
 
 export declare namespace Surface {
   export interface Data {
-    noteAt(beat: number, tick: number): Note;
+    noteAt(tick: number): Note;
   }
 }

@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
 
 import { GoalService } from "../shared/goal.service";
 import { Grid } from "./grid/grid.model";
@@ -15,25 +14,24 @@ import { TransportService } from "../../core/transport.service";
 let requestAnimationFrameId: number;
 
 /**
- * This class represents the lazy loaded A1Component.
+ * This class represents the lazy loaded A2Component.
  */
 @Component({
   moduleId: module.id,
-  selector: '.a1',
-  templateUrl: 'a1.component.html',
-  styleUrls: ['a1.component.css']
+  selector: '.a2',
+  templateUrl: 'a2.component.html',
+  styleUrls: ['a2.component.css']
 })
-export class A1Component implements OnInit, OnDestroy {
-  private renderer: string;
+export class A2Component implements OnInit, OnDestroy {
   private surfaces: Surface[];
   private beatsPerMeasure: number;
-  private supportedPulses: number[];
+  private pulsesByBeat: number[];
   private phraseBuilder: PhraseBuilder;
 
   /**
-   * Creates an instance of the A1Component.
+   * Creates an instance of the A2Component.
    */
-  constructor(private route: ActivatedRoute, private transport: TransportService,
+  constructor(private transport: TransportService,
               private goal: GoalService, private player: PlayerService,
               private stage: StageService, private surface: SurfaceService) {}
 
@@ -42,19 +40,18 @@ export class A1Component implements OnInit, OnDestroy {
    * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
-    this.beatsPerMeasure = 4;
-    this.supportedPulses = [1, 2];
-    this.renderer = this.route.snapshot.data['renderer'] || 'html';
-    this.transport.reset([this.beatsPerMeasure], this.supportedPulses);
+    let rhythm = new Rhythm([[1, 0], [0.9, 0], 0.9, [0.9, 0, 0, 0]]);
+    this.pulsesByBeat = rhythm.pulsesByBeat;
+    this.beatsPerMeasure = this.pulsesByBeat.length;
+    this.transport.reset([this.beatsPerMeasure], rhythm.supportedPulses);
 
-    let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']},
-      this.beatsPerMeasure, this.supportedPulses);
+    let grid = new Grid({q: 'snare', a: 'kick'}, this.pulsesByBeat);
     this.surfaces = [grid];
     this.player.init(this.surfaces);
     this.stage.init();
 
     this.phraseBuilder = new MonophonicMonotonePhraseBuilder(this.surface.soundNames,
-      new Rhythm([[1, 0], [0.9, 0], [0.9, 0], [0.9, 0]]), 3, 7);
+      rhythm, 3, 7);
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
 
@@ -104,13 +101,16 @@ export class A1Component implements OnInit, OnDestroy {
       this.player.unselect();
     } else if (event.key === ' ') { // Space: Unset
       this.player.unset(this.player.selected, this.player.cursor);
-    } else {
-      let numKey = _.parseInt(event.key); // Number: Pulses
-      if (_.includes(this.supportedPulses, numKey)) {
-        this.player.pulses(this.player.selected, numKey);
-      } else { // Key: Set
-        this.player.set(event.key, this.player.cursor);
-      }
+      this.player.select(this.player.selected, this.player.cursor + 1);
+    } else if (event.key === 'Backspace') {
+      this.player.unset(this.player.selected, this.player.cursor - 1);
+    } else if (event.key === 'ArrowLeft') { // Left: Select previous
+      this.player.select(this.player.selected, this.player.cursor - 1);
+    } else if (event.key === 'ArrowRight') { // Right: Select next
+      this.player.select(this.player.selected, this.player.cursor + 1);
+    } else { // Key: Set
+      this.player.set(event.key, this.player.cursor);
+      this.player.select(this.player.selected, this.player.cursor + 1);
     }
     return false;
   }

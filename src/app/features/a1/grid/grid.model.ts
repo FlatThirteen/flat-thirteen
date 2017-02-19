@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { Surface } from "../../../surface/surface.model";
 import { SoundName, Note } from "../../../sound/sound";
 
-import { ticksPerBeat } from "../../shared/beat.service";
+import { ticksPerBeat } from "../../../core/transport.service";
 
 let nextId = 0;
 
@@ -18,7 +18,7 @@ export class Grid implements Surface {
 
   constructor(shortcutKeysBySound: _.Dictionary<string[]>, beats: number,
               supportedPulses: number[]) {
-    this.id = 'grid' + nextId++;
+    this.id = 'a1/grid' + nextId++;
     this.keysBySound = shortcutKeysBySound;
     this.soundNames = <SoundName[]>_.keys(shortcutKeysBySound);
     this.beats = beats;

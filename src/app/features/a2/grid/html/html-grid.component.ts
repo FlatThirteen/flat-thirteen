@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { Grid } from "../grid.model";
 import { PlayerService } from "../../../../player/player.service";
@@ -26,13 +26,14 @@ export class HtmlGridComponent implements OnInit {
     }
   }
 
-  @HostListener('mouseleave') onMouseLeave() {
-    this.player.unselect();
+  gridClass() {
+    return _.assign({
+      selected: this.grid.listens(this.player.selected)
+    }, _.fromPairs([[this.stage.getCurrentScene().toLowerCase(), true]]));
   }
 
-  setPulses(pulses: number) {
-    if (_.includes(this.grid.supportedPulses, pulses)) {
-      this.player.pulses(this.player.selected, pulses);
-    }
+  pulsesFor(beat: number) {
+    let offset = _.sum(this.grid.pulsesByBeat.slice(0, beat));
+    return _.times(this.grid.pulsesByBeat[beat], (i) => offset + i);
   }
 }

@@ -14,25 +14,20 @@ import { TransportService } from "../../../../core/transport.service";
   styleUrls: ['beat.component.css'],
 })
 export class BeatComponent {
-  @Input() private pulses: number;
+  @Input() private pulses: number[];
   @Input() private beat: number;
   @Input() private key: string;
 
   constructor(private transport: TransportService, private player: PlayerService) {}
 
-  pulseCounts() {
-    return _.times(this.pulses);
+  noteClass() {
+    return noteTypes[this.pulses.length];
   }
 
-  noteType() {
-    return noteTypes[this.pulses];
-  }
-
-  controlNoteClasses(pulse: number) {
+  controlNoteClass(pulse: number) {
     return _.assign({
-      on: this.player.value(this.key, pulse),
-      cursor: this.player.cursor === pulse
-    }, _.fromPairs([[this.noteType(), true]]));
+      on: this.player.value(this.key, pulse)
+    }, _.fromPairs([[this.noteClass(), true]]));
   }
 }
 

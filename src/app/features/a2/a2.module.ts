@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from "@ngrx/effects";
 
-import { routes } from './a1.routing';
+import { routes } from './a2.routing';
 import { GridModule } from './grid/grid.module';
 import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
 
-import { A1Component } from './a1.component';
+import { A2Component } from './a2.component';
 import { GoalService } from "../shared/goal.service";
 import { PlayerActions } from "../../player/player.actions";
 import { PlayerEffects } from "../../player/player.effects";
@@ -27,7 +27,7 @@ import { TransportService } from '../../core/transport.service';
     EffectsModule.run(PlayerEffects),
   ],
   declarations: [
-    A1Component
+    A2Component
   ],
   providers: [
     PlayerActions,
@@ -42,5 +42,5 @@ import { TransportService } from '../../core/transport.service';
   ]
 })
 
-export class A1Module {}
+export class A2Module {}
 

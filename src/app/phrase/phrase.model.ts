@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { SoundName, Note } from "../sound/sound";
-import { Rhythm, BeatTick, mapKey } from "./rhythm.model";
+import { Rhythm, BeatTick, mapKey } from "../core/rhythm.model";
 
 export class Phrase {
   private notes: _.Dictionary<Note[]>;
@@ -65,7 +65,7 @@ export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
   build(): Phrase {
     let phrase = new Phrase();
     let generate = (generationStrategy: (beatTick: BeatTick, priority: number) => number) => {
-      for (let [beatTick, probability] of this.rhythm.pulseProbabilities()) {
+      for (let [beatTick, probability] of this.rhythm.pulseProbabilities) {
         if (generationStrategy(beatTick, probability)) {
           let soundIndex = _.random(this.soundNames.length - 1);
           phrase.add(new Note(this.soundNames[soundIndex]), beatTick);

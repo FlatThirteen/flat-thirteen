@@ -1,8 +1,8 @@
 <div class="pulse" *ngFor="let pulse of pulseCounts()"
-     [ngClass]="{active: beat.active(thisBeat, pulse, pulses), selected: selected}">
-  <div class="actual note" [ngClass]="noteType()" *ngIf="values[pulse]"></div>
+     [ngClass]="{active: transport.active(beat, pulse, pulses), selected: player.isSelected(beat)}">
+  <div class="actual note" [ngClass]="noteType()" *ngIf="player.value(key, pulse)"></div>
   <div class="controls">
     <div class="note" [ngClass]="controlNoteClasses(pulse)"
-         (click)="onToggle(pulse)">{{cursor === pulse ? label : ''}}</div>
+         (click)="player.toggle(key, pulse)">{{player.cursor === pulse ? key : ''}}</div>
   </div>
 </div>

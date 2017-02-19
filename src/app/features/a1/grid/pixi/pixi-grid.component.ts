@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as PIXI from 'pixi.js'
 
-import { BeatService } from "../../../shared/beat.service";
 import { Grid } from "../grid.model";
 import { PlayerService } from "../../../../player/player.service";
 import { RenderableBar } from './renderableBar';
 import { RenderableStrip } from './renderableStrip';
 import { StageService } from "../../../../stage/stage.service";
 import { TextOverlay } from './text-Overlay';
+import { TransportService } from "../../../../core/transport.service";
 
 @Component({
   selector: 'pixi-grid',
@@ -30,7 +30,7 @@ export class PixiGridComponent implements OnInit {
   renderableBar: RenderableBar;
   counterOverlay: TextOverlay;
 
-    constructor(private beat: BeatService, private player: PlayerService,
+    constructor(private transport: TransportService, private player: PlayerService,
                 private stageService: StageService) {}
 
   ngOnInit() {
@@ -94,8 +94,8 @@ export class PixiGridComponent implements OnInit {
     }
     this.renderer.render(this.stage);
 
-    if (!this.beat.paused) {
-      this.renderableBar.getRenderableObject().x = this.beat.progress() * (this.beatWidth * this.beatCount);
+    if (!this.transport.paused) {
+      this.renderableBar.getRenderableObject().x = this.transport.progress() * (this.beatWidth * this.beatCount);
     }
 
     let scene = this.stageService.getCurrentScene();
@@ -118,8 +118,8 @@ export class PixiGridComponent implements OnInit {
       }
     }
 
-    if (!this.beat.paused && (undefined != this.beat.count())) {
-      this.counterOverlay.setText(this.beat.count().toString());
+    if (!this.transport.paused && (undefined != this.transport.count())) {
+      this.counterOverlay.setText(this.transport.count().toString());
       this.counterOverlay.getRenderableObject().visible = this.stageService.shouldShowCount();
     }
 

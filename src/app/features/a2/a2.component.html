@@ -1,0 +1,6 @@
+<header></header>
+<div class="surface" *ngFor="let surface of surfaces; let i = index">
+  <html-grid *ngIf="isGrid(surface)" [grid]="surface"></html-grid>
+</div>
+<stage-panel></stage-panel>
+
