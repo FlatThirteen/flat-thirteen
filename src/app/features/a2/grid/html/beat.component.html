@@ -1,8 +1,9 @@
-<div class="pulse" *ngFor="let pulse of pulses; let i = index" (mouseenter)="onEnter(pulse)"
-     [ngClass]="{active: transport.active(thisBeat, i, pulses.length), cursor: cursor === pulse}">
-  <div class="actual note" [ngClass]="noteClass()" *ngIf="values[i]"></div>
+<div class="pulse" *ngFor="let pulse of pulses; let i = index"
+     [ngClass]="{active: transport.active(beat, i, pulses.length), cursor: player.cursor === pulse}"
+     (mouseenter)="player.select(key, pulse)">
+  <div class="actual note" [ngClass]="noteClass()" *ngIf="player.value(key, pulse)"></div>
   <div class="controls">
     <div class="note" [ngClass]="controlNoteClass(pulse)"
-         (click)="onToggle(pulse)">{{cursor === pulse ? label : ''}}</div>
+         (click)="player.toggle(key, pulse)">{{player.cursor === pulse ? key : ''}}</div>
   </div>
 </div>

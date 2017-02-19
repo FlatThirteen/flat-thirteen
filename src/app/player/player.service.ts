@@ -127,17 +127,6 @@ export class PlayerService {
     }
   }
 
-  values(key: string, beat?: number): boolean[] {
-    let surface = this.surface.forKey(key);
-    if (surface instanceof Grid) {
-      let data = surface.dataFor(beat, this._data);
-      return _.map(data.notes, (sound) => sound === (<Grid>surface).soundByKey[key]);
-    } else if (surface instanceof A1Grid) {
-      let [info, data] = surface.infoDataFor(key, this._data);
-      return _.map(data.notes, (sound) => sound === info.sound);
-    }
-  }
-
   notesAt(beat: number, tick: number): Note[] {
     return _.map(_.values(this._data), (data: Surface.Data[]) => data[beat].noteAt(tick));
   }

@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
+import { PlayerService } from "../../../../player/player.service";
 import { TransportService } from "../../../../core/transport.service";
 
 /**
@@ -14,16 +15,10 @@ import { TransportService } from "../../../../core/transport.service";
 })
 export class BeatComponent {
   @Input() private pulses: number[];
-  @Input('beat') private thisBeat: number;
+  @Input() private beat: number;
+  @Input() private key: string;
 
-  @Input() private label: string;
-  @Input() private values: boolean[];
-  @Input() private cursor: number;
-
-  @Output() toggle = new EventEmitter<number>();
-  @Output() enter = new EventEmitter<number>();
-
-  constructor(private transport: TransportService) {}
+  constructor(private transport: TransportService, private player: PlayerService) {}
 
   noteClass() {
     return noteTypes[this.pulses.length];
@@ -31,16 +26,8 @@ export class BeatComponent {
 
   controlNoteClass(pulse: number) {
     return _.assign({
-      on: this.values[pulse - this.pulses[0]]
+      on: this.player.value(this.key, pulse)
     }, _.fromPairs([[this.noteClass(), true]]));
-  }
-
-  onToggle(pulse: number) {
-    this.toggle.emit(pulse);
-  }
-
-  onEnter(pulse: number) {
-    this.enter.emit(pulse);
   }
 }
 

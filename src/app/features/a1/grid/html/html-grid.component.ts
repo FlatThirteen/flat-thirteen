@@ -35,8 +35,4 @@ export class HtmlGridComponent implements OnInit {
       this.player.pulses(this.player.selected, pulses);
     }
   }
-
-  onNote(key: string, pulse: number) {
-    this.player.toggle(key, pulse);
-  }
 }

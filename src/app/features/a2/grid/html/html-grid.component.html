@@ -1,10 +1,8 @@
 <div class="grid" [ngClass]="gridClass()" (mouseleave)="player.unselect()">
   <div class="strip-container">
     <div class="strip" *ngFor="let key of grid.keys">
-      <div *ngFor="let pulses of grid.pulsesByBeat; let i = index" class="beat"
-           [label]="key" [beat]="i" [pulses]="pulsesFor(i)"
-           [values]="player.values(key, i)" [cursor]="player.cursor"
-           (toggle)="player.toggle(key, $event)" (enter)="player.select(key, $event);">
+      <div class="beat" *ngFor="let pulses of grid.pulsesByBeat; let beat = index"
+           [key]="key" [beat]="beat" [pulses]="pulsesFor(beat)">
       </div>
     </div>
   </div>
