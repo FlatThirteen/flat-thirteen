@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 
-import { GoalService } from "../goal.service";
+import { LessonService } from "../../../lesson/lesson.service";
+import { PlayerService } from "../../../player/player.service";
 import { StageService } from "../../../stage/stage.service";
 import { TransportService } from "../../../core/transport.service";
 
 /**
- * This class represents the lazy loaded A1Component.
+ * This class represents the stage panel below the surfaces.
  */
 @Component({
   selector: 'stage-panel',
@@ -14,20 +15,20 @@ import { TransportService } from "../../../core/transport.service";
 })
 export class StagePanelComponent {
 
-  /**
-   * Creates an instance of the A1Component.
-   */
   constructor(private transport: TransportService,
-              private goal: GoalService,
+              private lesson: LessonService,
+              private player: PlayerService,
               private stage: StageService) {}
 
   onStart() {
     this.transport.start();
+    this.player.init();
   }
 
   onStop() {
     this.transport.stop();
-    this.stage.reset();
+    this.lesson.reset();
+
   }
 
 }

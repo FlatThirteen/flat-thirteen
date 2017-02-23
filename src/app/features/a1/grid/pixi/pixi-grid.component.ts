@@ -89,7 +89,7 @@ export class PixiGridComponent implements OnInit {
   }
 
   render() {
-    if (this.stageService.shouldShowPosition()) {
+    if (this.stageService.showPosition) {
       this.renderableBar.getRenderableObject().visible = true;
     }
     this.renderer.render(this.stage);
@@ -98,9 +98,8 @@ export class PixiGridComponent implements OnInit {
       this.renderableBar.getRenderableObject().x = this.transport.progress() * (this.beatWidth * this.beatCount);
     }
 
-    let scene = this.stageService.getCurrentScene();
     let active = false;
-    switch(scene) {
+    switch(this.stageService.scene) {
       case 'Demo':
         active = false;
         break;
@@ -120,7 +119,7 @@ export class PixiGridComponent implements OnInit {
 
     if (!this.transport.paused && (undefined != this.transport.count())) {
       this.counterOverlay.setText(this.transport.count().toString());
-      this.counterOverlay.getRenderableObject().visible = this.stageService.shouldShowCount();
+      this.counterOverlay.getRenderableObject().visible = this.stageService.showCount;
     }
 
     requestAnimationFrame(this.render.bind(this));

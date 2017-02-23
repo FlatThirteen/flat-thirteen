@@ -1,4 +1,4 @@
-<div class="grid" ngClass="{{stage.getCurrentScene() | lowercase }}">
+<div class="grid" ngClass="{{stage.scene$ | async | lowercase }}">
   <div class="controls" *ngIf="grid.supportedPulses.length > 1">
     <div class="pulses" *ngFor="let i of transport.counts()"
          [class.selected]="player.isSelected(i)">
@@ -13,11 +13,11 @@
          (mouseenter)="player.select(key);">
     </div>
   </div>
-  <div class="overlay" *ngIf="stage.shouldShowCount()">
+  <div class="overlay" *ngIf="stage.showCount">
     <div class="counter" [class.active]="transport.active()" *ngIf="!transport.paused">
       {{transport.count()}}
     </div>
   </div>
-  <div class="position" *ngIf="stage.shouldShowPosition()"
+  <div class="position" *ngIf="stage.showPosition"
        [style.left]="(transport.progress() * 100) + '%'"></div>
 </div>

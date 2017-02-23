@@ -1,27 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { Surface } from "../surface/surface.model";
-import { SurfaceService } from "../surface/surface.service";
-import { StageService } from "../stage/stage.service";
+import { LessonService } from "../lesson/lesson.service";
 
 @Injectable()
 export class PlayerActions {
 
-  constructor(private stage: StageService, private surface: SurfaceService) {}
+  constructor(private lesson: LessonService) {}
 
   static INIT = '[PLAYER] Init';
-  init(surfaces: Surface[]): Action {
-    this.surface.init(surfaces);
+  init(): Action {
     return {
       type: PlayerActions.INIT,
-      payload: this.surface.initialData
+      payload: this.lesson.initialData
     };
   }
 
   static SELECT = '[PLAYER] Select';
   select(key: string, cursor?: number): Action {
-    let surface = this.surface.forKey(key);
+    let surface = this.lesson.surfaceFor(key);
     return !surface ? noAction : {
       type: PlayerActions.SELECT,
       payload: [surface, key, cursor]
@@ -37,7 +34,7 @@ export class PlayerActions {
 
   static SET = '[PLAYER] Set';
   set(key: string, cursor: number, pulses: number | number[]): Action {
-    let surface = this.surface.forKey(key);
+    let surface = this.lesson.surfaceFor(key);
     return !surface ? noAction : {
       type: PlayerActions.SET,
       payload: [surface, key, cursor, pulses]
@@ -46,7 +43,7 @@ export class PlayerActions {
 
   static UNSET = '[PLAYER] Unset';
   unset(key: string, cursor: number): Action {
-    let surface = this.surface.forKey(key);
+    let surface = this.lesson.surfaceFor(key);
     return !surface ? noAction : {
       type: PlayerActions.UNSET,
       payload: [surface, key, cursor]
@@ -57,7 +54,7 @@ export class PlayerActions {
   pulses(key: string, pulses: number): Action {
     return !key ? noAction : {
       type: PlayerActions.PULSES,
-      payload: [this.surface.forKey(key), key, pulses]
+      payload: [this.lesson.surfaceFor(key), key, pulses]
     };
   }
 }

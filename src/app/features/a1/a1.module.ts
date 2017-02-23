@@ -8,14 +8,14 @@ import { GridModule } from './grid/grid.module';
 import { StagePanelModule } from "../shared/stage-panel/stage-panel.module";
 
 import { A1Component } from './a1.component';
-import { GoalService } from "../shared/goal.service";
+import { LessonActions } from "../../lesson/lesson.actions";
+import { LessonService } from "../../lesson/lesson.service";
 import { PlayerActions } from "../../player/player.actions";
 import { PlayerEffects } from "../../player/player.effects";
 import { PlayerService } from "../../player/player.service";
 import { SoundService } from "../../sound/sound.service";
 import { StageActions } from "../../stage/stage.actions";
 import { StageService } from "../../stage/stage.service";
-import { SurfaceService } from "../../surface/surface.service";
 import { TransportService } from '../../core/transport.service';
 
 @NgModule({
@@ -30,15 +30,15 @@ import { TransportService } from '../../core/transport.service';
     A1Component
   ],
   providers: [
+    LessonActions,
+    LessonService,
     PlayerActions,
     PlayerEffects,
     PlayerService,
     TransportService,
-    GoalService,
     SoundService,
     StageActions,
-    StageService,
-    SurfaceService
+    StageService
   ]
 })
 

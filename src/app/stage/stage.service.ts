@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { Store } from "@ngrx/store";
 
@@ -6,6 +7,10 @@ import { createSelector } from 'reselect';
 
 import { AppState } from "../app.reducer";
 
+import { Note } from "../sound/sound";
+import { Phrase, PhraseBuilder } from "../phrase/phrase.model";
+import { PlayerService } from "../player/player.service";
+import { SoundService } from "../sound/sound.service";
 import { StageScene } from "./stage.reducer";
 import { StageActions } from "./stage.actions";
 
@@ -16,71 +21,106 @@ export class StageService {
   static getNextScene = createSelector(StageService.getStage, stage => stage && stage.nextScene);
   static getRound = createSelector(StageService.getStage, stage => stage && stage.round);
   static getActive = createSelector(StageService.getStage, stage => stage && stage.active);
-  static getInactiveRounds = createSelector(StageService.getStage, stage => stage && stage.inactiveRounds);
+  static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
+  static getPlayedPhrase = createSelector(StageService.getStage, stage => stage && stage.playedPhrase);
 
-  private scene$: Observable<StageScene>;
-  private nextScene$: Observable<StageScene>;
-  private round$: Observable<number>;
-  private active$: Observable<boolean>;
-  private inactiveRounds$: Observable<number>;
+  readonly scene$: Observable<StageScene>;
+  readonly nextScene$: Observable<StageScene>;
+  readonly round$: Observable<number>;
+  readonly active$: Observable<boolean>;
+  readonly goalPhrase$: Observable<Phrase>;
+  readonly playedPhrase$: Observable<Phrase>;
 
-  private scene: StageScene;
+  private scene_: StageScene;
   private nextScene: StageScene;
-  private round: number;
+  private round_: number;
   private active: boolean;
-  private inactiveRounds: number;
+  private goalPhrase: Phrase;
+  private playedPhrase: Phrase;
+  private goalPlayed_: boolean;
+  private goalNotes_: number;
 
-  constructor(private store: Store<AppState>, private stage: StageActions) {
+  constructor(private store: Store<AppState>, private stage: StageActions,
+      private player: PlayerService, private sound: SoundService) {
     this.scene$ = this.store.select(StageService.getScene);
     this.nextScene$ = this.store.select(StageService.getNextScene);
     this.round$ = this.store.select(StageService.getRound);
     this.active$ = this.store.select(StageService.getActive);
-    this.inactiveRounds$ = this.store.select(StageService.getInactiveRounds);
+    this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
+    this.playedPhrase$ = this.store.select(StageService.getPlayedPhrase);
 
-    this.scene$.subscribe(scene => { this.scene = scene });
+    this.scene$.subscribe(scene => { this.scene_ = scene });
     this.nextScene$.subscribe(nextScene => { this.nextScene = nextScene });
-    this.round$.subscribe(round => { this.round = round });
+    this.round$.subscribe(round => { this.round_ = round });
     this.active$.subscribe(active => { this.active = active });
-    this.inactiveRounds$.subscribe(inactiveRounds => { this.inactiveRounds = inactiveRounds });
+    this.goalPhrase$.subscribe(goalPhrase => {
+      this.goalPhrase = goalPhrase;
+      this.goalPlayed_ = false;
+      this.goalNotes_ = goalPhrase && goalPhrase.numNotes();
+    });
+    this.playedPhrase$.subscribe(playedPhrase => {
+      this.playedPhrase = playedPhrase;
+      this.goalPlayed_ = playedPhrase && _.isEqual(this.goalPhrase, this.playedPhrase);
+    });
   }
 
   init() {
     this.store.dispatch(this.stage.init());
   }
 
-  reset() {
-    this.store.dispatch(this.stage.reset());
+  next(phraseBuilder?: PhraseBuilder) {
+    this.store.dispatch(this.stage.next(phraseBuilder));
   }
 
-  nextRound(playedGoal: boolean = false) {
-    this.store.dispatch(this.stage.nextRound(playedGoal));
+  victory() {
+    this.store.dispatch(this.stage.victory());
   }
 
-  getRound() {
-    return this.round;
+  play(note: Note, beat: number, tick: number, time?: number) {
+    this.sound.play(note.soundName, time);
+    this.store.dispatch(this.stage.play(note, beat, tick));
   }
 
-  getCurrentScene() {
-    return this.scene;
+  pulse(time: number, beat: number, tick: number) {
+    if (this.scene_ === 'Goal') {
+      let notes = this.goalPhrase.getNotes(beat, tick);
+      for (let note of notes) {
+        this.sound.play(note.soundName, time);
+      }
+    } else if (this.scene_ === 'Play') {
+      _.forEach(this.player.notesAt(beat, tick), note => {
+        if (note) {
+          this.play(note, beat, tick, time);
+        }
+      });
+    }
   }
 
-  isDemo() {
-    return this.scene === 'Demo';
+  get round() {
+    return this.round_;
   }
 
-  isGoal() {
-    return this.scene === 'Goal';
+  get scene() {
+    return this.scene_;
   }
 
-  isPlay() {
-    return this.scene === 'Play';
+  get isDemo() {
+    return this.scene_ === 'Demo';
   }
 
-  shouldShowCount() {
-    return this.scene === 'Count' || this.scene === 'Victory';
+  get showCount() {
+    return this.scene_ === 'Count' || this.scene_ === 'Victory';
   }
 
-  shouldShowPosition() {
-    return this.scene === 'Goal' || this.scene === 'Play';
+  get showPosition() {
+    return this.scene_ === 'Goal' || this.scene_ === 'Play';
+  }
+
+  get goalPlayed() {
+    return this.goalPlayed_;
+  }
+
+  get goalNotes() {
+    return this.goalNotes_;
   }
 }

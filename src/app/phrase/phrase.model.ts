@@ -22,6 +22,7 @@ export class Phrase {
       this.notes[beatTick] = [note];
     }
     this.noteCount++;
+    return this;
   }
 
   getNotes(beat: number, tick: number = 0): Note[] {

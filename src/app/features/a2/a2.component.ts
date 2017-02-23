@@ -1,14 +1,10 @@
-import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 
-import { GoalService } from "../shared/goal.service";
 import { Grid } from "./grid/grid.model";
-import { MonophonicMonotonePhraseBuilder, PhraseBuilder } from "../../phrase/phrase.model";
+import { LessonService } from "../../lesson/lesson.service";
 import { PlayerService } from "../../player/player.service";
-import { Rhythm } from "../../core/rhythm.model";
 import { StageService } from "../../stage/stage.service";
 import { Surface } from "../../surface/surface.model";
-import { SurfaceService } from "../../surface/surface.service";
 import { TransportService } from "../../core/transport.service";
 
 let requestAnimationFrameId: number;
@@ -23,35 +19,20 @@ let requestAnimationFrameId: number;
   styleUrls: ['a2.component.css']
 })
 export class A2Component implements OnInit, OnDestroy {
-  private surfaces: Surface[];
-  private beatsPerMeasure: number;
-  private pulsesByBeat: number[];
-  private phraseBuilder: PhraseBuilder;
 
-  /**
-   * Creates an instance of the A2Component.
-   */
-  constructor(private transport: TransportService,
-              private goal: GoalService, private player: PlayerService,
-              private stage: StageService, private surface: SurfaceService) {}
+  constructor(private transport: TransportService, private player: PlayerService,
+              private stage: StageService, private lesson: LessonService) {}
 
   /**
    * Starts up the requestAnimationFrame loop so that the browser redraws the
    * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
-    let rhythm = new Rhythm([[1, 0], [0.9, 0], 0.9, [0.9, 0, 0, 0]]);
-    this.pulsesByBeat = rhythm.pulsesByBeat;
-    this.beatsPerMeasure = this.pulsesByBeat.length;
-    this.transport.reset([this.beatsPerMeasure], rhythm.supportedPulses);
+    let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
+    this.lesson.init([grid], {stages: 5});
+    this.player.init();
+    this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
 
-    let grid = new Grid({q: 'snare', a: 'kick'}, this.pulsesByBeat);
-    this.surfaces = [grid];
-    this.player.init(this.surfaces);
-    this.stage.init();
-
-    this.phraseBuilder = new MonophonicMonotonePhraseBuilder(this.surface.soundNames,
-      rhythm, 3, 7);
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
 
@@ -67,24 +48,22 @@ export class A2Component implements OnInit, OnDestroy {
   }
 
   onTop() {
-    if (this.goal.playedGoal()) {
-      this.goal.newGoal(this.phraseBuilder);
-      this.stage.nextRound(true);
-      this.player.init(this.surfaces);
+    if (this.stage.goalPlayed) {
+      this.lesson.advance(this.stage.round);
+      this.stage.victory();
+      if (this.lesson.phraseBuilder) {
+        this.player.init();
+      } else {
+        this.transport.stop();
+        this.lesson.reset();
+      }
     } else {
-      this.stage.nextRound(false);
-      this.goal.clearPlayed();
+      this.stage.next(this.stage.showCount && this.lesson.phraseBuilder);
     }
   }
 
   onPulse(time: number, beat: number, tick: number) {
-    if (this.stage.isGoal()) {
-      this.goal.playGoal(time, beat, tick);
-    } else if (this.stage.isPlay()) {
-      _.forEach(this.player.notesAt(beat, tick), note => {
-        this.goal.playSound(note, beat, tick, time);
-      });
-    }
+    this.stage.pulse(time, beat, tick);
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -92,10 +71,10 @@ export class A2Component implements OnInit, OnDestroy {
     if (event.key === 'Enter') { // Enter: Start/stop
       if (this.transport.paused) {
         this.transport.start();
-        this.player.init(this.surfaces);
+        this.player.init();
       } else {
         this.transport.stop();
-        this.stage.reset();
+        this.lesson.reset();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();

@@ -1,6 +1,9 @@
 import * as _ from 'lodash';
 import { Component, Input, OnInit } from '@angular/core';
 
+import { Observable } from "rxjs";
+import { combineLatest } from "rxjs/observable/combineLatest";
+
 import { Grid } from "../grid.model";
 import { PlayerService } from "../../../../player/player.service";
 import { StageService } from "../../../../stage/stage.service";
@@ -16,20 +19,18 @@ import { TransportService } from "../../../../core/transport.service";
 })
 export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
+  private gridClass$: Observable<string>;
 
   constructor(private transport: TransportService, private player: PlayerService,
-              private stage: StageService) {}
+              private stage: StageService) {
+    this.gridClass$ = combineLatest(stage.scene$, player.selected$).map(
+        ([scene, selected]) => scene.toLowerCase() + (this.grid.listens(selected) ? ' selected' : ''));
+  }
 
   ngOnInit() {
     if (!this.grid) {
       throw new Error('Missing grid');
     }
-  }
-
-  gridClass() {
-    return _.assign({
-      selected: this.grid.listens(this.player.selected)
-    }, _.fromPairs([[this.stage.getCurrentScene().toLowerCase(), true]]));
   }
 
   pulsesFor(beat: number) {
