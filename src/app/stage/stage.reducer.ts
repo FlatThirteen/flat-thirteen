@@ -13,27 +13,17 @@ export class StageState {
   readonly active: boolean;
   readonly inactiveRounds: number;
 
-  constructor(scene: StageScene, nextScene: StageScene, round: number, active: boolean, inactiveRounds: number) {
-    this.scene = scene;
-    this.nextScene = nextScene;
-    this.round = 0;
-    this.active = false;
-    this.inactiveRounds = 0;
-  }
-
   static reducer(state: StageState, action: Action): StageState {
     switch (action.type) {
-      case StageActions.INIT: {
-        return new StageState('Demo', 'Count', 0, false, 0);
-      }
+      case StageActions.INIT:
       case StageActions.RESET: {
-        return <StageState>_.defaultsDeep({
-            scene: 'Demo',
-            nextScene: 'Count',
-            round: 0,
-            active: false,
-            inactiveRounds: 0
-          }, state);
+        return {
+          scene: 'Demo', 
+          nextScene: 'Count',
+          round: 0,
+          active: false, 
+          inactiveRounds: 0
+        } as StageState;
       }
       case StageActions.NEXTROUND: {
         let playedGoal = action.payload;
@@ -43,11 +33,7 @@ export class StageState {
       case PlayerActions.UNSET:
       case PlayerActions.PULSES: {
         return <StageState>_.defaultsDeep({
-          scene: state.scene,
-          nextScene: state.nextScene,
-          round: state.round,
-          active: true,
-          inactiveRounds: state.inactiveRounds
+          active: true
         }, state);
       }
       default: {
