@@ -4,18 +4,21 @@ import { storeFreeze } from 'ngrx-store-freeze';
 import { storeLogger } from 'ngrx-store-logger';
 import { routerReducer, RouterState } from '@ngrx/router-store';
 
+import { LessonState } from "./lesson/lesson.reducer";
 import { PlayerState } from "./player/player.reducer";
 import { StageState } from "./stage/stage.reducer";
 
 export interface AppState {
-  player: PlayerState;
+  lesson: LessonState;
   stage: StageState;
+  player: PlayerState;
   router: RouterState;
 }
 
 export const reducers = {
-  player: PlayerState.reducer,
+  lesson: LessonState.reducer,
   stage: StageState.reducer,
+  player: PlayerState.reducer,
   router: routerReducer,
 };
 

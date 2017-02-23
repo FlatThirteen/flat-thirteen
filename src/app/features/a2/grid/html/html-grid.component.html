@@ -1,4 +1,4 @@
-<div class="grid" [ngClass]="gridClass()" (mouseleave)="player.unselect()">
+<div class="grid" [ngClass]="gridClass$ | async" (mouseleave)="player.unselect()">
   <div class="strip-container">
     <div class="strip" *ngFor="let key of grid.keys">
       <div class="beat" *ngFor="let pulses of grid.pulsesByBeat; let beat = index"
@@ -6,12 +6,12 @@
       </div>
     </div>
   </div>
-  <div class="overlay" *ngIf="stage.shouldShowCount()">
+  <div class="overlay" *ngIf="stage.showCount">
     <div class="counter" [class.active]="transport.active()" *ngIf="!transport.paused">
       {{transport.count()}}
     </div>
   </div>
-  <div class="position" *ngIf="stage.shouldShowPosition()"
+  <div class="position" *ngIf="stage.showPosition"
        [style.left]="(transport.progress() * 100) + '%'"></div>
   <div class="cursor"></div>
 </div>

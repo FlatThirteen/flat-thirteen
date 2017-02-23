@@ -10,8 +10,6 @@ let nextId = 0;
 export class Grid implements Surface {
   readonly id: string;
   readonly soundByKey: _.Dictionary<SoundName>;
-  readonly keys: string[];
-  readonly soundNames: SoundName[];
   readonly pulsesByBeat: number[];
   readonly pulses: number;
   readonly initialData: GridData[];
@@ -19,11 +17,17 @@ export class Grid implements Surface {
   constructor(soundByKey: _.Dictionary<SoundName>, pulsesByBeat: number[]) {
     this.id = 'a2/grid' + nextId++;
     this.soundByKey = soundByKey;
-    this.keys = _.keys(soundByKey);
-    this.soundNames = <SoundName[]>_.values(soundByKey);
     this.pulsesByBeat = pulsesByBeat;
     this.pulses = _.sum(pulsesByBeat);
     this.initialData = _.map(pulsesByBeat, (pulses) => new GridData([], pulses));
+  }
+
+  get keys() {
+    return _.keys(this.soundByKey);
+  }
+
+  get soundNames() {
+    return <SoundName[]>_.values(this.soundByKey);
   }
 
   listens(key: string): boolean {

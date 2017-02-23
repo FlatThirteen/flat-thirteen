@@ -1,5 +1,4 @@
-import * as _ from 'lodash';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { PlayerService } from "../../../../player/player.service";
 import { TransportService } from "../../../../core/transport.service";
@@ -25,9 +24,7 @@ export class BeatComponent {
   }
 
   controlNoteClass(pulse: number) {
-    return _.assign({
-      on: this.player.value(this.key, pulse)
-    }, _.fromPairs([[this.noteClass(), true]]));
+    return this.noteClass() + (this.player.value(this.key, pulse) ? ' on' : '');
   }
 }
 

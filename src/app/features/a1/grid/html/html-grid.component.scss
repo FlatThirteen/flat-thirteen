@@ -83,7 +83,7 @@
   }
 }
 
-:not(.goal) .controls .pulses.selected {
+.controls .pulses.selected {
   opacity: 1;
   transition-delay: 350ms;
   transform: translateY(0) scale(1);

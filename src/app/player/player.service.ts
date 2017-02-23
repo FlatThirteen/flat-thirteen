@@ -9,10 +9,10 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { AppState } from "../app.reducer";
 import { Grid as A1Grid } from "../features/a1/grid/grid.model";
 import { Grid } from "../features/a2/grid/grid.model";
+import { LessonService } from "../lesson/lesson.service";
 import { Observable } from "rxjs";
 import { PlayerActions } from "./player.actions";
 import { Surface } from "../surface/surface.model";
-import { SurfaceService } from "../surface/surface.service";
 import { Note } from "../sound/sound";
 
 @Injectable()
@@ -23,10 +23,10 @@ export class PlayerService {
   static getBeat = createSelector(PlayerService.getPlayer, player => player && player.beat);
   static getCursor = createSelector(PlayerService.getPlayer, player => player && player.cursor);
 
-  private data$: Observable<_.Dictionary<Surface.Data[]>>;
-  private selected$: Observable<string>;
-  private beat$: Observable<number>;
-  private cursor$: Observable<number>;
+  readonly data$: Observable<_.Dictionary<Surface.Data[]>>;
+  readonly selected$: Observable<string>;
+  readonly beat$: Observable<number>;
+  readonly cursor$: Observable<number>;
 
   private _data: _.Dictionary<Surface.Data[]>;
   private _selected: string;
@@ -34,7 +34,7 @@ export class PlayerService {
   private _cursor: number;
 
   constructor(private store: Store<AppState>, private player: PlayerActions,
-              private surface: SurfaceService) {
+              private lesson: LessonService) {
     this.data$ = this.store.select(PlayerService.getData);
     this.selected$ = this.store.select(PlayerService.getSelected);
     this.beat$ = this.store.select(PlayerService.getBeat);
@@ -54,8 +54,8 @@ export class PlayerService {
     return this._cursor;
   }
 
-  init(surfaces: Surface[]) {
-    this.store.dispatch(this.player.init(surfaces));
+  init() {
+    this.store.dispatch(this.player.init());
   }
 
   select(key: string, cursor?: number) {
@@ -69,7 +69,7 @@ export class PlayerService {
   }
 
   set(key: string, cursor: number) {
-    let surface = this.surface.forKey(key);
+    let surface = this.lesson.surfaceFor(key);
     let pulses: number | number[] = 1;
     if (surface instanceof Grid) {
       // Send pulsesByBeat so player effect knows cursor is calculated from
@@ -95,7 +95,7 @@ export class PlayerService {
     if (pulses) {
       this.store.dispatch(this.player.pulses(key, pulses));
     } else {
-      let surface = this.surface.forKey(key);
+      let surface = this.lesson.surfaceFor(key);
       if (surface instanceof A1Grid) {
         let data = surface.infoDataFor(key, this._data)[1];
         return data.pulses;
@@ -108,7 +108,7 @@ export class PlayerService {
   }
 
   isPulses(beat: number, pulses: number) {
-    let surface = this.surface.forKey(this._selected);
+    let surface = this.lesson.surfaceFor(this._selected);
     if (surface instanceof A1Grid) {
       let [info, data] = surface.infoDataFor(this._selected, this._data);
       return info.beat === beat && data.pulses === pulses;
@@ -116,7 +116,7 @@ export class PlayerService {
   }
 
   value(key: string, cursor: number = 0): boolean {
-    let surface = this.surface.forKey(key);
+    let surface = this.lesson.surfaceFor(key);
     if (surface instanceof Grid) {
       let [beat, pulse] = surface.beatPulseFor(cursor);
       let data = surface.dataFor(beat, this._data);

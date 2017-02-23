@@ -45,6 +45,9 @@ export class TransportService {
     Tone.Transport.setLoopPoints(0, beatsPerMeasure.length + 'm');
 
     this.quarterLoop = new Tone.Loop((time: number) => {
+      if (this.paused) {
+        return;
+      }
       this.beatIndex++;
       this.sound.play('click', time, this.beat ? 'normal' : 'heavy');
 
