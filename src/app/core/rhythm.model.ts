@@ -29,7 +29,7 @@ export class Rhythm {
     }, {});
     this.pulseProbabilities = <[BeatTick, number][]>_.orderBy(_.toPairs(this.map), 1, 'desc');
     this.pulsesByBeat = <number[]>_.map(timing, (timing) => _.isArray(timing) ? timing.length : 1);
-    this.supportedPulses = _.uniq(this.pulsesByBeat);
+    this.supportedPulses = _.sortBy(_.uniq(this.pulsesByBeat));
     this.length = _.flatten(timing).length;
   }
 }

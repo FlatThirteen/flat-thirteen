@@ -36,14 +36,13 @@ export class A1Component implements OnInit, OnDestroy {
    * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
-    this.supportedPulses = [1, 2, 4];
     this.renderer = this.route.snapshot.data['renderer'] || 'html';
 
     let grid = new Grid({snare: ['q', 'w', 'e', 'r'], kick: ['a', 's', 'd', 'f']},
-      4, this.supportedPulses);
+      4, this.lesson.supportedPulses);
     this.lesson.init([grid], {});
     this.player.init();
-    this.transport.reset([this.lesson.beatsPerMeasure], this.supportedPulses);
+    this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
 
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));

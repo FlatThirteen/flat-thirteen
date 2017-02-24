@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 import { Action } from '@ngrx/store';
 
+import { LessonActions } from "../lesson/lesson.actions";
 import { Phrase } from "../phrase/phrase.model";
 import { PlayerActions } from '../player/player.actions';
 import { StageActions } from './stage.actions';
-import { LessonActions } from "../lesson/lesson.actions";
 
 export type StageScene = 'Demo' | 'Count' | 'Goal' | 'Play' | 'Victory';
 
