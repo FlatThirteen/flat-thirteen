@@ -61,7 +61,7 @@ export class StageState {
       case PlayerActions.UNSET:
       case PlayerActions.PULSES: {
         return <StageState>_.defaults({
-          active: state.scene === 'Goal' || state.scene === 'Play'
+          active: state.nextScene !== 'Goal'
         }, state);
       }
       default: {

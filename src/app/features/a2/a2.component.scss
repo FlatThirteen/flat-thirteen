@@ -1,3 +1,26 @@
 .surface {
   margin: 1vw 0;
 }
+
+.listen {
+  background-color: rgba(205, 205, 205, 0.9);
+  border: solid 5px rgba(0, 0, 0, 0.9);
+  border-radius: 50%;
+  position: absolute;
+  height: 10vw;
+  left: 50vw;
+  padding: 2vw;
+  transition: all 150ms ease-in-out;
+  transform: translate(-7vw, -7vw) scale(0, 0);
+  width: 10vw;
+  z-index: 1;
+
+  &.goal {
+    transform: translate(-7vw, -7vw) scale(1, 1);
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
