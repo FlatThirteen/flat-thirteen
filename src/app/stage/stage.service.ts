@@ -108,6 +108,10 @@ export class StageService {
     return this.scene_ === 'Demo';
   }
 
+  get isGoal() {
+    return this.scene_ === 'Goal';
+  }
+
   get showCount() {
     return this.scene_ === 'Count' || this.scene_ === 'Victory';
   }
