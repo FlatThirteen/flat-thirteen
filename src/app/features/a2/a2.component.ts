@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Observable } from "rxjs";
+import { combineLatest } from "rxjs/observable/combineLatest";
 
 import { Grid } from "./grid/grid.model";
 import { LessonService } from "../../lesson/lesson.service";
@@ -22,9 +24,17 @@ let requestAnimationFrameId: number;
   styleUrls: ['a2.component.css']
 })
 export class A2Component implements OnInit, OnDestroy {
+  private listenClass$: Observable<string>;
+  private showStart: boolean = false;
+
   constructor(private route: ActivatedRoute, private transport: TransportService,
               private player: PlayerService, private stage: StageService,
-              private lesson: LessonService) {}
+              private lesson: LessonService) {
+    this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
+        ([scene, active, touched]) => scene === 'Goal' && active ? 'waiting' :
+            scene === 'Goal' && !touched ? 'just' :
+            (scene === 'Demo' || scene === 'Goal') && touched ? 'enable' : '');
+  }
 
   /**
    * Starts up the requestAnimationFrame loop so that the browser redraws the
@@ -54,6 +64,7 @@ export class A2Component implements OnInit, OnDestroy {
   }
 
   onTop() {
+    this.showStart = true;
     if (this.stage.goalPlayed) {
       this.lesson.advance(this.stage.round);
       this.stage.victory();
@@ -63,7 +74,7 @@ export class A2Component implements OnInit, OnDestroy {
         this.transport.stop();
         this.lesson.reset();
       }
-    } else {
+    } else if (!this.stage.isLoop) {
       this.stage.next(this.stage.showCount && this.lesson.phraseBuilder);
     }
   }
@@ -75,12 +86,12 @@ export class A2Component implements OnInit, OnDestroy {
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') { // Enter: Start/stop
+      this.lesson.reset();
       if (this.transport.paused) {
-        this.transport.start();
         this.player.init();
+        this.transport.start();
       } else {
         this.transport.stop();
-        this.lesson.reset();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();
@@ -98,6 +109,13 @@ export class A2Component implements OnInit, OnDestroy {
       this.player.select(this.player.selected, this.player.cursor + 1);
     }
     return false;
+  }
+
+  onListen() {
+    if (this.transport.paused) {
+      this.transport.start();
+    }
+    this.stage.listen();
   }
 
   isGrid(surface: Surface) {
