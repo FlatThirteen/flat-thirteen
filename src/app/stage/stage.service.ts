@@ -64,8 +64,8 @@ export class StageService {
     });
   }
 
-  init() {
-    this.store.dispatch(this.stage.init());
+  listen() {
+    this.store.dispatch(this.stage.listen());
   }
 
   next(phraseBuilder?: PhraseBuilder) {
@@ -83,14 +83,19 @@ export class StageService {
 
   pulse(time: number, beat: number, tick: number) {
     if (this.scene_ === 'Goal') {
-      let notes = this.goalPhrase.getNotes(beat, tick);
-      for (let note of notes) {
+      for (let note of this.goalPhrase.getNotes(beat, tick)) {
         this.sound.play(note.soundName, time);
       }
     } else if (this.scene_ === 'Play') {
       _.forEach(this.player.notesAt(beat, tick), note => {
         if (note) {
           this.play(note, beat, tick, time);
+        }
+      });
+    } else if (this.scene_ === 'Loop') {
+      _.forEach(this.player.notesAt(beat, tick), note => {
+        if (note) {
+          this.sound.play(note.soundName, time);
         }
       });
     }
@@ -108,6 +113,10 @@ export class StageService {
     return this.scene_ === 'Demo';
   }
 
+  get isLoop() {
+    return this.scene_ === 'Loop';
+  }
+
   get isGoal() {
     return this.scene_ === 'Goal';
   }
@@ -117,7 +126,7 @@ export class StageService {
   }
 
   get showPosition() {
-    return this.scene_ === 'Goal' || this.scene_ === 'Play';
+    return this.scene_ === 'Loop' || this.scene_ === 'Goal' || this.scene_ === 'Play';
   }
 
   get goalPlayed() {

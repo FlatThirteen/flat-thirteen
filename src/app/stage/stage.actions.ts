@@ -9,10 +9,10 @@ export class StageActions {
 
   constructor() {}
 
-  static INIT = '[STAGE] Init';
-  init(): Action {
+  static LISTEN = '[STAGE] Listen';
+  listen(): Action {
     return {
-      type: StageActions.INIT
+      type: StageActions.LISTEN
     };
   }
 

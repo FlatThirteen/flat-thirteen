@@ -22,11 +22,13 @@ export class PlayerService {
   static getSelected = createSelector(PlayerService.getPlayer, player => player && player.selected);
   static getBeat = createSelector(PlayerService.getPlayer, player => player && player.beat);
   static getCursor = createSelector(PlayerService.getPlayer, player => player && player.cursor);
+  static getTouched = createSelector(PlayerService.getPlayer, player => player && player.touched);
 
   readonly data$: Observable<_.Dictionary<Surface.Data[]>>;
   readonly selected$: Observable<string>;
   readonly beat$: Observable<number>;
   readonly cursor$: Observable<number>;
+  readonly touched$: Observable<boolean>;
 
   private _data: _.Dictionary<Surface.Data[]>;
   private _selected: string;
@@ -39,6 +41,7 @@ export class PlayerService {
     this.selected$ = this.store.select(PlayerService.getSelected);
     this.beat$ = this.store.select(PlayerService.getBeat);
     this.cursor$ = this.store.select(PlayerService.getCursor);
+    this.touched$ = this.store.select(PlayerService.getTouched);
 
     this.data$.subscribe(data => { this._data = data });
     this.selected$.subscribe(selected => { this._selected = selected });

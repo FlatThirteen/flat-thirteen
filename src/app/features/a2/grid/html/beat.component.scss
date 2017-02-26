@@ -74,6 +74,10 @@
   border-radius: 50%;
   cursor: pointer;
   margin: auto;
+
+  :host-context(.goal) & {
+    opacity: 0.3;
+  }
 }
 
 .controls {

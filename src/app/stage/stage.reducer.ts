@@ -6,28 +6,28 @@ import { Phrase } from "../phrase/phrase.model";
 import { PlayerActions } from '../player/player.actions';
 import { StageActions } from './stage.actions';
 
-export type StageScene = 'Demo' | 'Count' | 'Goal' | 'Play' | 'Victory';
+export type StageScene = 'Demo' | 'Loop' | 'Count' | 'Goal' | 'Play' | 'Victory';
 
 export class StageState {
-  readonly scene: StageScene;
-  readonly nextScene: StageScene;
-  readonly round: number;
-  readonly active: boolean;
-  readonly goalPhrase: Phrase;
-  readonly playedPhrase: Phrase;
+  readonly round: number = 0;
+  readonly active: boolean = true;
+  readonly goalPhrase: Phrase = null;
+  readonly playedPhrase: Phrase = null;
+
+  constructor(readonly scene: StageScene, readonly nextScene: StageScene) {}
 
   static reducer(state: StageState, action: Action): StageState {
     switch (action.type) {
       case LessonActions.INIT:
       case LessonActions.RESET: {
-        return {
-          scene: 'Demo',
-          nextScene: 'Count',
-          round: 0,
-          active: true,
-          goalPhrase: null,
-          playedPhrase: null
-        };
+        return new StageState('Demo', 'Count');
+      }
+      case StageActions.LISTEN: {
+        if (state.scene === 'Demo') {
+          return new StageState('Loop', 'Loop');
+        } else {
+          return _.defaults({ active: true }, state);
+        }
       }
       case StageActions.NEXT: {
         let phraseBuilder = action.payload;
@@ -42,25 +42,18 @@ export class StageState {
         };
       }
       case StageActions.VICTORY: {
-        return {
-          scene: 'Victory',
-          nextScene: 'Goal',
-          round: 0,
-          active: true,
-          goalPhrase: null,
-          playedPhrase: null
-        };
+        return new StageState('Victory', 'Goal');
       }
       case StageActions.PLAY: {
         let [note, beat, tick] = action.payload;
-        return <StageState>_.defaults({
+        return _.defaults({
           playedPhrase: _.cloneDeep(state.playedPhrase).add(note, beat, tick)
         }, state);
       }
       case PlayerActions.SET:
       case PlayerActions.UNSET:
       case PlayerActions.PULSES: {
-        return <StageState>_.defaults({
+        return _.defaults({
           active: state.nextScene !== 'Goal'
         }, state);
       }

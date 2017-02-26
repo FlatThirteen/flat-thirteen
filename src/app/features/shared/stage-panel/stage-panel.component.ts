@@ -21,8 +21,9 @@ export class StagePanelComponent {
               private stage: StageService) {}
 
   onStart() {
-    this.transport.start();
+    this.lesson.reset();
     this.player.init();
+    this.transport.start();
   }
 
   onStop() {

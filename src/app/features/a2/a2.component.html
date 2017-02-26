@@ -2,7 +2,7 @@
 <div class="surface" *ngFor="let surface of lesson.surfaces; let i = index">
   <html-grid *ngIf="isGrid(surface)" [grid]="surface"></html-grid>
 </div>
-<div class="listen" [ngClass]="{goal: stage.isGoal}">
+<div class="listen" [ngClass]="listenClass$ | async" (click)="onListen()">
   <img src="/assets/listen-music-128.png" alt="Listen!"/>
 </div>
-<stage-panel></stage-panel>
+<stage-panel *ngIf="showStart"></stage-panel>

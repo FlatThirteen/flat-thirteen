@@ -16,6 +16,10 @@
   text-align: center;
   user-select: none;
 
+  &:not(:first-child) {
+    margin-top: 2vw;
+  }
+
   &:hover {
     color: #000;
   }

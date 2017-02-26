@@ -11,11 +11,13 @@ export class PlayerState {
   readonly selected?: string;
   readonly beat?: number;
   readonly cursor: number;
+  readonly touched: boolean;
 
   constructor(readonly data: _.Dictionary<Surface.Data[]>) {
     this.selected = null;
     this.beat = null;
     this.cursor = 0;
+    this.touched = false;
   }
 
   static reducer(state: PlayerState, action: Action): PlayerState {
@@ -61,6 +63,7 @@ export class PlayerState {
             beat: beat,
             cursor: cursor,
             data: surface.set(data, key, cursor),
+            touched: true
           }, state);
         } else if (surface instanceof A1Grid) {
           let [info, data] = surface.infoDataFor(key, state.data);
