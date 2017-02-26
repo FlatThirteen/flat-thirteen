@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 
 import { Grid } from "./grid/grid.model";
@@ -6,6 +7,8 @@ import { PlayerService } from "../../player/player.service";
 import { StageService } from "../../stage/stage.service";
 import { Surface } from "../../surface/surface.model";
 import { TransportService } from "../../core/transport.service";
+import { ActivatedRoute } from "@angular/router";
+import { Rhythm } from "../../core/rhythm.model";
 
 let requestAnimationFrameId: number;
 
@@ -19,15 +22,18 @@ let requestAnimationFrameId: number;
   styleUrls: ['a2.component.css']
 })
 export class A2Component implements OnInit, OnDestroy {
-
-  constructor(private transport: TransportService, private player: PlayerService,
-              private stage: StageService, private lesson: LessonService) {}
+  constructor(private route: ActivatedRoute, private transport: TransportService,
+              private player: PlayerService, private stage: StageService,
+              private lesson: LessonService) {}
 
   /**
    * Starts up the requestAnimationFrame loop so that the browser redraws the
    * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
+    this.lesson.rhythm = Rhythm.fromParam(this.route.snapshot.queryParams['p'] || '1111');
+    this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
+    this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
     let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
     this.lesson.init([grid], {stages: 5});
     this.player.init();

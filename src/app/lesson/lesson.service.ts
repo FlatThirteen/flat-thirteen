@@ -50,9 +50,9 @@ export class LessonService {
     this.end$.subscribe(end => { this.end = end });
     this.stages$.subscribe(stages => { this.stages = stages});
 
-    this.rhythm_ = new Rhythm([[1, 0], [0.9, 0], 0.9, [0.9, 0, 0, 0]]);
+    this.rhythm_ = new Rhythm([1, 1, 1, 1]);
     this.minNotes_ = 3;
-    this.maxNotes_ = 7;
+    this.maxNotes_ = 16;
   }
 
   init(surfaces: Surface[], end: EndCondition) {
@@ -65,6 +65,22 @@ export class LessonService {
 
   advance(rounds: number) {
     this.store.dispatch(this.lesson.advance(rounds));
+  }
+
+  set rhythm(rhythm: Rhythm) {
+    this.rhythm_ = rhythm;
+  }
+
+  set min(min: number) {
+    if (min) {
+      this.minNotes_ = _.clamp(min, 2, this.maxNotes_);
+    }
+  }
+
+  set max(max: number) {
+    if (max) {
+      this.maxNotes_ = _.clamp(max, this.minNotes_, 16);
+    }
   }
 
   get surfaces() {

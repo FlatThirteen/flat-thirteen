@@ -32,4 +32,15 @@ export class Rhythm {
     this.supportedPulses = _.sortBy(_.uniq(this.pulsesByBeat));
     this.length = _.flatten(timing).length;
   }
+
+  static fromParam(param: string): Rhythm {
+    let pulses = _.map(param, _.parseInt).map(_.partial(_.clamp, _, 1, 4));
+    return Rhythm.fromPulses(pulses);
+  }
+
+  static fromPulses(pulses: number[]): Rhythm {
+    let timing = _.map(pulses, (pulse) => _.times(pulse, _.constant(0)));
+    timing[0][0] = 1;
+    return new Rhythm(timing);
+  }
 }
