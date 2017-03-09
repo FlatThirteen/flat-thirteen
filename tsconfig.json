@@ -19,8 +19,8 @@
     "node_modules",
     "compiled",
     "e2e/**/*.ts",
-    "src/main.browser.universal.aot.ts",
-    "src/app/app.module.universal.node.ts"
+    "src/client/main/main-app.module.universal.node.ts",
+    "src/server/main/main.browser.universal.aot.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true,

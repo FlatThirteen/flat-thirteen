@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { createSelector } from 'reselect';
 
-import { AppState } from "../app.reducer";
+import { MainAppState } from "../../client/main/main-app.reducer";
 import { EndCondition } from "./lesson.reducer";
 import { LessonActions } from "./lesson.actions";
 import { MonophonicMonotonePhraseBuilder } from "../phrase/phrase.model";
@@ -15,7 +15,7 @@ import { Surface } from "../surface/surface.model";
 
 @Injectable()
 export class LessonService {
-  static getLesson = (state: AppState) => state.lesson;
+  static getLesson = (state: MainAppState) => state.lesson;
   static getSurfaces = createSelector(LessonService.getLesson, lesson => lesson && lesson.surfaces);
   static getEnd = createSelector(LessonService.getLesson, lesson => lesson && lesson.end);
   static getStages = createSelector(LessonService.getLesson, lesson => lesson && lesson.stages);
@@ -35,7 +35,7 @@ export class LessonService {
   private minNotes_: number;
   private maxNotes_: number;
 
-  constructor(private store: Store<AppState>, private lesson: LessonActions) {
+  constructor(private store: Store<MainAppState>, private lesson: LessonActions) {
     this.surfaces$ = this.store.select(LessonService.getSurfaces);
     this.end$ = this.store.select(LessonService.getEnd);
     this.stages$ = this.store.select(LessonService.getStages);

@@ -80,7 +80,6 @@ const DLL_VENDORS = [
   '@angular/core',
   '@angular/forms',
   '@angular/http',
-  '@angular/material',
   '@angular/platform-browser',
   '@angular/platform-browser-dynamic',
   '@angular/platform-server',
@@ -102,13 +101,13 @@ const COPY_FOLDERS = [
   { from: 'src/assets', to: 'assets' },
   { from: 'node_modules/hammerjs/hammer.min.js' },
   { from: 'node_modules/hammerjs/hammer.min.js.map' },
-  { from: 'src/app/main.css' },
-  { from: 'src/app/styles.css' },
+  { from: 'src/client/main/main.css' },
+  { from: 'src/client/styles.css' },
   ...MY_COPY_FOLDERS
 ];
 
 if (!DEV_SERVER) {
-  COPY_FOLDERS.unshift({ from: 'src/index.html' });
+  COPY_FOLDERS.unshift({ from: 'src/client/main/main.html', to: 'index.html' });
 } else {
   COPY_FOLDERS.push({ from: 'dll' });
 }
@@ -134,7 +133,7 @@ const commonConfig = function webpackConfig(): WebpackConfig {
         exclude: [/\.(spec|e2e|d)\.ts$/]
       },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.html/, loader: 'raw-loader', exclude: [root('src/index.html')] },
+      { test: /\.html/, loader: 'raw-loader', exclude: [root('src/client/main/main.html')] },
       { test: /\.css$/, loader: 'raw-loader' },
       ...MY_CLIENT_RULES
     ]
@@ -163,7 +162,7 @@ const commonConfig = function webpackConfig(): WebpackConfig {
         manifest: require(`./dll/vendor-manifest.json`)
       }),
       new HtmlWebpackPlugin({
-        template: 'src/index.html',
+        template: 'src/client/main/main.html',
         inject: false
       })
     );
@@ -219,7 +218,7 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
   if (DLL) {
     config.entry = {
-      app_assets: ['./src/main.browser'],
+      app_assets: ['./src/server/main/main.browser'],
       polyfill: [
         'sockjs-client',
         '@angularclass/hmr',
@@ -244,21 +243,21 @@ const clientConfig = function webpackConfig(): WebpackConfig {
     if (!UNIVERSAL) {
       if (AOT) {
         config.entry = {
-          main: './src/main.browser.aot'
+          main: './src/server/main/main.browser.aot'
         };
       } else {
         config.entry = {
-          main: './src/main.browser'
+          main: './src/server/main/main.browser'
         };
       }
     } else {
       if (AOT) {
         config.entry = {
-          main: './src/main.browser.universal.aot'
+          main: './src/server/main/main.browser.universal.aot'
         };
       } else {
         config.entry = {
-          main: './src/main.browser.universal'
+          main: './src/server/main/main.browser.universal'
         };
       }
     }
@@ -316,7 +315,7 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
 const serverConfig: WebpackConfig = {
   target: 'node',
-  entry: './src/server',
+  entry: './src/server/server',
   output: {
     filename: 'index.js',
     path: root('dist/server'),
@@ -324,30 +323,11 @@ const serverConfig: WebpackConfig = {
   },
   module: {
     rules: [
-      { test: /angular2-material/, loader: 'imports-loader?window=>global' },
       ...MY_SERVER_RULES
     ],
   },
   externals: includeClientPackages([
     // include these client packages so we can transform their source with webpack loaders
-    '@angular2-material/button',
-    '@angular2-material/card',
-    '@angular2-material/checkbox',
-    '@angular2-material/core',
-    '@angular2-material/grid',
-    '@angular2-material/icon',
-    '@angular2-material/input',
-    '@angular2-material/list',
-    '@angular2-material/menu',
-    '@angular2-material/progress',
-    '@angular2-material/progress',
-    '@angular2-material/radio',
-    '@angular2-material/sidenav',
-    '@angular2-material/slider',
-    '@angular2-material/slide',
-    '@angular2-material/tabs',
-    '@angular2-material/toolbar',
-    '@angular2-material/tooltip',
     ...MY_SERVER_INCLUDE_CLIENT_PACKAGES
   ]),
   node: {

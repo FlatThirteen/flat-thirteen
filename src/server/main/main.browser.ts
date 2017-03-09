@@ -1,11 +1,11 @@
-import './polyfills.browser';
-import './rxjs.imports';
+import '../polyfills.browser';
+import '../rxjs.imports';
 
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { bootloader } from '@angularclass/hmr';
-import { AppModule } from './app/app.module';
-import { decorateModuleRef } from './environment';
+import { AppModule } from '../../client/main/main-app.module';
+import { decorateModuleRef } from '../environment';
 
 if ('production' === ENV) {
   enableProdMode();

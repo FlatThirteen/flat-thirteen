@@ -15,9 +15,9 @@ import { enableProdMode } from '@angular/core';
 import { createEngine } from 'angular2-express-engine';
 
 // App
-import { AppModule } from './app/app.module.universal.node';
+import { AppModule } from '../client/main/main-app.module.universal.node';
 import { routes } from './server.routes';
-import { HOST, UNIVERSAL_PORT } from '../constants';
+import { HOST, UNIVERSAL_PORT } from '../../constants';
 
 // enable prod for faster renders
 enableProdMode();
@@ -39,7 +39,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets'), {maxAge: 30}))
 app.use(express.static(path.join(ROOT, 'dist/client'), {index: false}));
 
 function ngApp(req, res) {
-  res.render('index', {
+  res.render('main', {
     req,
     res,
     ngModule: AppModule,

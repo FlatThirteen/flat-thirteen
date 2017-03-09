@@ -4,11 +4,11 @@ import { storeFreeze } from 'ngrx-store-freeze';
 import { storeLogger } from 'ngrx-store-logger';
 import { routerReducer, RouterState } from '@ngrx/router-store';
 
-import { LessonState } from "./lesson/lesson.reducer";
-import { PlayerState } from "./player/player.reducer";
-import { StageState } from "./stage/stage.reducer";
+import { LessonState } from '../../app/lesson/lesson.reducer';
+import { PlayerState } from '../../app/player/player.reducer';
+import { StageState } from '../../app/stage/stage.reducer';
 
-export interface AppState {
+export interface MainAppState {
   lesson: LessonState;
   stage: StageState;
   player: PlayerState;

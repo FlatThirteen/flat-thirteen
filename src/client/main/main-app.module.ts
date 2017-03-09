@@ -14,18 +14,19 @@ import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularcla
 
 import { Store } from '@ngrx/store';
 
-import { APP_DECLARATIONS } from './app.declarations';
-import { APP_ENTRY_COMPONENTS } from './app.entry-components';
-import { APP_IMPORTS } from './app.imports';
-import { APP_PROVIDERS } from './app.providers';
+import { APP_DECLARATIONS } from './main-app.config';
+import { APP_ENTRY_COMPONENTS } from './main-app.config';
+import { APP_IMPORTS } from './main-app.config';
+import { APP_PROVIDERS } from './main-app.config';
 
-import { AppComponent } from './app.component';
+import { MainAppComponent } from './main-app.component';
 
-import { AppState } from './app.reducer';
+import { MainAppState } from './main-app.reducer';
 
 @NgModule({
+  bootstrap: [MainAppComponent],
   declarations: [
-    AppComponent,
+    MainAppComponent,
     APP_DECLARATIONS
   ],
   entryComponents: [APP_ENTRY_COMPONENTS],
@@ -34,13 +35,11 @@ import { AppState } from './app.reducer';
     BrowserModule,
     HttpModule,
   ],
-  bootstrap: [AppComponent],
   providers: [APP_PROVIDERS]
 })
 
 export class AppModule {
-  constructor(public appRef: ApplicationRef,
-    private _store: Store<AppState>) { }
+  constructor(public appRef: ApplicationRef, private _store: Store<MainAppState>) {}
 
   hmrOnInit(store) {
     if (!store || !store.rootState) return;
@@ -53,7 +52,9 @@ export class AppModule {
       });
     }
 
-    if ('restoreInputValues' in store) { store.restoreInputValues(); }
+    if ('restoreInputValues' in store) {
+      store.restoreInputValues();
+    }
     this.appRef.tick();
     Object.keys(store).forEach(prop => delete store[prop]);
   }

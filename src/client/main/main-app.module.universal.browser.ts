@@ -1,25 +1,24 @@
-/** 
- * This module is the entry for your App SERVER when in UNIVERSAL mode.
- * 
+/**
+ * This module is the entry for your App BROWSER when in UNIVERSAL mode.
+ *
  * Make sure to use the 3 constant APP_ imports so you don't have to keep
  * track of your root app dependencies here. Only import directly in this file if
- * there is something that is specific to the environment.  
+ * there is something that is specific to the environment.
  */
 
 import { NgModule } from '@angular/core';
-
 import { UniversalModule } from 'angular2-universal';
 
-import { APP_DECLARATIONS } from './app.declarations';
-import { APP_ENTRY_COMPONENTS } from './app.entry-components';
-import { APP_IMPORTS } from './app.imports';
-import { APP_PROVIDERS } from './app.providers';
+import { APP_DECLARATIONS } from './main-app.config';
+import { APP_ENTRY_COMPONENTS } from './main-app.config';
+import { APP_IMPORTS } from './main-app.config';
+import { APP_PROVIDERS } from './main-app.config';
 
-import { AppComponent } from './app.component';
+import { MainAppComponent } from './main-app.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    MainAppComponent,
     APP_DECLARATIONS
   ],
   entryComponents: [APP_ENTRY_COMPONENTS],
@@ -27,7 +26,7 @@ import { AppComponent } from './app.component';
     APP_IMPORTS,
     UniversalModule // NodeModule, NodeHttpModule, and NodeJsonpModule are included
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [MainAppComponent],
   providers: [APP_PROVIDERS]
 })
 export class AppModule { }

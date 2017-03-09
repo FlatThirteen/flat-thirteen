@@ -1,23 +1,22 @@
 import * as _ from 'lodash';
 
 import { Injectable } from '@angular/core';
-import { Store } from "@ngrx/store";
+import { Store } from '@ngrx/store';
 
 import { createSelector } from 'reselect';
-import 'rxjs/add/operator/distinctUntilChanged';
 
-import { AppState } from "../app.reducer";
-import { Grid as A1Grid } from "../features/a1/grid/grid.model";
-import { Grid } from "../features/a2/grid/grid.model";
-import { LessonService } from "../lesson/lesson.service";
-import { Observable } from "rxjs";
-import { PlayerActions } from "./player.actions";
-import { Surface } from "../surface/surface.model";
-import { Note } from "../sound/sound";
+import { MainAppState } from '../../client/main/main-app.reducer';
+import { Grid as A1Grid } from '../features/a1/grid/grid.model';
+import { Grid } from '../features/a2/grid/grid.model';
+import { LessonService } from '../lesson/lesson.service';
+import { Observable } from 'rxjs';
+import { PlayerActions } from './player.actions';
+import { Surface } from '../surface/surface.model';
+import { Note } from '../sound/sound';
 
 @Injectable()
 export class PlayerService {
-  static getPlayer = (state: AppState) => state.player;
+  static getPlayer = (state: MainAppState) => state.player;
   static getData = createSelector(PlayerService.getPlayer, player => player && player.data);
   static getSelected = createSelector(PlayerService.getPlayer, player => player && player.selected);
   static getBeat = createSelector(PlayerService.getPlayer, player => player && player.beat);
@@ -35,7 +34,7 @@ export class PlayerService {
   private _beat: number;
   private _cursor: number;
 
-  constructor(private store: Store<AppState>, private player: PlayerActions,
+  constructor(private store: Store<MainAppState>, private player: PlayerActions,
               private lesson: LessonService) {
     this.data$ = this.store.select(PlayerService.getData);
     this.selected$ = this.store.select(PlayerService.getSelected);
@@ -43,10 +42,10 @@ export class PlayerService {
     this.cursor$ = this.store.select(PlayerService.getCursor);
     this.touched$ = this.store.select(PlayerService.getTouched);
 
-    this.data$.subscribe(data => { this._data = data });
-    this.selected$.subscribe(selected => { this._selected = selected });
-    this.beat$.subscribe(beat => { this._beat = beat });
-    this.cursor$.subscribe(cursor => { this._cursor = cursor });
+    this.data$.subscribe(data => { this._data = data; });
+    this.selected$.subscribe(selected => { this._selected = selected; });
+    this.beat$.subscribe(beat => { this._beat = beat; });
+    this.cursor$.subscribe(cursor => { this._cursor = cursor; });
   }
 
   get selected() {

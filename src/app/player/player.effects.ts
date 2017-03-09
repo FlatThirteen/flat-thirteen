@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import 'rxjs/add/operator/ignoreElements';
 
-import { Grid as A1Grid } from "../features/a1/grid/grid.model";
-import { Grid } from "../features/a2/grid/grid.model";
-import { Note } from "../sound/sound";
-import { PlayerActions } from "./player.actions";
-import { SoundService } from "../sound/sound.service";
-import { StageService } from "../stage/stage.service";
-import { TransportService, ticks } from "../core/transport.service";
+import { Grid as A1Grid } from '../features/a1/grid/grid.model';
+import { Grid } from '../features/a2/grid/grid.model';
+import { Note } from '../sound/sound';
+import { PlayerActions } from './player.actions';
+import { SoundService } from '../sound/sound.service';
+import { StageService } from '../stage/stage.service';
+import { TransportService, ticks } from '../core/transport.service';
 
 @Injectable()
 export class PlayerEffects {
@@ -27,7 +26,8 @@ export class PlayerEffects {
     .do(([surface, key, cursor, pulses]) => {
       let sound, beat, tick;
       if (surface instanceof Grid) {
-        let [beat, pulse] = surface.beatPulseFor(cursor);
+        let pulse;
+        [beat, pulse] = surface.beatPulseFor(cursor);
         sound = surface.soundByKey[key];
         pulses = pulses[beat];
         tick = ticks(pulse, pulses);

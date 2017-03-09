@@ -22,12 +22,12 @@
     "e2e/**/*.ts",
     "src/**/*.e2e.ts",
     "src/**/*.spec.ts",
-    "src/server.ts",
-    "src/main.browser.aot.ts",
-    "src/main.browser.universal.ts",
-    "src/main.browser.universal.aot.ts",
-    "src/app/app.module.universal.browser.ts",
-    "src/app/app.module.universal.node.ts"
+    "src/client/main/main-app.module.universal.browser.ts",
+    "src/client/main/main-app.module.universal.node.ts",
+    "src/server/server.ts",
+    "src/server/main/main.browser.aot.ts",
+    "src/server/main/main.browser.universal.ts",
+    "src/server/main/main.browser.universal.aot.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true,

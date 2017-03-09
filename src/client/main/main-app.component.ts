@@ -1,26 +1,35 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { views } from './app-nav-views';
-import { MOBILE } from './services/constants';
-
 @Component({
-  selector: 'my-app',
-  styleUrls: ['./app.component.css'],
-  templateUrl: './app.component.html'
+  selector: 'main-app',
+  styleUrls: ['main-app.component.css'],
+  templateUrl: 'main-app.component.html'
 })
-export class AppComponent {
+export class MainAppComponent {
   showMonitor = (ENV === 'development' && !AOT &&
     ['monitor', 'both'].includes(STORE_DEV_TOOLS) // set in constants.js file in project root
   );
-  mobile = MOBILE;
-  sideNavMode = MOBILE ? 'over' : 'side';
-  views = views;
+  views = [
+    {
+      name: 'Home',
+      link: ['']
+    }, {
+      name: 'A2',
+      link: ['A2']
+    }, {
+      name: 'A1',
+      link: ['A1']
+    }, {
+      name: 'A1p',
+      link: ['A1/pixi']
+    }, {
+      name: 'About',
+      link: ['about']
+    }
+  ];
 
-  constructor(
-    public route: ActivatedRoute,
-    public router: Router
-  ) { }
+  constructor(public route: ActivatedRoute, public router: Router) {}
 
   activateEvent(event) {
     if (ENV === 'development') {

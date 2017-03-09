@@ -1,16 +1,17 @@
+import { HomeComponent } from './home/home.component';
+import { NotFound404Component } from './not-found404.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IdlePreload, IdlePreloadModule } from '@angularclass/idle-preload';
-import { MaterialModule } from '@angular/material';
 
 import { RouterStoreModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { useLogMonitor } from '@ngrx/store-log-monitor';
 
-import { routes } from './app.routing';
-import { rootReducer } from './app.reducer';
-import { StoreDevToolsModule } from './features/store-devtools.module';
+import { routes } from './main-app.routing';
+import { rootReducer } from './main-app.reducer';
+import { StoreDevToolsModule } from '../../app/features/store-devtools.module';
 
 const STORE_DEV_TOOLS_IMPORTS = [];
 if (ENV === 'development' && !AOT &&
@@ -25,7 +26,6 @@ if (ENV === 'development' && !AOT &&
 ]);
 
 export const APP_IMPORTS = [
-  MaterialModule.forRoot(),
   ReactiveFormsModule,
   IdlePreloadModule.forRoot(), // forRoot ensures the providers are only created once
   RouterModule.forRoot(routes, { useHash: false, preloadingStrategy: IdlePreload }),
@@ -35,3 +35,13 @@ export const APP_IMPORTS = [
   StoreDevToolsModule
 ];
 
+export const APP_DECLARATIONS = [
+  HomeComponent,
+  NotFound404Component
+];
+
+export const APP_ENTRY_COMPONENTS = [
+
+];
+
+export const APP_PROVIDERS = [];

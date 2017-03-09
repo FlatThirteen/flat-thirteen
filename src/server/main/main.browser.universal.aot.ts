@@ -1,9 +1,9 @@
-import './polyfills.browser.aot';
-import './rxjs.imports';
+import '../polyfills.browser.aot';
+import '../rxjs.imports';
 
 import { enableProdMode } from '@angular/core';
 import { platformUniversalDynamic } from 'angular2-universal';
-import { AppModuleNgFactory } from '../compiled/src/app/app.module.universal.browser.ngfactory';
+import { AppModuleNgFactory } from '../../../compiled/src/client/main/main-app.module.universal.browser.ngfactory';
 
 if ('production' === ENV) {
   enableProdMode();
