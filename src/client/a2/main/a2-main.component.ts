@@ -4,13 +4,13 @@ import { Observable } from "rxjs";
 import { combineLatest } from "rxjs/observable/combineLatest";
 
 import { Grid } from "./grid/grid.model";
-import { LessonService } from "../../lesson/lesson.service";
-import { PlayerService } from "../../player/player.service";
-import { StageService } from "../../stage/stage.service";
-import { Surface } from "../../surface/surface.model";
-import { TransportService } from "../../core/transport.service";
+import { LessonService } from "../../../app/lesson/lesson.service";
+import { PlayerService } from "../../../app/player/player.service";
+import { StageService } from "../../../app/stage/stage.service";
+import { Surface } from "../../../app/surface/surface.model";
+import { TransportService } from "../../../app/core/transport.service";
 import { ActivatedRoute } from "@angular/router";
-import { Rhythm } from "../../core/rhythm.model";
+import { Rhythm } from "../../../app/core/rhythm.model";
 
 let requestAnimationFrameId: number;
 
@@ -19,11 +19,11 @@ let requestAnimationFrameId: number;
  */
 @Component({
   moduleId: module.id,
-  selector: '.a2',
-  templateUrl: 'a2.component.html',
-  styleUrls: ['a2.component.css']
+  selector: 'a2-main',
+  templateUrl: 'a2-main.component.html',
+  styleUrls: ['a2-main.component.css']
 })
-export class A2Component implements OnInit, OnDestroy {
+export class A2MainComponent implements OnInit, OnDestroy {
   private listenClass$: Observable<string>;
   private showStart: boolean = false;
 
@@ -32,8 +32,8 @@ export class A2Component implements OnInit, OnDestroy {
               private lesson: LessonService) {
     this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
         ([scene, active, touched]) => scene === 'Goal' && active ? 'waiting' :
-            scene === 'Goal' && !touched ? 'just' :
-            (scene === 'Demo' || scene === 'Goal') && touched ? 'enable' : '');
+        scene === 'Goal' && !touched ? 'just' :
+        (scene === 'Demo' || scene === 'Goal') && touched ? 'enable' : '');
   }
 
   /**

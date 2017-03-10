@@ -4,6 +4,7 @@
  * If more constants should be added file an issue or create PR.
  */
 import 'ts-helpers';
+import * as path from 'path';
 
 import {
   DEV_PORT, PROD_PORT, UNIVERSAL_PORT, EXCLUDE_SOURCE_MAPS, HOST,
@@ -101,6 +102,7 @@ const COPY_FOLDERS = [
   { from: 'src/assets', to: 'assets' },
   { from: 'node_modules/hammerjs/hammer.min.js' },
   { from: 'node_modules/hammerjs/hammer.min.js.map' },
+  { from: 'src/client/a2/a2.css' },
   { from: 'src/client/main/main.css' },
   { from: 'src/client/styles.css' },
   ...MY_COPY_FOLDERS
@@ -108,6 +110,7 @@ const COPY_FOLDERS = [
 
 if (!DEV_SERVER) {
   COPY_FOLDERS.unshift({ from: 'src/client/main/main.html', to: 'index.html' });
+  COPY_FOLDERS.unshift({ from: 'src/client/a2/a2.html', to: 'a2.html' });
 } else {
   COPY_FOLDERS.push({ from: 'dll' });
 }
@@ -133,7 +136,9 @@ const commonConfig = function webpackConfig(): WebpackConfig {
         exclude: [/\.(spec|e2e|d)\.ts$/]
       },
       { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.html/, loader: 'raw-loader', exclude: [root('src/client/main/main.html')] },
+      { test: /\.html/,
+        loader: 'raw-loader',
+        exclude: [root('src/client/main/main.html'), root('src/client/a2/a2.html')] },
       { test: /\.css$/, loader: 'raw-loader' },
       ...MY_CLIENT_RULES
     ]
@@ -163,6 +168,11 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       }),
       new HtmlWebpackPlugin({
         template: 'src/client/main/main.html',
+        inject: false
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'A2/index.html',
+        template: 'src/client/a2/a2.html',
         inject: false
       })
     );
@@ -218,7 +228,10 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
   if (DLL) {
     config.entry = {
-      app_assets: ['./src/server/main/main.browser'],
+      app_assets: [
+        './src/server/a2/a2.browser',
+        './src/server/main/main.browser'
+      ],
       polyfill: [
         'sockjs-client',
         '@angularclass/hmr',
@@ -243,21 +256,25 @@ const clientConfig = function webpackConfig(): WebpackConfig {
     if (!UNIVERSAL) {
       if (AOT) {
         config.entry = {
-          main: './src/server/main/main.browser.aot'
+          main: './src/server/main/main.browser.aot',
+          a2: './src/server/a2/a2.browser.aot'
         };
       } else {
         config.entry = {
-          main: './src/server/main/main.browser'
+          main: './src/server/main/main.browser',
+          a2: './src/server/a2/a2.browser'
         };
       }
     } else {
       if (AOT) {
         config.entry = {
-          main: './src/server/main/main.browser.universal.aot'
+          main: './src/server/main/main.browser.universal.aot',
+          a2: './src/server/a2/a2.browser.universal.aot'
         };
       } else {
         config.entry = {
-          main: './src/server/main/main.browser.universal'
+          main: './src/server/main/main.browser.universal',
+          a2: './src/server/a2/a2.browser.universal'
         };
       }
     }
@@ -266,7 +283,7 @@ const clientConfig = function webpackConfig(): WebpackConfig {
   if (!DLL) {
     config.output = {
       path: root('dist/client'),
-      filename: 'index.js'
+      filename: '[name].js'
     };
   } else {
     config.output = {

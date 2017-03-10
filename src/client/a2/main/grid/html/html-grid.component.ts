@@ -5,9 +5,9 @@ import { Observable } from "rxjs";
 import { combineLatest } from "rxjs/observable/combineLatest";
 
 import { Grid } from "../grid.model";
-import { PlayerService } from "../../../../player/player.service";
-import { StageService } from "../../../../stage/stage.service";
-import { TransportService } from "../../../../core/transport.service";
+import { PlayerService } from "../../../../../app/player/player.service";
+import { StageService } from "../../../../../app/stage/stage.service";
+import { TransportService } from "../../../../../app/core/transport.service";
 
 /**
  * This class represents the HTML version of the Grid Component.

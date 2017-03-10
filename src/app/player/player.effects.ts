@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 
 import { Grid as A1Grid } from '../features/a1/grid/grid.model';
-import { Grid } from '../features/a2/grid/grid.model';
+import { Grid } from '../../client/a2/main/grid/grid.model';
 import { Note } from '../sound/sound';
 import { PlayerActions } from './player.actions';
 import { SoundService } from '../sound/sound.service';

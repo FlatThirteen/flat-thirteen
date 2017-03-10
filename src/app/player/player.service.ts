@@ -7,7 +7,7 @@ import { createSelector } from 'reselect';
 
 import { MainAppState } from '../../client/main/main-app.reducer';
 import { Grid as A1Grid } from '../features/a1/grid/grid.model';
-import { Grid } from '../features/a2/grid/grid.model';
+import { Grid } from '../../client/a2/main/grid/grid.model';
 import { LessonService } from '../lesson/lesson.service';
 import { Observable } from 'rxjs';
 import { PlayerActions } from './player.actions';

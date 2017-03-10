@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
-import { PlayerService } from "../../../../player/player.service";
-import { TransportService } from "../../../../core/transport.service";
+import { PlayerService } from "../../../../../app/player/player.service";
+import { TransportService } from "../../../../../app/core/transport.service";
 
 /**
  * The BeatComponent is used by html-grid to represent a single note box
