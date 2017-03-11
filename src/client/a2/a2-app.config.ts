@@ -1,25 +1,25 @@
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { IdlePreload, IdlePreloadModule } from '@angularclass/idle-preload';
 
 import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from "@ngrx/effects";
+import { EffectsModule } from '@ngrx/effects';
 
 import { routes } from './a2-app.routing';
-import { rootReducer } from './a2-app.reducer';
-import { GridModule } from "./main/grid/grid.module";
-import { StagePanelModule } from "../../app/features/shared/stage-panel/stage-panel.module";
+import { rootReducer } from '../common/app.reducer';
+import { GridModule } from './main/grid/grid.module';
+import { StagePanelModule } from '../component/stage-panel/stage-panel.module';
 
-import { A2MainComponent } from "./main/a2-main.component";
-import { LessonActions } from "../../app/lesson/lesson.actions";
-import { LessonService } from "../../app/lesson/lesson.service";
-import { PlayerActions } from "../../app/player/player.actions";
-import { PlayerEffects } from "../../app/player/player.effects";
-import { PlayerService } from "../../app/player/player.service";
-import { TransportService } from "../../app/core/transport.service";
-import { SoundService } from "../../app/sound/sound.service";
-import { StageActions } from "../../app/stage/stage.actions";
-import { StageService } from "../../app/stage/stage.service";
+import { A2MainComponent } from './main/a2-main.component';
+import { LessonActions } from '../common/lesson/lesson.actions';
+import { LessonService } from '../common/lesson/lesson.service';
+import { PlayerActions } from '../common/player/player.actions';
+import { PlayerEffects } from '../common/player/player.effects';
+import { PlayerService } from '../common/player/player.service';
+import { TransportService } from '../common/core/transport.service';
+import { SoundService } from '../common/sound/sound.service';
+import { StageActions } from '../common/stage/stage.actions';
+import { StageService } from '../common/stage/stage.service';
 
 export const APP_IMPORTS = [
   ReactiveFormsModule,

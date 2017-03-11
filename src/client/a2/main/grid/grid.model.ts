@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 
-import { Surface } from "../../../../app/surface/surface.model";
-import { SoundName, Note } from "../../../../app/sound/sound";
+import { Surface } from '../../../common/surface/surface.model';
+import { SoundName, Note } from '../../../common/sound/sound';
 
-import { ticksPerBeat } from "../../../../app/core/transport.service";
+import { ticksPerBeat } from '../../../common/core/transport.service';
 
 let nextId = 0;
 

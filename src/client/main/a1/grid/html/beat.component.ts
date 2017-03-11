@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import * as _ from 'lodash';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { PlayerService } from '../../../../common/player/player.service';
 import { TransportService } from '../../../../common/core/transport.service';
@@ -13,18 +14,25 @@ import { TransportService } from '../../../../common/core/transport.service';
   styleUrls: ['beat.component.css'],
 })
 export class BeatComponent {
-  @Input() private pulses: number[];
+  @Input() private pulses: number;
   @Input() private beat: number;
   @Input() private key: string;
 
   constructor(private transport: TransportService, private player: PlayerService) {}
 
-  noteClass() {
-    return noteTypes[this.pulses.length];
+  pulseCounts() {
+    return _.times(this.pulses);
   }
 
-  controlNoteClass(pulse: number) {
-    return this.noteClass() + (this.player.value(this.key, pulse) ? ' on' : '');
+  noteType() {
+    return noteTypes[this.pulses];
+  }
+
+  controlNoteClasses(pulse: number) {
+    return _.assign({
+      on: this.player.value(this.key, pulse),
+      cursor: this.player.cursor === pulse
+    }, _.fromPairs([[this.noteType(), true]]));
   }
 }
 

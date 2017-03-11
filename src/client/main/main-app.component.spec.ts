@@ -7,7 +7,7 @@ import { MainAppComponent } from './main-app.component';
 import { HomeComponent } from './home/home.component';
 import { NotFound404Component } from './not-found404.component';
 import { routes } from './main-app.routing';
-import { StoreDevToolsModule } from '../../app/features/store-devtools.module';
+import { StoreDevToolsModule } from '../component/store-devtools/store-devtools.module';
 
 describe('MainApp Component', () => {
   beforeEach(() => {
