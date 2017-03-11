@@ -1,5 +1,3 @@
-import { HomeComponent } from './home/home.component';
-import { NotFound404Component } from './not-found404.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IdlePreload, IdlePreloadModule } from '@angularclass/idle-preload';
@@ -12,6 +10,9 @@ import { useLogMonitor } from '@ngrx/store-log-monitor';
 import { routes } from './main-app.routing';
 import { rootReducer } from '../common/app.reducer';
 import { StoreDevToolsModule } from '../component/store-devtools/store-devtools.module';
+
+import { HomeComponent } from './home/home.component';
+import { NotFound404Component } from './not-found404.component';
 
 const STORE_DEV_TOOLS_IMPORTS = [];
 if (ENV === 'development' && !AOT &&
