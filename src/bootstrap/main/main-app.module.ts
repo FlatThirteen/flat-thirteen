@@ -12,19 +12,19 @@ import { HttpModule } from '@angular/http';
 
 import { Store } from '@ngrx/store';
 
-import { AppState } from '../common/app.reducer';
-import { HmrAppModule } from "../common/hmr-app.module";
+import { AppState } from '../../client/common/app.reducer';
+import { HmrAppModule } from '../hmr-app.module';
 
-import { A2AppComponent } from './a2-app.component';
-import { APP_DECLARATIONS } from './a2-app.config';
-import { APP_ENTRY_COMPONENTS } from './a2-app.config';
-import { APP_IMPORTS } from './a2-app.config';
-import { APP_PROVIDERS } from './a2-app.config';
+import { MainAppComponent } from '../../client/main/main-app.component';
+import { APP_DECLARATIONS } from '../../client/main/main-app.config';
+import { APP_ENTRY_COMPONENTS } from '../../client/main/main-app.config';
+import { APP_IMPORTS } from '../../client/main/main-app.config';
+import { APP_PROVIDERS } from '../../client/main/main-app.config';
 
 @NgModule({
-  bootstrap: [A2AppComponent],
+  bootstrap: [MainAppComponent],
   declarations: [
-    A2AppComponent,
+    MainAppComponent,
     APP_DECLARATIONS
   ],
   entryComponents: [APP_ENTRY_COMPONENTS],

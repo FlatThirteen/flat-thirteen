@@ -9,16 +9,16 @@
 import { NgModule } from '@angular/core';
 import { UniversalModule } from 'angular2-universal';
 
-import { APP_DECLARATIONS } from './a2-app.config';
-import { APP_ENTRY_COMPONENTS } from './a2-app.config';
-import { APP_IMPORTS } from './a2-app.config';
-import { APP_PROVIDERS } from './a2-app.config';
+import { APP_DECLARATIONS } from '../../client/main/main-app.config';
+import { APP_ENTRY_COMPONENTS } from '../../client/main/main-app.config';
+import { APP_IMPORTS } from '../../client/main/main-app.config';
+import { APP_PROVIDERS } from '../../client/main/main-app.config';
 
-import { A2AppComponent } from './a2-app.component';
+import { MainAppComponent } from '../../client/main/main-app.component';
 
 @NgModule({
   declarations: [
-    A2AppComponent,
+    MainAppComponent,
     APP_DECLARATIONS
   ],
   entryComponents: [APP_ENTRY_COMPONENTS],
@@ -26,7 +26,7 @@ import { A2AppComponent } from './a2-app.component';
     APP_IMPORTS,
     UniversalModule // NodeModule, NodeHttpModule, and NodeJsonpModule are included
   ],
-  bootstrap: [A2AppComponent],
+  bootstrap: [MainAppComponent],
   providers: [APP_PROVIDERS]
 })
 export class AppModule { }

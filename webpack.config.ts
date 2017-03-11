@@ -228,7 +228,7 @@ const clientConfig = function webpackConfig(): WebpackConfig {
   if (DLL) {
     config.entry = {
       app_assets: MY_ENTRY_PAGES.map((name) =>
-          `./src/server/${ name }/${ name }.browser`),
+          `./src/bootstrap/${ name }/${ name }.browser`),
       polyfill: [
         'sockjs-client',
         '@angularclass/hmr',
@@ -253,7 +253,7 @@ const clientConfig = function webpackConfig(): WebpackConfig {
     let universal = UNIVERSAL ? '.universal' : '';
     let aot = AOT ? '.aot' : '';
     config.entry = MY_ENTRY_PAGES.reduce((result, name) => {
-      result[name] = `./src/server/${ name }/${ name }.browser${ universal }${ aot }`;
+      result[name] = `./src/bootstrap/${ name }/${ name }.browser${ universal }${ aot }`;
       return result;
     }, {});
   }
@@ -310,7 +310,7 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
 const serverConfig: WebpackConfig = {
   target: 'node',
-  entry: './src/server/server',
+  entry: './src/bootstrap/server',
   output: {
     filename: 'index.js',
     path: root('dist/server'),

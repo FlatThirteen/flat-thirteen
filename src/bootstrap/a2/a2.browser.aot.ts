@@ -4,7 +4,7 @@ declare let ENV: string;
 
 import { enableProdMode } from '@angular/core';
 import { platformBrowser } from '@angular/platform-browser';
-import { AppModuleNgFactory } from '../../../compiled/src/client/a2/a2-app.module.ngfactory';
+import { AppModuleNgFactory } from '../../../compiled/src/bootstrap/a2/a2-app.module.ngfactory';
 
 if ('production' === ENV) {
   enableProdMode();

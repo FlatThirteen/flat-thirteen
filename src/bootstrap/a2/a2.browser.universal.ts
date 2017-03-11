@@ -3,7 +3,7 @@ import '../rxjs.imports';
 
 import { enableProdMode } from '@angular/core';
 import { platformUniversalDynamic } from 'angular2-universal';
-import { AppModule } from '../../client/a2/a2-app.module.universal.browser';
+import { AppModule } from './a2-app.module.universal.browser';
 
 if ('production' === ENV) {
   enableProdMode();

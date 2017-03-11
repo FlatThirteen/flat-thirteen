@@ -5,7 +5,7 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { bootloader } from '@angularclass/hmr';
 
-import { AppModule } from '../../client/main/main-app.module';
+import { AppModule } from './a2-app.module';
 import { decorateModuleRef } from '../environment';
 
 if ('production' === ENV) {

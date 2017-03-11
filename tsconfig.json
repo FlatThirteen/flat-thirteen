@@ -19,10 +19,8 @@
     "node_modules",
     "compiled",
     "e2e/**/*.ts",
-    "src/client/a2/a2-app.module.universal.node.ts",
-    "src/client/main/main-app.module.universal.node.ts",
-    "src/server/a2/a2.browser.universal.aot.ts",
-    "src/server/main/main.browser.universal.aot.ts"
+    "src/bootstrap/**/*.module.universal.node.ts",
+    "src/bootstrap/**/*.browser.universal.aot.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true,

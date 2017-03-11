@@ -3,7 +3,7 @@ import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularcla
 
 import { Store } from '@ngrx/store';
 
-import { AppState } from './app.reducer';
+import { AppState } from '../client/common/app.reducer';
 
 
 export abstract class HmrAppModule {

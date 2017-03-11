@@ -1,18 +1,16 @@
-import '../polyfills.browser.aot';
+import '../polyfills.browser';
 import '../rxjs.imports';
 
 import { enableProdMode } from '@angular/core';
 import { platformUniversalDynamic } from 'angular2-universal';
-import { AppModuleNgFactory } from '../../../compiled/src/client/a2/a2-app.module.universal.browser.ngfactory';
+import { AppModule } from './main-app.module.universal.browser';
 
 if ('production' === ENV) {
   enableProdMode();
 }
 
-export const platform = platformUniversalDynamic();
-
 export function main() {
-  return platform.bootstrapModuleFactory(AppModuleNgFactory)
+  return platformUniversalDynamic().bootstrapModule(AppModule)
     .catch(err => console.log(err));
 }
 

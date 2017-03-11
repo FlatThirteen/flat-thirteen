@@ -15,7 +15,7 @@ import { enableProdMode } from '@angular/core';
 import { createEngine } from 'angular2-express-engine';
 
 // App
-import { AppModule } from '../client/main/main-app.module.universal.node';
+import { AppModule } from './main/main-app.module.universal.node';
 import { routes } from './server.routes';
 import { HOST, UNIVERSAL_PORT } from '../../constants';
 
