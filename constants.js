@@ -50,6 +50,10 @@ exports.EXCLUDE_SOURCE_MAPS = [
   root('node_modules/rxjs')
 ];
 
+exports.MY_ENTRY_PAGES = [
+  'main', 'a2'
+];
+
 exports.MY_COPY_FOLDERS = [
   // use this for folders you want to be copied in to Client dist
   // src/assets and index.html are already copied by default.

@@ -4,12 +4,11 @@
  * If more constants should be added file an issue or create PR.
  */
 import 'ts-helpers';
-import * as path from 'path';
 
 import {
   DEV_PORT, PROD_PORT, UNIVERSAL_PORT, EXCLUDE_SOURCE_MAPS, HOST,
   USE_DEV_SERVER_PROXY, DEV_SERVER_PROXY_CONFIG, DEV_SERVER_WATCH_OPTIONS,
-  DEV_SOURCE_MAPS, PROD_SOURCE_MAPS, STORE_DEV_TOOLS,
+  DEV_SOURCE_MAPS, PROD_SOURCE_MAPS, STORE_DEV_TOOLS, MY_ENTRY_PAGES,
   MY_COPY_FOLDERS, MY_POLYFILL_DLLS, MY_VENDOR_DLLS, MY_CLIENT_PLUGINS, MY_CLIENT_PRODUCTION_PLUGINS,
   MY_CLIENT_RULES, MY_SERVER_RULES, MY_SERVER_INCLUDE_CLIENT_PACKAGES
 } from './constants';
@@ -138,7 +137,7 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.html/,
         loader: 'raw-loader',
-        exclude: [root('src/client/main/main.html'), root('src/client/a2/a2.html')] },
+        exclude: MY_ENTRY_PAGES.map((name) => root(`src/client/${ name }/${ name }.html`)) },
       { test: /\.css$/, loader: 'raw-loader' },
       ...MY_CLIENT_RULES
     ]
@@ -228,10 +227,8 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
   if (DLL) {
     config.entry = {
-      app_assets: [
-        './src/server/a2/a2.browser',
-        './src/server/main/main.browser'
-      ],
+      app_assets: MY_ENTRY_PAGES.map((name) =>
+          `./src/server/${ name }/${ name }.browser`),
       polyfill: [
         'sockjs-client',
         '@angularclass/hmr',
@@ -253,31 +250,12 @@ const clientConfig = function webpackConfig(): WebpackConfig {
       vendor: [...DLL_VENDORS]
     };
   } else {
-    if (!UNIVERSAL) {
-      if (AOT) {
-        config.entry = {
-          main: './src/server/main/main.browser.aot',
-          a2: './src/server/a2/a2.browser.aot'
-        };
-      } else {
-        config.entry = {
-          main: './src/server/main/main.browser',
-          a2: './src/server/a2/a2.browser'
-        };
-      }
-    } else {
-      if (AOT) {
-        config.entry = {
-          main: './src/server/main/main.browser.universal.aot',
-          a2: './src/server/a2/a2.browser.universal.aot'
-        };
-      } else {
-        config.entry = {
-          main: './src/server/main/main.browser.universal',
-          a2: './src/server/a2/a2.browser.universal'
-        };
-      }
-    }
+    let universal = UNIVERSAL ? '.universal' : '';
+    let aot = AOT ? '.aot' : '';
+    config.entry = MY_ENTRY_PAGES.reduce((result, name) => {
+      result[name] = `./src/server/${ name }/${ name }.browser${ universal }${ aot }`;
+      return result;
+    }, {});
   }
 
   if (!DLL) {
