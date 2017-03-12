@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'main-app',
-  styleUrls: ['main-app.component.css'],
+  styleUrls: ['main-app.component.styl'],
   templateUrl: 'main-app.component.pug'
 })
 export class MainAppComponent {

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'home-page',
   templateUrl: 'home.component.pug',
-  styleUrls: ['home.component.css'],
+  styleUrls: ['home.component.styl'],
 })
 
 export class HomeComponent {

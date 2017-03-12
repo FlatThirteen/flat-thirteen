@@ -21,7 +21,7 @@ let requestAnimationFrameId: number;
   moduleId: module.id,
   selector: 'a2-main',
   templateUrl: 'a2-main.component.pug',
-  styleUrls: ['a2-main.component.css']
+  styleUrls: ['a2-main.component.styl']
 })
 export class A2MainComponent implements OnInit, OnDestroy {
   private listenClass$: Observable<string>;

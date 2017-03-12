@@ -10,7 +10,7 @@ import { TransportService } from '../../../../common/core/transport.service';
 @Component({
   selector: '.beat',
   templateUrl: 'beat.component.pug',
-  styleUrls: ['beat.component.css'],
+  styleUrls: ['beat.component.styl'],
 })
 export class BeatComponent {
   @Input() private pulses: number[];

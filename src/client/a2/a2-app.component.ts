@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   moduleId: module.id,
   selector: 'a2-app',
   templateUrl: 'a2-app.component.pug',
-  styleUrls: ['a2-app.component.css']
+  styleUrls: ['a2-app.component.styl']
 })
 export class A2AppComponent {
   constructor() {}

@@ -1,12 +1,11 @@
-.grid {
+.grid
   border: solid 1px #888;
   margin: 5vw auto 1vw;
   position: relative;
   user-select: none;
   width: 80vw;
-}
 
-.overlay {
+.overlay
   align-items: center;
   bottom: 0;
   justify-content: center;
@@ -15,9 +14,8 @@
   right: 0;
   top: 0;
   display: flex;
-}
 
-.counter {
+.counter
   background-color: #FFF;
   border-radius: 50%;
   font-size: 30vw;
@@ -29,27 +27,24 @@
   text-align: center;
   width: 30vw;
 
-  &.active {
+  &.active
     animation: active;
     animation-duration: 250ms;
-  }
-}
 
-.position {
+.position
   background-color: rgba(255,255,255,0.5);
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: 1.5vw;
-}
 
-.controls {
+.controls
   position: absolute;
   top: -4.2vw;
   width: 100%;
 
-  .pulses {
+  .pulses
     align-items: baseline;
     display: inline-flex;
     flex: 1;
@@ -60,7 +55,7 @@
     transform: translateY(40px) scale(.1);
     width: 25%;
 
-    .hint {
+    .hint
       background-color: #008FFF;
       border-radius: 40% 40% 0 0;
       cursor: pointer;
@@ -72,43 +67,33 @@
       transition: opacity 150ms ease-in-out;
       width: 20%;
 
-      &.set, &.set:hover {
+      &.set, &.set:hover
         opacity: .8;
-      }
 
-      &:hover {
+      &:hover
         opacity: 1;
-      }
-    }
-  }
-}
 
-:not(.goal) .controls .pulses.selected {
+:not(.goal) .controls .pulses.selected
   opacity: 1;
   transition-delay: 350ms;
   transform: translateY(0) scale(1);
-}
 
-.strip {
+.strip
   background-color: #007FFF;
   display: flex;
   margin: 0;
   width: 100%;
-}
 
-.goal .strip {
+.goal .strip
   background-color: #777;
-}
 
-.beat {
+.beat
   transition: background-color 150ms ease-in-out;
-}
 
-.goal .beat {
+.goal .beat
   background-color: #888;
-}
 
-.beat:not(:last-child):after {
+.beat:not(:last-child):after
   background-color: #FFF;
   content: '';
   height: 8vw;
@@ -116,4 +101,3 @@
   margin: 4px;
   position: absolute;
   width: 2px;
-}

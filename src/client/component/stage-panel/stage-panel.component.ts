@@ -11,7 +11,7 @@ import { TransportService } from '../../common/core/transport.service';
 @Component({
   selector: 'stage-panel',
   templateUrl: 'stage-panel.component.pug',
-  styleUrls: ['stage-panel.component.css'],
+  styleUrls: ['stage-panel.component.styl'],
 })
 export class StagePanelComponent {
 

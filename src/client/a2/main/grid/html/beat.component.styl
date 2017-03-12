@@ -1,4 +1,4 @@
-:host {
+:host
   align-items: center;
   background-color: #008FFF;
   display: inline-flex;
@@ -8,26 +8,23 @@
   position: relative;
   text-align: center;
   width: 25%;
-}
 
-.active {
+.active
   background-color: #009FFF;
 
-  :host-context(.goal) & {
+  :host-context(.goal) &
     background-color: #999;
-  }
-}
 
-.pulse {
-  &:not(:last-child) {
+.pulse
+  &:not(:last-child)
     border-right: dotted 3px #007FFF;
-  }
+
   display: inline-flex;
   flex: 1;
   height: 100%;
   position: relative;
 
-  :host-context(.strip:last-child) &.cursor:after {
+  :host-context(.strip:last-child) &.cursor:after
     content: '';
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -38,49 +35,41 @@
     position: absolute;
     transform: translate(-10px, 5px);
     width: 0;
-  }
-}
 
-.quarter {
+.quarter
   font-size: 10vw;
   line-height: 15vw;
   height: 16vw;
   width: 16vw;
-}
 
-.eighth {
+.eighth
   font-size: 6vw;
   line-height: 8vw;
   height: 9vw;
   width: 9vw;
-}
 
-.triplet {
+.triplet
   font-size: 4vw;
   line-height: 6vw;
   height: 6vw;
   width: 6vw;
-}
 
-.sixteenth {
+.sixteenth
   font-size: 2vw;
   line-height: 4vw;
   height: 4vw;
   width: 4vw;
-}
 
-.note {
+.note
   background-color: #000;
   border-radius: 50%;
   cursor: pointer;
   margin: auto;
 
-  :host-context(.goal) & {
+  :host-context(.goal) &
     opacity: 0.3;
-  }
-}
 
-.controls {
+.controls
   align-items: center;
   display: inline-flex;
   height: 100%;
@@ -90,41 +79,35 @@
   top: 0;
   width: 100%;
 
-  .note {
+  .note
     background-color: rgba(0, 0, 0, 0.1);
     color: rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
     transition: all 150ms ease-in-out;
 
-    :not(.active) & {
+    :not(.active) &
       transition: none;
-    }
-  }
-}
 
-.cursor .controls {
-  :host-context(.selected) & {
+.cursor .controls
+  :host-context(.selected) &
     opacity: 1;
-  }
 
-  .note {
+  .note
     background-color: rgba(0, 0, 0, 0.1);
     position: relative;
 
-    &:hover {
+    &:hover
       background-color: rgba(0, 0, 0, 0.3);
-    }
 
-    &.on {
+    &.on
       background-color: rgba(0, 0, 0, 1);
       color: rgba(255, 255, 255, 0.5);
       transform: scale(1);
 
-      &:hover {
+      &:hover
         background-color: rgba(0, 0, 0, 0.7);
-      }
 
-      &:after {
+      &:after
         content: '';
         background-color: rgba(255, 255, 255, 0.5);
         font-size: 10px;
@@ -133,61 +116,44 @@
         position: absolute;
         text-align: center;
         width: 50%;
-      }
-    }
-  }
 
-  .quarter.on {
-    &:after {
+  .quarter.on
+    &:after
       bottom: 19%;
       height: 10px;
-    }
 
-    &:hover:after {
+    &:hover:after
       content: 'space';
       color: #000;
-    }
-  }
 
-  .eighth.on:after {
+  .eighth.on:after
     bottom: 18%;
     height: 5px;
-  }
 
-  .triplet.on:after {
+  .triplet.on:after
     bottom: 13%;
     height: 4px;
-  }
 
-  .sixteenth.on:after {
+  .sixteenth.on:after
     bottom: 13%;
     height: 3px;
-  }
-}
 
-:host-context(.demo) .actual.note, :host-context(.play) .active .actual.note {
+:host-context(.demo) .actual.note, :host-context(.play) .active .actual.note
   animation: active;
   animation-duration: 250ms;
 
-  &.on {
+  &.on
     background-color: rgba(0, 0, 0, 1);
-  }
-}
 
-@keyframes active {
-  0% {
+@keyframes active
+  0%
     transform: scale(1);
-  }
 
-  40% {
+  40%
     transform: scale(1.1);
-  }
 
-  70% {
+  70%
     transform: scale(0.9);
-  }
 
-  100% {
+  100%
     transform: scale(1);
-  }
-}

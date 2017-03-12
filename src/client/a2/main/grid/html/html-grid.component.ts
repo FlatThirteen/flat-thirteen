@@ -15,7 +15,7 @@ import { TransportService } from '../../../../common/core/transport.service';
 @Component({
   selector: 'html-grid',
   templateUrl: 'html-grid.component.pug',
-  styleUrls: ['html-grid.component.css'],
+  styleUrls: ['html-grid.component.styl'],
 })
 export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
