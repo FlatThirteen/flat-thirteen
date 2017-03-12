@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 @Component({
   moduleId: module.id,
   selector: 'a2-app',
-  templateUrl: 'a2-app.component.html',
+  templateUrl: 'a2-app.component.pug',
   styleUrls: ['a2-app.component.css']
 })
 export class A2AppComponent {

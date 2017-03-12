@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'main-app',
   styleUrls: ['main-app.component.css'],
-  templateUrl: 'main-app.component.html'
+  templateUrl: 'main-app.component.pug'
 })
 export class MainAppComponent {
   showMonitor = (ENV === 'development' && !AOT &&

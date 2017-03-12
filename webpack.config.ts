@@ -134,6 +134,7 @@ const commonConfig = function webpackConfig(): WebpackConfig {
         ],
         exclude: [/\.(spec|e2e|d)\.ts$/]
       },
+      { test: /\.pug$/, loaders: ['raw-loader', 'pug-html-loader'] },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.html/,
         loader: 'raw-loader',

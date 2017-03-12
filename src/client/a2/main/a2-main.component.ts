@@ -20,7 +20,7 @@ let requestAnimationFrameId: number;
 @Component({
   moduleId: module.id,
   selector: 'a2-main',
-  templateUrl: 'a2-main.component.html',
+  templateUrl: 'a2-main.component.pug',
   styleUrls: ['a2-main.component.css']
 })
 export class A2MainComponent implements OnInit, OnDestroy {

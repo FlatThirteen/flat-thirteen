@@ -10,7 +10,7 @@ import { TransportService } from '../../common/core/transport.service';
  */
 @Component({
   selector: 'stage-panel',
-  templateUrl: 'stage-panel.component.html',
+  templateUrl: 'stage-panel.component.pug',
   styleUrls: ['stage-panel.component.css'],
 })
 export class StagePanelComponent {
@@ -29,7 +29,6 @@ export class StagePanelComponent {
   onStop() {
     this.transport.stop();
     this.lesson.reset();
-
   }
 
 }

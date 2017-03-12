@@ -9,7 +9,7 @@ import { TransportService } from '../../../../common/core/transport.service';
  */
 @Component({
   selector: '.beat',
-  templateUrl: 'beat.component.html',
+  templateUrl: 'beat.component.pug',
   styleUrls: ['beat.component.css'],
 })
 export class BeatComponent {
