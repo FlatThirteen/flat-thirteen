@@ -1,0 +1,6 @@
+.container
+  .start(*ngIf="transport.paused || stage.isLoop", (click)="onStart()") Enter
+  .stop(*ngIf="!transport.paused", (click)="onStop()") Stop
+  .info(*ngIf="!transport.paused")
+    | Round: {{stage.round}}
+    | GoalNotes: {{stage.goalNotes}}

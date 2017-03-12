@@ -1,0 +1,11 @@
+.grid([ngClass]="gridClass$ | async", (mouseleave)="player.unselect()")
+  .strip-container
+    .strip(*ngFor="let key of grid.keys")
+      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
+           [key]="key", [beat]="beat", [pulses]="pulsesFor(beat)")
+  .overlay(*ngIf="stage.showCount")
+    .counter([class.active]="transport.active()", *ngIf="!transport.paused")
+      | {{transport.count()}}
+  .position(*ngIf="stage.showPosition",
+      [style.left]="(transport.progress() * 100) + '%'")
+  .cursor

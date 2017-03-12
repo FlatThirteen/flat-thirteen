@@ -17,14 +17,15 @@
   "exclude": [
     "node_modules",
     "compiled",
+    "e2e/**/*.ts",
     "src/**/*.e2e.ts",
     "src/**/*.spec.ts",
-    "src/server.ts",
-    "src/main.browser.ts",
-    "src/main.browser.aot.ts",
-    "src/main.browser.universal.aot.ts",
-    "src/app/app.module.ts",
-    "src/app/app.module.universal.node.ts"
+    "src/bootstrap/**/*.module.ts",
+    "src/bootstrap/**/*.module.universal.node.ts",
+    "src/bootstrap/**/*.browser.ts",
+    "src/bootstrap/**/*.browser.aot.ts",
+    "src/bootstrap/**/*.browser.universal.aot.ts",
+    "src/bootstrap/server.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true,

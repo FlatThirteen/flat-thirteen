@@ -10,6 +10,11 @@ Use `yarn run build` for production build.
 
 Use `yarn run server:prod` for production server and production watch. Default production port is `8088`.
 
+The scripts are set to compile css next to scss because ngc compiler does not support Sass.
+To compile scss, use `yarn run sass`, but many of the scripts will either build or watch scss files.
+
+### Not working yet
+
 Use `yarn run universal` to run production build in Universal. To run and build universal in AOT mode, use
 `yarn run universal:aot`. Default universal port is `8000`.
 
@@ -20,10 +25,7 @@ Then you can use `yarn run prodserver` to see to serve files.
 Do not use build:aot directly unless you have already compiled.
 Use `yarn run compile` instead, it compiles and builds:aot
 
-The scripts are set to compile css next to scss because ngc compiler does not support Sass.
-To compile scss, use `yarn run sass`, but many of the scripts will either build or watch scss files.
-
-### Testing
+#### Testing
 
 For unit tests, use `yarn run test` for continuous testing in watch mode and use
 `yarn run test:once` for single test. To view code coverage after running test, open `coverage/html/index.html` in your browser.

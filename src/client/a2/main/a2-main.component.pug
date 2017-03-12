@@ -1,0 +1,6 @@
+header
+.surface(*ngFor="let surface of lesson.surfaces; let i = index")
+  html-grid(*ngIf="isGrid(surface)", [grid]="surface")
+.listen([ngClass]="listenClass$ | async", (click)="onListen()")
+  img(src="/assets/listen-music-128.png", alt="Listen!")
+stage-panel(*ngIf="showStart")

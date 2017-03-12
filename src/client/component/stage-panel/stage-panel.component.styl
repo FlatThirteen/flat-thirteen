@@ -1,0 +1,31 @@
+.container
+  background-color: #EEE;
+  margin: auto;
+  padding: 2vw;
+  position: relative;
+  width: 80vw;
+  text-align: center;
+
+.start, .stop
+  background-color: rgba(255,255,255,0.9);
+  border: solid 1px #000;
+  color: #888;
+  cursor: pointer;
+  padding: 1vw 4vw;
+  text-align: center;
+  user-select: none;
+
+  &:not(:first-child)
+    margin-top: 2vw;
+
+  &:hover
+    color: #000;
+
+.start
+  font-size: 10vw;
+
+.stop
+  font-size: 2vw;
+
+.info
+  text-align: center;

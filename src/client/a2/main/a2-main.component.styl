@@ -1,0 +1,44 @@
+.surface
+  margin: 1vw 0;
+
+.listen
+  border: solid 5px rgba(0, 0, 0, 0.9);
+  border-radius: 50%;
+  position: absolute;
+  height: 4vw;
+  left: 50vw;
+  margin-left: -3px;
+  opacity: 0;
+  padding: 2vw;
+  transform: translate(-4vw, -26vw) scale(0, 0);
+  transition: all 150ms ease-in-out;
+  user-select: none;
+  width: 4vw;
+
+  &.waiting
+    background-color: #008FFF;
+    transform: translate(-4vw, -26vw) scale(0.5, 0.5);
+    opacity: 0.3;
+
+  &.enable
+    background-color: #008FFF;
+    cursor: pointer;
+    opacity: 0.3;
+    transform: translate(-4vw, -26vw) scale(1, 1);
+
+    &:hover
+      opacity: 1;
+
+  &.just
+    background-color: #FFFFFF;
+    cursor: pointer;
+    opacity: 0.7;
+    transform: translate(-4vw, -26vw) scale(1, 1);
+
+    &:hover
+      background-color: #008FFF;
+      opacity: 1;
+
+  img
+    height: 100%;
+    width: 100%;

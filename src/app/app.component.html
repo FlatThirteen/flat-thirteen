@@ -1,9 +1,0 @@
-<header>
-  <h1>Flat Thirteen, Inc.</h1>
-  <div>Teaching music through gaming</div>
-</header>
-<div class="menu">
-  <a *ngFor="let view of views" [routerLink]="view.link" routerLinkActive="active-link">{{view.name}}</a>
-</div>
-<router-outlet (activate)="activateEvent($event)" (deactivate)="deactivateEvent($event)"></router-outlet>
-<my-store-devtools *ngIf="showMonitor"></my-store-devtools>

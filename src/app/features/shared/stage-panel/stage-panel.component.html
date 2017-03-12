@@ -1,8 +1,0 @@
-<div class="container">
-  <div *ngIf="transport.paused || stage.isLoop" (click)="onStart()" class="start">Enter</div>
-  <div *ngIf="!transport.paused" (click)="onStop()" class="stop">Stop</div>
-  <div class="info" *ngIf="!transport.paused">
-    Round: {{stage.round}}
-    GoalNotes: {{stage.goalNotes}}
-  </div>
-</div>
