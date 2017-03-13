@@ -109,7 +109,7 @@ const COPY_FOLDERS = [
 
 if (!DEV_SERVER) {
   COPY_FOLDERS.unshift({ from: 'src/client/main/main.html', to: 'index.html' });
-  COPY_FOLDERS.unshift({ from: 'src/client/a2/a2.html', to: 'a2.html' });
+  COPY_FOLDERS.unshift({ from: 'src/client/a2/a2.html', to: 'A2/index.html' });
 } else {
   COPY_FOLDERS.push({ from: 'dll' });
 }
