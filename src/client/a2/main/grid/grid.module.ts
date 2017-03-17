@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { BeatComponent } from "./html/beat.component";
 import { HtmlGridComponent } from './html/html-grid.component';
 
 
@@ -10,7 +9,6 @@ import { HtmlGridComponent } from './html/html-grid.component';
     CommonModule
   ],
   declarations: [
-    BeatComponent,
     HtmlGridComponent
   ],
   exports: [

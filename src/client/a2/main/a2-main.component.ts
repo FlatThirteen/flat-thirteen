@@ -24,12 +24,12 @@ let requestAnimationFrameId: number;
   styleUrls: ['a2-main.component.styl']
 })
 export class A2MainComponent implements OnInit, OnDestroy {
-  private listenClass$: Observable<string>;
-  private showStart: boolean = false;
+  public listenClass$: Observable<string>;
+  public showStart: boolean = false;
 
-  constructor(private route: ActivatedRoute, private transport: TransportService,
-              private player: PlayerService, private stage: StageService,
-              private lesson: LessonService) {
+  constructor(public route: ActivatedRoute, public transport: TransportService,
+              public player: PlayerService, public stage: StageService,
+              public lesson: LessonService) {
     this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
         ([scene, active, touched]) => scene === 'Goal' && active ? 'waiting' :
         scene === 'Goal' && !touched ? 'just' :
@@ -105,8 +105,9 @@ export class A2MainComponent implements OnInit, OnDestroy {
     } else if (event.key === 'ArrowRight') { // Right: Select next
       this.player.select(this.player.selected, this.player.cursor + 1);
     } else { // Key: Set
-      this.player.set(event.key, this.player.cursor);
-      this.player.select(this.player.selected, this.player.cursor + 1);
+      if (this.player.set(event.key, this.player.cursor)) {
+        this.player.select(this.player.selected, this.player.cursor + 1);
+      }
     }
     return false;
   }
@@ -116,6 +117,17 @@ export class A2MainComponent implements OnInit, OnDestroy {
       this.transport.start();
     }
     this.stage.listen();
+  }
+
+  onStart() {
+    this.lesson.reset();
+    this.player.init();
+    this.transport.start();
+  }
+
+  onStop() {
+    this.transport.stop();
+    this.lesson.reset();
   }
 
   isGrid(surface: Surface) {

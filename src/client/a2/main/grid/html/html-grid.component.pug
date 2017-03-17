@@ -1,11 +1,28 @@
 .grid([ngClass]="gridClass$ | async", (mouseleave)="player.unselect()")
+  .back-fx.overlay
   .strip-container
     .strip(*ngFor="let key of grid.keys")
-      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
-           [key]="key", [beat]="beat", [pulses]="pulsesFor(beat)")
-  .overlay(*ngIf="stage.showCount")
-    .counter([class.active]="transport.active()", *ngIf="!transport.paused")
-      | {{transport.count()}}
+      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
+        .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
+            [ngClass]="pulseClass(beat, pulse, pulses, pulseIndex)")
+          .actual.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
+  .top-fx.overlay
   .position(*ngIf="stage.showPosition",
       [style.left]="(transport.progress() * 100) + '%'")
-  .cursor
+  .overlay
+    .strip(*ngFor="let key of grid.keys")
+      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
+        .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
+            [ngClass]="pulseClass(beat, pulse, pulses, pulseIndex)",
+            (mouseenter)="player.select(key, pulseIndex)")
+          .controls
+            .note([ngClass]="controlNoteClass(key, pulseIndex, pulses)",
+                (click)="player.toggle(key, pulseIndex)")
+              | {{player.cursor === pulseIndex ? key : ''}}
+  .faces
+    .face(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
+        [ngClass]="{active: transport.active(beat), cursor: player.beat === beat}")
+      .eyes([ngClass]="{left: player.beat + 1 === beat, right: player.beat - 1 === beat}")
+  .counter-container.overlay(*ngIf="stage.showCount")
+    .counter([class.active]="transport.active()", *ngIf="!transport.paused")
+      | {{transport.count()}}

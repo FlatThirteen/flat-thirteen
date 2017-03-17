@@ -15,20 +15,9 @@ import { TransportService } from '../../common/core/transport.service';
 })
 export class StagePanelComponent {
 
-  constructor(private transport: TransportService,
-              private lesson: LessonService,
-              private player: PlayerService,
-              private stage: StageService) {}
-
-  onStart() {
-    this.lesson.reset();
-    this.player.init();
-    this.transport.start();
-  }
-
-  onStop() {
-    this.transport.stop();
-    this.lesson.reset();
-  }
+  constructor(public transport: TransportService,
+              public lesson: LessonService,
+              public player: PlayerService,
+              public stage: StageService) {}
 
 }

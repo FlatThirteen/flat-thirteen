@@ -1,31 +1,20 @@
 .container
   background-color: #EEE;
-  margin: auto;
-  padding: 2vw;
-  position: relative;
-  width: 80vw;
+  height: 100%;
+  padding: 2vw 10vw;
   text-align: center;
-
-.start, .stop
-  background-color: rgba(255,255,255,0.9);
-  border: solid 1px #000;
-  color: #888;
-  cursor: pointer;
-  padding: 1vw 4vw;
-  text-align: center;
-  user-select: none;
-
-  &:not(:first-child)
-    margin-top: 2vw;
-
-  &:hover
-    color: #000;
-
-.start
-  font-size: 10vw;
-
-.stop
-  font-size: 2vw;
 
 .info
-  text-align: center;
+  display: flex;
+  font-size: 5vw;
+  justify-content: space-around;
+
+  .note
+    background-color: #000;
+    border-radius: 50%;
+    display: inline-block;
+    height: 5vw;
+    margin-right: 1vw;
+    vertical-align: top;
+    width: 5vw;
+
