@@ -272,12 +272,13 @@ export class TopEffect {
     */
 
     let expFilter = new ExpFilter();
-    /*
     expFilter.apply = function(filterManager, input, output) {
+      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
+
       filterManager.applyFilter(this, input, output);
     }.bind(expFilter);
-    */
-    expFilter.uniforms.dimensions = [beatWidth, beatHeight];
+    
+    //expFilter.uniforms.dimensions = [beatWidth, beatHeight];
 
     //g.filters = [this.shockwaveFilter];
     //sprite.filters = [this.shockwaveFilter, rgFilter];
