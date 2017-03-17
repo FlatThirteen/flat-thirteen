@@ -1,14 +1,43 @@
 .menu
   bottom: 0;
   left: 0;
-  position: absolute;
+  position: fixed;
   top: 0;
 
-.logo
-  margin: 10px;
-  opacity: 0.2;
-  transition: all 150ms ease-in-out;
-  width: 40px;
+  .home
+    position: relative;
 
-  &:hover
-    opacity: 1;
+    .logo
+      margin: 10px;
+      opacity: 0.2;
+      transition: all 150ms ease-in-out;
+      width: 40px;
+
+    .text
+      bottom: 0;
+      opacity: 0;
+      font-weight: bold;
+      padding: 0 10px;
+      position: absolute;
+      text-decoration: none;
+      transition: all 150ms ease-in-out;
+
+    &:hover
+      .logo, .text
+        opacity: 1;
+
+.console
+  background-color: rgba(185, 185, 185, 0.5);
+  max-height: 0;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  .contents
+    min-height: 25vh;
+    max-height: 50vh;
+
+  .input
+    width: 100%;

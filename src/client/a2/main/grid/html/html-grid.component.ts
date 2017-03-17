@@ -19,10 +19,10 @@ import { TransportService } from '../../../../common/core/transport.service';
 })
 export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
-  private gridClass$: Observable<string>;
+  public gridClass$: Observable<string>;
 
-  constructor(private transport: TransportService, private player: PlayerService,
-              private stage: StageService) {
+  constructor(public transport: TransportService, public player: PlayerService,
+              public stage: StageService) {
     this.gridClass$ = combineLatest(stage.scene$, player.selected$).map(
         ([scene, selected]) => scene.toLowerCase() + (this.grid.listens(selected) ? ' selected' : ''));
   }
@@ -37,4 +37,26 @@ export class HtmlGridComponent implements OnInit {
     let offset = _.sum(this.grid.pulsesByBeat.slice(0, beat));
     return _.times(this.grid.pulsesByBeat[beat], (i) => offset + i);
   }
+
+  pulseClass(beat, pulse, pulses, pulseIndex) {
+    return {
+      active: this.transport.active(beat, pulse, pulses),
+      cursor: this.player.cursor === pulseIndex
+    };
+  }
+
+  noteClass(pulses: number) {
+    return noteTypes[pulses];
+  }
+
+  controlNoteClass(key: string, pulseIndex: number, pulses: number) {
+    return this.noteClass(pulses) + (this.player.value(key, pulseIndex) ? ' on' : '');
+  }
 }
+
+const noteTypes = {
+  1: 'quarter',
+  2: 'eighth',
+  3: 'triplet',
+  4: 'sixteenth'
+};

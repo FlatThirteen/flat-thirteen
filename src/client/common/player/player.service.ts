@@ -52,6 +52,10 @@ export class PlayerService {
     return this._selected;
   }
 
+  get beat() {
+    return this._beat;
+  }
+
   get cursor() {
     return this._cursor;
   }
@@ -87,6 +91,7 @@ export class PlayerService {
     if (surface) {
       this.store.dispatch(this.player.set(key, cursor, pulses));
     }
+    return !!surface;
   }
 
   unset(key: string, cursor: number) {
