@@ -104,7 +104,6 @@ class ShockwaveFilter extends PIXI.Filter {
         center: { type: 'vec2' },
         params: { type: 'vec3' },
         time: { type: '1f', value: 0 },
-        color: { type: 'vec4' },
         dimensions: { type: 'vec2'}
       }
     );
@@ -242,7 +241,6 @@ export class TopEffect {
 
     this.shockwaveFilter = new ShockwaveFilter();
     this.shockwaveFilter.uniforms.center = [0.5, 0.5];
-    this.shockwaveFilter.uniforms.color = [1.0, 0.13, 0.0, 1.0];
     this.shockwaveFilter.uniforms.params = [10, 0.8, 0.1];
     this.shockwaveFilter.uniforms.time = 0;
     this.shockwaveFilter.apply = function(filterManager, input, output)
