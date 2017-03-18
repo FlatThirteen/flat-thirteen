@@ -110,9 +110,8 @@ class RadarFilter extends PIXI.Filter {
       uniform vec2 center;
       uniform vec4 color;
       uniform vec2 dimensions;
-      //uniform vec4 filterArea;
+      uniform vec4 filterArea;
 
-      /*
       vec2 mapCoord( vec2 coord )
       {
           coord *= filterArea.xy;
@@ -121,23 +120,13 @@ class RadarFilter extends PIXI.Filter {
           return coord;
       }
 
-      vec2 unmapCoord( vec2 coord )
-      {
-          coord -= filterArea.zw;
-          coord /= filterArea.xy;
-
-          return coord;
-      }
-      */
-
       void main()
       {
-        /*
-          vec2 uv = vTextureCoord);
+          vec2 uv = vTextureCoord;
           vec4 finalColor;
+          vec2 mappedCoord = mapCoord(uv) / dimensions;
           
-          float r = distance(uv, center);
-          //float r = distance(gl_FragCoord.xy, center);
+          float r = distance(mappedCoord, center);
           float value = smoothstep(0.0,time,r);
 
           finalColor += value * color;
@@ -149,15 +138,6 @@ class RadarFilter extends PIXI.Filter {
           {
             gl_FragColor = mix(texture2D(uSampler, uv), finalColor, 1.0);
           }
-          */
-          
-          /*
-          vec2 mappedCoord = mapCoord(vTextureCoord) / dimensions;
-          float x = step(0.5, mappedCoord.x);
-          float y = step(0.5, mappedCoord.y);
-          gl_FragColor = texture2D(uSampler, uv) + vec4(x * 1.0, y * 1.0, 0.0, 1.0);
-          */
-          gl_FragColor = texture2D(uSampler, uv);
       }
       `, 
       {
@@ -216,15 +196,15 @@ export class TopEffect {
   init(width: number, height: number) {
    this.width = width;
     this.height = height;
-    //this.renderer = PIXI.autoDetectRenderer(width, height, { transparent: true });
-    this.renderer = PIXI.autoDetectRenderer(width, height, { transparent: false });
+    this.renderer = PIXI.autoDetectRenderer(width, height, { transparent: true });
+    //this.renderer = PIXI.autoDetectRenderer(width, height, { transparent: false });
     this.renderer.autoResize = true;
     this.container = new PIXI.Container();
 
     let beatWidth = width/4;
     let beatHeight = height/2;
     let g = new PIXI.Graphics();
-    g.beginFill(0x000000, 1.0);
+    g.beginFill(0x000000, 0.0);
     g.drawRect(0, 0, beatWidth, beatHeight);
     g.endFill();
     
@@ -255,21 +235,16 @@ export class TopEffect {
     this.shockwaveFilter.uniforms.time = 0.0;
     */
 
-    /*
     this.radarFilter = new RadarFilter();
-    //this.radarFilter.uniforms.center = [0.3125, 0.3125];
     this.radarFilter.uniforms.center = [0.5, 0.5];
     this.radarFilter.uniforms.color = [1.0, 0.13, 0.0, 1.0];
-    this.radarFilter.uniforms.time = 0.125;
+    this.radarFilter.uniforms.time = 0.0;
     this.radarFilter.apply = function(filterManager, input, output)
     {
-      //this.uniforms.dimensions[0] = input.sourceFrame.width
-      //this.uniforms.dimensions[1] = input.sourceFrame.height
+      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
 
-      // draw the filter...
       filterManager.applyFilter(this, input, output);
     }.bind(this.radarFilter);
-    */
 
     let expFilter = new ExpFilter();
     expFilter.apply = function(filterManager, input, output) {
@@ -283,7 +258,7 @@ export class TopEffect {
     //g.filters = [this.shockwaveFilter];
     //sprite.filters = [this.shockwaveFilter, rgFilter];
     //sprite.filters = [rgFilter, this.shockwaveFilter];
-    sprite.filters = [expFilter];
+    sprite.filters = [this.radarFilter];
 
     //sprite2.filters = [this.radarFilter];
 
@@ -301,12 +276,10 @@ export class TopEffect {
         this.shockwaveFilter.uniforms.time = 0.0;
     }
 
-    /*
     this.radarFilter.uniforms.time += 0.02;
     if (this.radarFilter.uniforms.time >= 1.0) {
         this.radarFilter.uniforms.time = 0.0;
     }
-    */
 
     this.renderer.render(this.container);
 
@@ -318,7 +291,7 @@ export class TopEffect {
     if (true === scale) {
       //TODO: scale
       let point = new PIXI.Point(width/this.width, height/this.height);
-      //this.container.scale = point;
+      this.container.scale = point;
     }
   }
 }
