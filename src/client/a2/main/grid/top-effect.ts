@@ -63,16 +63,29 @@ class ShockwaveFilter extends PIXI.Filter {
 
       uniform sampler2D uSampler;
 
-      uniform vec2 center;
-      uniform vec3 params; // 10.0, 0.8, 0.1
       uniform float time;
+      uniform vec2 center;
+      uniform vec3 params;
+      uniform vec4 color;
+      uniform vec2 dimensions;
+      uniform vec4 filterArea;
+
+      vec2 mapCoord( vec2 coord )
+      {
+          coord *= filterArea.xy;
+          coord += filterArea.zw;
+
+          return coord;
+      }
 
       void main()
       {
           vec2 uv = vTextureCoord;
           vec2 texCoord = uv;
+          vec4 finalColor;
+          vec2 mappedCoord = mapCoord(uv) / dimensions;
 
-          float dist = distance(uv, center);
+          float dist = distance(mappedCoord, center);
 
           if ( (dist <= (time + params.z)) && (dist >= (time - params.z)) )
           {
@@ -88,10 +101,11 @@ class ShockwaveFilter extends PIXI.Filter {
       }
       `, 
       {
-        uSampler: { type: 'sampler2D', value: 0 },
         center: { type: 'vec2' },
         params: { type: 'vec3' },
-        time: { type: '1f', value: 0 }
+        time: { type: '1f', value: 0 },
+        color: { type: 'vec4' },
+        dimensions: { type: 'vec2'}
       }
     );
   }
@@ -204,7 +218,7 @@ export class TopEffect {
     let beatWidth = width/4;
     let beatHeight = height/2;
     let g = new PIXI.Graphics();
-    g.beginFill(0x000000, 0.0);
+    g.beginFill(0x000000, 1.0);
     g.drawRect(0, 0, beatWidth, beatHeight);
     g.endFill();
     
@@ -227,13 +241,16 @@ export class TopEffect {
     rgFilter.uniforms.windowHeight = height;
 
     this.shockwaveFilter = new ShockwaveFilter();
-    this.shockwaveFilter.uniforms.center = [0.375, 0.375];
+    this.shockwaveFilter.uniforms.center = [0.5, 0.5];
+    this.shockwaveFilter.uniforms.color = [1.0, 0.13, 0.0, 1.0];
     this.shockwaveFilter.uniforms.params = [10, 0.8, 0.1];
     this.shockwaveFilter.uniforms.time = 0;
-    /*
-    this.shockwaveFilter = new ExampleFilter();
-    this.shockwaveFilter.uniforms.time = 0.0;
-    */
+    this.shockwaveFilter.apply = function(filterManager, input, output)
+    {
+      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
+
+      filterManager.applyFilter(this, input, output);
+    }.bind(this.shockwaveFilter);
 
     this.radarFilter = new RadarFilter();
     this.radarFilter.uniforms.center = [0.5, 0.5];
@@ -258,7 +275,8 @@ export class TopEffect {
     //g.filters = [this.shockwaveFilter];
     //sprite.filters = [this.shockwaveFilter, rgFilter];
     //sprite.filters = [rgFilter, this.shockwaveFilter];
-    sprite.filters = [this.radarFilter];
+    //sprite.filters = [this.radarFilter, this.shockwaveFilter];
+    sprite.filters = [this.shockwaveFilter];
 
     //sprite2.filters = [this.radarFilter];
 
