@@ -1,5 +1,7 @@
 import * as PIXI from 'pixi.js'
 
+import { RadarFilter } from './filters/radar-filter';
+
 class ExampleFilter extends PIXI.Filter {
   constructor() {
     super(
@@ -110,58 +112,7 @@ class ShockwaveFilter extends PIXI.Filter {
   }
 }
 
-class RadarFilter extends PIXI.Filter {
-  constructor() {
-    super(
-      null, 
-      `
-      varying vec2 vTextureCoord;
 
-      uniform sampler2D uSampler;
-
-      uniform float time;
-      uniform vec2 center;
-      uniform vec4 color;
-      uniform vec2 dimensions;
-      uniform vec4 filterArea;
-
-      vec2 mapCoord( vec2 coord )
-      {
-          coord *= filterArea.xy;
-          coord += filterArea.zw;
-
-          return coord;
-      }
-
-      void main()
-      {
-          vec2 uv = vTextureCoord;
-          vec4 finalColor;
-          vec2 mappedCoord = mapCoord(uv) / dimensions;
-          
-          float r = distance(mappedCoord, center);
-          float value = smoothstep(0.0,time,r);
-
-          finalColor += value * color;
-          if (value > 0.5 || value < 0.25)
-          {
-            gl_FragColor = texture2D(uSampler, uv);
-          }
-          else
-          {
-            gl_FragColor = mix(texture2D(uSampler, uv), finalColor, 1.0);
-          }
-      }
-      `, 
-      {
-        time: { type: '1f' },
-        center: { type: 'vec2' },
-        color: { type: 'vec4' },
-        dimensions: { type: 'vec2'}
-      }
-    );
-  }
-}
 
 class ExpFilter extends PIXI.Filter {
   constructor() {
@@ -217,7 +168,7 @@ export class TopEffect {
     let beatWidth = width/4;
     let beatHeight = height/2;
     let g = new PIXI.Graphics();
-    g.beginFill(0x000000, 1.0);
+    g.beginFill(0x000000, 0.0);
     g.drawRect(0, 0, beatWidth, beatHeight);
     g.endFill();
     
@@ -252,7 +203,7 @@ export class TopEffect {
 
     this.radarFilter = new RadarFilter();
     this.radarFilter.uniforms.center = [0.5, 0.5];
-    this.radarFilter.uniforms.color = [1.0, 0.13, 0.0, 1.0];
+    this.radarFilter.uniforms.color = [1.0, 0.33, 0.13, 1.0];
     this.radarFilter.uniforms.time = 0.0;
     this.radarFilter.apply = function(filterManager, input, output)
     {
@@ -274,7 +225,7 @@ export class TopEffect {
     //sprite.filters = [this.shockwaveFilter, rgFilter];
     //sprite.filters = [rgFilter, this.shockwaveFilter];
     //sprite.filters = [this.radarFilter, this.shockwaveFilter];
-    sprite.filters = [this.shockwaveFilter];
+    sprite.filters = [this.radarFilter];
 
     //sprite2.filters = [this.radarFilter];
 
