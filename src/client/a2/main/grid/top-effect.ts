@@ -205,6 +205,7 @@ export class TopEffect {
     this.radarFilter.uniforms.center = [0.5, 0.5];
     this.radarFilter.uniforms.color = [1.0, 0.33, 0.13, 1.0];
     this.radarFilter.uniforms.time = 0.0;
+    this.radarFilter.uniforms.size = 0.05;
     this.radarFilter.apply = function(filterManager, input, output)
     {
       this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
@@ -243,7 +244,7 @@ export class TopEffect {
         this.shockwaveFilter.uniforms.time = 0.0;
     }
 
-    this.radarFilter.uniforms.time += 0.02;
+    this.radarFilter.uniforms.time += 0.01;
     if (this.radarFilter.uniforms.time >= 1.0) {
         this.radarFilter.uniforms.time = 0.0;
     }

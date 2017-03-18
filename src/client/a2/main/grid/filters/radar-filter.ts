@@ -8,12 +8,14 @@ export class RadarFilter extends PIXI.Filter {
       varying vec2 vTextureCoord;
 
       uniform sampler2D uSampler;
+      uniform vec4 filterArea;
+
+      uniform vec2 dimensions;
 
       uniform float time;
       uniform vec2 center;
       uniform vec4 color;
-      uniform vec2 dimensions;
-      uniform vec4 filterArea;
+      uniform float size;     
 
       vec2 mapCoord( vec2 coord )
       {
@@ -30,25 +32,28 @@ export class RadarFilter extends PIXI.Filter {
           vec2 mappedCoord = mapCoord(uv) / dimensions;
           
           float r = distance(mappedCoord, center);
-          float value = smoothstep(0.0,time,r);
+          float value = smoothstep(time-0.05,time,r) - smoothstep(time+0.05, time, r);
 
           finalColor += value * color;
           finalColor.w = 1.0;
-          if (value > 0.5 || value < 0.3)
+
+          if (value < 1.0 && value > 0.0)
           {
-            gl_FragColor = texture2D(uSampler, uv);
+            gl_FragColor = finalColor;
           }
           else
           {
-            gl_FragColor = finalColor;//mix(texture2D(uSampler, uv), finalColor, 1.0);
+            gl_FragColor = texture2D(uSampler, uv);
           }
+          
       }
       `, 
       {
-        time: { type: '1f' },
-        center: { type: 'vec2' },
-        color: { type: 'vec4' },
-        dimensions: { type: 'vec2'}
+        time: { type: '1f', value: 0.0 },
+        center: { type: 'vec2', value: [0.5, 0.5] },
+        color: { type: 'vec4', value: [1.0, 1.0, 1.0, 1.0] },
+        size: { type: '1f', value: 0.05}
+        dimensions: { type: 'vec2' }
       }
     );
   }
