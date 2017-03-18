@@ -155,13 +155,15 @@ export class TopEffect {
   width: number;
   height: number;
   shockwaveFilter: ShockwaveFilter;
+  //TOOD: encapsulate these:
+  radarSprite: PIXI.Sprite;
   radarFilter: RadarFilter;
+  radarActive: boolean;
 
   init(width: number, height: number) {
    this.width = width;
     this.height = height;
     this.renderer = PIXI.autoDetectRenderer(width, height, { transparent: true });
-    //this.renderer = PIXI.autoDetectRenderer(width, height, { transparent: false });
     this.renderer.autoResize = true;
     this.container = new PIXI.Container();
 
@@ -173,65 +175,18 @@ export class TopEffect {
     g.endFill();
     
     let texture = g.generateCanvasTexture();
-    let sprite = new PIXI.Sprite(texture);
-    //sprite.anchor.set(0.5, 0.5);
-    //sprite.x = width/2;
-    //sprite.y = height/2;
+    this.radarSprite = new PIXI.Sprite(texture);
 
-    let sprite2 = new PIXI.Sprite(texture);
-    sprite2.anchor.set(0.5, 0.5);
-    sprite2.x = width/2;
-    sprite2.y = height;
-
-    let rgFilter = new RadialGradient();
-    rgFilter.uniforms.color = [0.0, 127.0/255.0, 1.0, 0.0];
-    rgFilter.uniforms.center = [0.375, 0.375];
-    rgFilter.uniforms.radius = height/2;
-    rgFilter.uniforms.expand = 0.0;
-    rgFilter.uniforms.windowHeight = height;
-
-    this.shockwaveFilter = new ShockwaveFilter();
-    this.shockwaveFilter.uniforms.center = [0.5, 0.5];
-    this.shockwaveFilter.uniforms.params = [10, 0.8, 0.1];
-    this.shockwaveFilter.uniforms.time = 0;
-    this.shockwaveFilter.apply = function(filterManager, input, output)
-    {
-      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
-
-      filterManager.applyFilter(this, input, output);
-    }.bind(this.shockwaveFilter);
-
-    this.radarFilter = new RadarFilter();
+    this.radarFilter = new RadarFilter(1.0);
     this.radarFilter.uniforms.center = [0.5, 0.5];
     this.radarFilter.uniforms.color = [1.0, 0.33, 0.13, 1.0];
     this.radarFilter.uniforms.time = 0.0;
     this.radarFilter.uniforms.size = 0.05;
-    this.radarFilter.apply = function(filterManager, input, output)
-    {
-      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
 
-      filterManager.applyFilter(this, input, output);
-    }.bind(this.radarFilter);
+    this.radarSprite.filters = [this.radarFilter];
+    this.radarActive = true;
 
-    let expFilter = new ExpFilter();
-    expFilter.apply = function(filterManager, input, output) {
-      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
-
-      filterManager.applyFilter(this, input, output);
-    }.bind(expFilter);
-    
-    //expFilter.uniforms.dimensions = [beatWidth, beatHeight];
-
-    //g.filters = [this.shockwaveFilter];
-    //sprite.filters = [this.shockwaveFilter, rgFilter];
-    //sprite.filters = [rgFilter, this.shockwaveFilter];
-    //sprite.filters = [this.radarFilter, this.shockwaveFilter];
-    sprite.filters = [this.radarFilter];
-
-    //sprite2.filters = [this.radarFilter];
-
-    this.container.addChild(sprite);
-    //this.container.addChild(sprite2);
+    this.container.addChild(this.radarSprite);
   }
 
   getView() {
@@ -244,14 +199,14 @@ export class TopEffect {
         this.shockwaveFilter.uniforms.time = 0.0;
     }
 
-    this.radarFilter.uniforms.time += 0.01;
-    if (this.radarFilter.uniforms.time >= 1.0) {
-        this.radarFilter.uniforms.time = 0.0;
+    if (true === this.radarActive) {
+      this.radarActive = this.radarFilter.update(0.01);
+      if (false == this.radarActive) {
+        this.radarSprite.filters = [];
+      }
     }
 
     this.renderer.render(this.container);
-
-    
   }
 
   resize(width: number, height: number, scale: boolean) {

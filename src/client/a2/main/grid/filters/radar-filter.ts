@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 
 export class RadarFilter extends PIXI.Filter {
-  constructor() {
+  constructor(private maxTime: number) {
     super(
       null, 
       `
@@ -56,5 +56,24 @@ export class RadarFilter extends PIXI.Filter {
         dimensions: { type: 'vec2' }
       }
     );
+
+    this.maxTime = maxTime;
+
+    this.apply = function(filterManager, input, output)
+    {
+      this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
+
+      filterManager.applyFilter(this, input, output);
+    }.bind(this);
+  }
+
+  update(delta: number): boolean {
+    this.uniforms.time += delta;
+    if (this.uniforms.time > this.maxTime) {
+      this.uniforms.time = 0.0;
+      return false;
+    }
+
+    return true;
   }
 }
