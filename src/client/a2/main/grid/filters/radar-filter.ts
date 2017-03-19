@@ -52,7 +52,7 @@ export class RadarFilter extends PIXI.Filter {
         time: { type: '1f', value: 0.0 },
         center: { type: 'vec2', value: [0.5, 0.5] },
         color: { type: 'vec4', value: [1.0, 1.0, 1.0, 1.0] },
-        size: { type: '1f', value: 0.05}
+        size: { type: '1f', value: 0.05},
         dimensions: { type: 'vec2' }
       }
     );
