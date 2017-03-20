@@ -30,16 +30,17 @@ export class RadarFilter extends PIXI.Filter {
           vec2 uv = vTextureCoord;
           vec4 finalColor;
           vec2 mappedCoord = mapCoord(uv) / dimensions;
+          vec2 newCenter = mapCoord(center) / dimensions;
           
-          float r = distance(mappedCoord, center);
-          float value = smoothstep(time-0.05,time,r) - smoothstep(time+0.05, time, r);
+          float r = distance(mappedCoord, newCenter);
+          float value = smoothstep(time-size,time,r) - smoothstep(time+size, time, r);
 
           finalColor += value * color;
           finalColor.w = 1.0;
 
           if (value < 1.0 && value > 0.0)
           {
-            gl_FragColor = finalColor;
+            gl_FragColor = mix(texture2D(uSampler, uv), finalColor, 1.0);
           }
           else
           {

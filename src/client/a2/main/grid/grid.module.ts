@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HtmlGridComponent } from './html/html-grid.component';
+import { PixiEffectsComponent } from './layers/pixi-effects.component';
 
 
 @NgModule({
@@ -9,7 +10,8 @@ import { HtmlGridComponent } from './html/html-grid.component';
     CommonModule
   ],
   declarations: [
-    HtmlGridComponent
+    HtmlGridComponent,
+    PixiEffectsComponent,
   ],
   exports: [
     HtmlGridComponent

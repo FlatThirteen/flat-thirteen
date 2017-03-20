@@ -9,6 +9,8 @@ import { PlayerService } from '../../../../common/player/player.service';
 import { StageService } from '../../../../common/stage/stage.service';
 import { TransportService } from '../../../../common/core/transport.service';
 
+import { PixiEffectsComponent } from '../layers/pixi-effects.component';
+
 import { TopEffect } from '../top-effect';
 
 /**
@@ -39,7 +41,7 @@ export class HtmlGridComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {   
+  ngAfterViewInit() {
     //let element = document.getElementById('top-fx');
     let element = document.getElementsByClassName('top-fx overlay')[0];
     let width = element.clientWidth;
@@ -48,7 +50,14 @@ export class HtmlGridComponent implements OnInit, AfterViewInit {
     this.topEffect.init(width, height);
     element.appendChild(this.topEffect.getView());
 
+    let e = document.getElementsByClassName('top-fx overlay')[0];
+    console.log(e.clientWidth);
+    console.log(e.clientHeight);
+
     this.render();
+
+
+
   }
 
   pulsesFor(beat: number) {

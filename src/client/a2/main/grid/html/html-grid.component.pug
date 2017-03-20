@@ -1,5 +1,6 @@
 .grid([ngClass]="gridClass$ | async", (mouseleave)="player.unselect()")
   .back-fx.overlay
+      //pixi-effects()
   .strip-container
     .strip(*ngFor="let key of grid.keys")
       .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
@@ -7,6 +8,7 @@
             [ngClass]="pulseClass(beat, pulse, pulses, pulseIndex)")
           .actual.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
   .top-fx.overlay((window:resize)="adjustTopEffectCanvasSize($event)")
+    //pixi-effects()
   .position(*ngIf="stage.showPosition",
       [style.left]="(transport.progress() * 100) + '%'")
   .overlay
