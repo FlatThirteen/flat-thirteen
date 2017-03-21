@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, AfterViewInit } from '@angular/core';
 
 import { RadarEffect, RadarEffectFactory } from './effects/radar-effect-factory';
 
@@ -9,7 +9,7 @@ import { RadarEffect, RadarEffectFactory } from './effects/radar-effect-factory'
   styleUrls: ['pixi-effects.component.styl'],
 })
 
-export class PixiEffectsComponent implements OnInit, AfterViewInit {
+export class PixiEffectsComponent implements AfterViewInit {
   private renderer: PIXI.SystemRenderer;
   private container: PIXI.Container;
   private width: number;
@@ -21,10 +21,6 @@ export class PixiEffectsComponent implements OnInit, AfterViewInit {
   constructor() {
     this.radarEffects = [];
     this.radarEffectFactory = new RadarEffectFactory();
-  }
-
-  ngOnInit() {
-    
   }
 
   ngAfterViewInit() {   
