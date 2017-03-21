@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -11,8 +11,6 @@ import { TransportService } from '../../../../common/core/transport.service';
 
 import { PixiEffectsComponent } from '../layers/pixi-effects.component';
 
-import { TopEffect } from '../top-effect';
-
 /**
  * This class represents the HTML version of the Grid Component.
  */
@@ -21,43 +19,20 @@ import { TopEffect } from '../top-effect';
   templateUrl: 'html-grid.component.pug',
   styleUrls: ['html-grid.component.styl'],
 })
-export class HtmlGridComponent implements OnInit, AfterViewInit {
+export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
   public gridClass$: Observable<string>;
-
-  private topEffect: TopEffect;
 
   constructor(public transport: TransportService, public player: PlayerService,
               public stage: StageService) {
     this.gridClass$ = combineLatest(stage.scene$, player.selected$).map(
         ([scene, selected]) => scene.toLowerCase() + (this.grid.listens(selected) ? ' selected' : ''));
-
-    this.topEffect = new TopEffect();
   }
 
   ngOnInit() {
     if (!this.grid) {
       throw new Error('Missing grid');
     }
-  }
-
-  ngAfterViewInit() {
-    //let element = document.getElementById('top-fx');
-    let element = document.getElementsByClassName('top-fx overlay')[0];
-    let width = element.clientWidth;
-    let height = element.clientHeight;
-
-    this.topEffect.init(width, height);
-    element.appendChild(this.topEffect.getView());
-
-    let e = document.getElementsByClassName('top-fx overlay')[0];
-    console.log(e.clientWidth);
-    console.log(e.clientHeight);
-
-    this.render();
-
-
-
   }
 
   pulsesFor(beat: number) {
@@ -78,19 +53,6 @@ export class HtmlGridComponent implements OnInit, AfterViewInit {
 
   controlNoteClass(key: string, pulseIndex: number, pulses: number) {
     return this.noteClass(pulses) + (this.player.value(key, pulseIndex) ? ' on' : '');
-  }
-
-  render() {
-    this.topEffect.render();
-
-    requestAnimationFrame(this.render.bind(this));
-  }
-
-  adjustTopEffectCanvasSize(event) {
-    let element = document.getElementsByClassName('top-fx overlay')[0];
-    let width = element.clientWidth;
-    let height = element.clientHeight;
-    this.topEffect.resize(width, height, true);
   }
 }
 

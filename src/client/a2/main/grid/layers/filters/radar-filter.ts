@@ -25,28 +25,36 @@ export class RadarFilter extends PIXI.Filter {
           return coord;
       }
 
+      vec4 RadarPing(vec2 uv, vec2 center, float innerTail, float frontierBorder, float timeResetSeconds, float radarPingSpeed, float fadeDistance)
+      {
+        vec2 diff = center-uv;
+        float r = length(diff);
+        float time = mod(time, timeResetSeconds) * radarPingSpeed;
+
+        float circle;
+        circle += smoothstep(time - innerTail, time, r) * smoothstep(time + frontierBorder,time, r);
+        circle *= smoothstep(fadeDistance, 0.0, r);
+
+        return vec4(circle, circle, circle, 1.0);
+      }
+
       void main()
       {
-          vec2 uv = vTextureCoord;
-          vec4 finalColor;
-          vec2 mappedCoord = mapCoord(uv) / dimensions;
-          vec2 newCenter = mapCoord(center) / dimensions;
-          
-          float r = distance(mappedCoord, newCenter);
-          float value = smoothstep(time-size,time,r) - smoothstep(time+size, time, r);
-
-          finalColor += value * color;
-          finalColor.w = 1.0;
-
-          if (value < 1.0 && value > 0.0)
-          {
-            gl_FragColor = mix(texture2D(uSampler, uv), finalColor, 1.0);
-          }
-          else
-          {
-            gl_FragColor = texture2D(uSampler, uv);
-          }
-          
+        float fadeDistance = 1.0;
+        float resetTimeSec = 5.0;
+        float radarPingSpeed = 0.3;
+        vec2 uv = vTextureCoord;
+        vec2 mappedCoord = mapCoord(uv) / dimensions;
+        vec2 mappedCenter = mapCoord(center) / dimensions;
+        vec4 c = RadarPing(mappedCoord, mappedCenter, 0.15, 0.025, resetTimeSec, radarPingSpeed, fadeDistance);
+        if (c.x < 0.5)
+        {
+          gl_FragColor = texture2D(uSampler, uv);
+        }
+        else
+        {
+          gl_FragColor = c * color;
+        }
       }
       `, 
       {

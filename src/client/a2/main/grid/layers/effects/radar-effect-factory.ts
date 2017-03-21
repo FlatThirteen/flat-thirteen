@@ -8,19 +8,22 @@ export class RadarEffect {
   private active: boolean;
 
   constructor(span: number, color: number[], size: number, private readonly speed: number) {
+    /*
     let g = new PIXI.Graphics();
-    g.beginFill(0xffffff, 1.0);
+    g.beginFill(0x000000, 1.0);
     g.drawRect(0, 0, size, size);
     g.endFill();
-    
     let texture = g.generateCanvasTexture();
-    
     this.sprite = new PIXI.Sprite(texture);
+    */
+    this.sprite = new PIXI.Sprite();
     this.sprite.width = size;
     this.sprite.height = size;
+    //this.sprite.anchor.x = 0.5;
+    //this.sprite.anchor.y = 0.5;
 
-    this.filter = new RadarFilter(1.0);
-    this.filter.uniforms.center = [0.5, 0.5];
+    this.filter = new RadarFilter(10.0);
+    this.filter.uniforms.center = [0.27, 0.27];
     this.filter.uniforms.color = color;
     this.filter.uniforms.time = 0.0;
     this.filter.uniforms.size = span;

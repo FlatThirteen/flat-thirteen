@@ -62,30 +62,29 @@ export class PixiEffectsComponent implements OnInit, AfterViewInit {
     _.forEach(this.radarEffects, function(effect) {
       effect.update();
       if (false === effect.isActive()) {
-        //console.log("not active");
         effect.getDisplayObject().destroy();
       } else {
         radarEffects.push(effect);
-        //console.log("active");
       }
     });
     this.radarEffects = radarEffects;
     
     this.renderer.render(this.container);
 
-    if (1 > this.radarEffects.length) {
-      this.createRadarEffect(64, 0, 128, 0.02);
+    //Test code:
+    /*
+    if (0 === this.radarEffects.length) {
+      for (let i = 0; i < 3; ++i) {
+        this.createRadarEffect(i * 128, 0, 128, 0.02);
+      }
     }
-    
-
-    //console.log(this.radarEffects.length);
+    */
 
     requestAnimationFrame(this.render.bind(this));
   }
 
   adjustTopEffectCanvasSize(event) {
     let element = document.getElementById('canvas');
-    //let element = document.getElementsByClassName('canvas')[0];
     let width = element.clientWidth;
     let height = element.clientHeight;
     

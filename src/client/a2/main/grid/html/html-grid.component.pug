@@ -7,8 +7,8 @@
         .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
             [ngClass]="pulseClass(beat, pulse, pulses, pulseIndex)")
           .actual.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
-  .top-fx.overlay((window:resize)="adjustTopEffectCanvasSize($event)")
-    //pixi-effects()
+  .top-fx.overlay
+    pixi-effects()
   .position(*ngIf="stage.showPosition",
       [style.left]="(transport.progress() * 100) + '%'")
   .overlay
