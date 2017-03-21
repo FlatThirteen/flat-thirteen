@@ -29,24 +29,16 @@ export class PixiEffectsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {   
     let element = document.getElementById('canvas');
-    //let element = document.getElementsByClassName('canvas')[0];
     this.width = element.clientWidth;
     this.height = element.clientHeight;
 
-    console.log(this.width);
-    console.log(this.height);
-
-    this.initRenderer();
+    this.renderer = PIXI.autoDetectRenderer(this.width, this.height, { transparent: true });
+    this.renderer.autoResize = true;
+    this.container = new PIXI.Container();
 
     element.appendChild(this.renderer.view);
 
     this.render();
-  }
-
-  private initRenderer() {
-    this.renderer = PIXI.autoDetectRenderer(this.width, this.height, { transparent: true });
-    this.renderer.autoResize = true;
-    this.container = new PIXI.Container();
   }
 
   createRadarEffect(x: number, y: number, size: number, speed: number) {
@@ -61,7 +53,7 @@ export class PixiEffectsComponent implements OnInit, AfterViewInit {
     let radarEffects = [];
     _.forEach(this.radarEffects, function(effect) {
       effect.update();
-      if (false === effect.isActive()) {
+      if (!effect.isActive()) {
         effect.getDisplayObject().destroy();
       } else {
         radarEffects.push(effect);
@@ -87,6 +79,8 @@ export class PixiEffectsComponent implements OnInit, AfterViewInit {
     let element = document.getElementById('canvas');
     let width = element.clientWidth;
     let height = element.clientHeight;
+    //TODO: resize and scale properly
+    //  Having a fixed aspect ratio makes things easier and clean (graphically)
     
   }
 }

@@ -43,7 +43,7 @@ export class RadarEffect {
   }
 
   update() {
-    if (true === this.active) {
+    if (this.active) {
       this.active = this.filter.update(this.speed);
     }
   }
