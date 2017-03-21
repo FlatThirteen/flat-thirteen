@@ -68,8 +68,7 @@ export class RadarFilter extends PIXI.Filter {
 
     this.maxTime = maxTime;
 
-    this.apply = function(filterManager, input, output)
-    {
+    this.apply = function(filterManager, input, output) {
       this.uniforms.dimensions = [input.sourceFrame.width, input.sourceFrame.height];
 
       filterManager.applyFilter(this, input, output);
