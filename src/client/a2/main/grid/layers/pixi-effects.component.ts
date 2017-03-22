@@ -46,15 +46,7 @@ export class PixiEffectsComponent implements AfterViewInit {
   }
 
   render() {
-    _.remove(this.radarEffects, function(effect) {
-      effect.update();
-      if (!effect.isActive()) {
-        effect.getDisplayObject().destroy();
-        return true;
-      }
-      return false;
-    });
-    
+    _.remove(this.radarEffects, (effect) => effect.updateAndDestroyIfNeeded() );
     
     this.renderer.render(this.container);
 

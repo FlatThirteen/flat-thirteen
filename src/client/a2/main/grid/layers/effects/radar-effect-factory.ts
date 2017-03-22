@@ -38,6 +38,15 @@ export class RadarEffect {
     }
   }
 
+  updateAndDestroyIfNeeded() {
+    this.active = this.filter.update(this.speed);
+    if (!this.active) {
+      this.sprite.destroy();
+      return true;
+    }
+    return false;
+  }
+
   getDisplayObject() {
     return this.sprite;
   }
