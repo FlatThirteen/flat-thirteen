@@ -46,16 +46,15 @@ export class PixiEffectsComponent implements AfterViewInit {
   }
 
   render() {
-    let radarEffects = [];
-    _.forEach(this.radarEffects, function(effect) {
+    _.remove(this.radarEffects, function(effect) {
       effect.update();
       if (!effect.isActive()) {
         effect.getDisplayObject().destroy();
-      } else {
-        radarEffects.push(effect);
+        return true;
       }
+      return false;
     });
-    this.radarEffects = radarEffects;
+    
     
     this.renderer.render(this.container);
 
