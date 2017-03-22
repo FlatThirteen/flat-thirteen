@@ -9,6 +9,8 @@ import { PlayerService } from '../../../../common/player/player.service';
 import { StageService } from '../../../../common/stage/stage.service';
 import { TransportService } from '../../../../common/core/transport.service';
 
+import { PixiEffectsComponent } from '../layers/pixi-effects.component';
+
 /**
  * This class represents the HTML version of the Grid Component.
  */
