@@ -69,7 +69,7 @@ export class A1Component implements OnInit, OnDestroy {
         this.lesson.reset();
       }
     } else {
-      this.stage.next(this.stage.showCount && this.lesson.phraseBuilder);
+      this.stage.next(this.stage.isCount && this.lesson.phraseBuilder);
     }
   }
 

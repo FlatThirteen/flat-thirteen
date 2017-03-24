@@ -13,7 +13,7 @@
          (mouseenter)="player.select(key);">
     </div>
   </div>
-  <div class="overlay" *ngIf="stage.showCount">
+  <div class="overlay" *ngIf="stage.isCount">
     <div class="counter" [class.active]="transport.active()" *ngIf="!transport.paused">
       {{transport.count()}}
     </div>

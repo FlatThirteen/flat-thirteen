@@ -100,13 +100,13 @@ export class PixiGridComponent implements OnInit {
 
     let active = false;
     switch(this.stageService.scene) {
-      case 'Demo':
+      case 'demo':
         active = false;
         break;
-      case 'Play':
+      case 'play':
         active = true;
         break;
-      case 'Victory':
+      case 'victory':
         this.processVictoryState();
         break;
     }
@@ -119,7 +119,7 @@ export class PixiGridComponent implements OnInit {
 
     if (!this.transport.paused && (undefined != this.transport.count())) {
       this.counterOverlay.setText(this.transport.count().toString());
-      this.counterOverlay.getRenderableObject().visible = this.stageService.showCount;
+      this.counterOverlay.getRenderableObject().visible = this.stageService.isCount;
     }
 
     requestAnimationFrame(this.render.bind(this));

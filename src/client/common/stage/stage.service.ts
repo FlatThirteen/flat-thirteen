@@ -82,17 +82,17 @@ export class StageService {
   }
 
   pulse(time: number, beat: number, tick: number) {
-    if (this._scene === 'Goal') {
+    if (this._scene === 'goal' || this._scene === 'victory') {
       for (let note of this.goalPhrase.getNotes(beat, tick)) {
         this.sound.play(note.soundName, time);
       }
-    } else if (this._scene === 'Play') {
+    } else if (this._scene === 'play') {
       _.forEach(this.player.notesAt(beat, tick), note => {
         if (note) {
           this.play(note, beat, tick, time);
         }
       });
-    } else if (this._scene === 'Loop') {
+    } else if (this._scene === 'loop') {
       _.forEach(this.player.notesAt(beat, tick), note => {
         if (note) {
           this.sound.play(note.soundName, time);
@@ -110,23 +110,27 @@ export class StageService {
   }
 
   get isDemo() {
-    return this._scene === 'Demo';
+    return this._scene === 'demo';
   }
 
   get isLoop() {
-    return this._scene === 'Loop';
+    return this._scene === 'loop';
+  }
+
+  get isCount() {
+    return this._scene === 'count';
   }
 
   get isGoal() {
-    return this._scene === 'Goal';
+    return this._scene === 'goal';
   }
 
-  get showCount() {
-    return this._scene === 'Count' || this._scene === 'Victory';
+  get isVictory() {
+    return this._scene === 'victory';
   }
 
   get showPosition() {
-    return this._scene === 'Loop' || this._scene === 'Goal' || this._scene === 'Play';
+    return this._scene === 'loop' || this._scene === 'goal' || this._scene === 'play';
   }
 
   get goalPlayed() {

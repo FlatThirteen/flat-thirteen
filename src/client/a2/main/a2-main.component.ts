@@ -31,9 +31,9 @@ export class A2MainComponent implements OnInit, OnDestroy {
               public player: PlayerService, public stage: StageService,
               public lesson: LessonService) {
     this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
-        ([scene, active, touched]) => scene === 'Goal' && active ? 'waiting' :
-        scene === 'Goal' && !touched ? 'just' :
-        (scene === 'Demo' || scene === 'Goal') && touched ? 'enable' : '');
+        ([scene, active, touched]) => scene === 'goal' && active ? 'waiting' :
+        scene === 'goal' && !touched ? 'just' :
+        (scene === 'demo' || scene === 'goal') && touched ? 'enable' : '');
   }
 
   /**
@@ -50,7 +50,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
 
     this.transport.setOnTop((time) => this.onTop());
-    this.transport.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));
+    this.transport.setOnPulse((time, beat, pulse) => this.stage.pulse(time, beat, pulse));
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
@@ -66,21 +66,20 @@ export class A2MainComponent implements OnInit, OnDestroy {
   onTop() {
     this.showStart = true;
     if (this.stage.goalPlayed) {
-      this.lesson.advance(this.stage.round);
-      this.stage.victory();
-      if (this.lesson.phraseBuilder) {
-        this.player.init();
+      if (this.stage.isVictory) {
+        this.lesson.advance(this.stage.round);
+        if (this.lesson.phraseBuilder) {
+          this.player.init();
+        } else {
+          this.transport.stop();
+          this.lesson.reset();
+        }
       } else {
-        this.transport.stop();
-        this.lesson.reset();
+        this.stage.victory();
       }
     } else if (!this.stage.isLoop) {
-      this.stage.next(this.stage.showCount && this.lesson.phraseBuilder);
+      this.stage.next(this.stage.isCount && this.lesson.phraseBuilder);
     }
-  }
-
-  onPulse(time: number, beat: number, tick: number) {
-    this.stage.pulse(time, beat, tick);
   }
 
   @HostListener('document:keydown', ['$event'])
