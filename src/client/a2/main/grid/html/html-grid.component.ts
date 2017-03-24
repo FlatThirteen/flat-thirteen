@@ -24,7 +24,7 @@ export class HtmlGridComponent implements OnInit {
   constructor(public transport: TransportService, public player: PlayerService,
               public stage: StageService) {
     this.gridClass$ = combineLatest(stage.scene$, player.selected$).map(
-        ([scene, selected]) => scene.toLowerCase() + (this.grid.listens(selected) ? ' selected' : ''));
+        ([scene, selected]) => scene + (this.grid.listens(selected) ? ' selected' : ''));
   }
 
   ngOnInit() {

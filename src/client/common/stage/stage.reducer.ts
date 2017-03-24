@@ -6,7 +6,7 @@ import { Phrase } from '../phrase/phrase.model';
 import { PlayerActions } from '../player/player.actions';
 import { StageActions } from './stage.actions';
 
-export type StageScene = 'Demo' | 'Loop' | 'Count' | 'Goal' | 'Play' | 'Victory';
+export type StageScene = 'demo' | 'loop' | 'count' | 'goal' | 'play' | 'victory';
 
 export class StageState {
   readonly round: number = 0;
@@ -20,21 +20,24 @@ export class StageState {
     switch (action.type) {
       case LessonActions.INIT:
       case LessonActions.RESET: {
-        return new StageState('Demo', 'Count');
+        return new StageState('demo', 'count');
+      }
+      case LessonActions.ADVANCE: {
+        return new StageState('count', 'goal');
       }
       case StageActions.LISTEN: {
-        if (state.scene === 'Demo') {
-          return new StageState('Loop', 'Loop');
+        if (state.scene === 'demo') {
+          return new StageState('loop', 'loop');
         } else {
           return _.defaults({ active: true }, state);
         }
       }
       case StageActions.NEXT: {
         let phraseBuilder = action.payload;
-        let nextIsGoal = state.nextScene === 'Count' || state.nextScene === 'Victory';
+        let nextIsGoal = state.nextScene === 'count';
         return {
-          scene: !state.active ? 'Goal' : state.nextScene,
-          nextScene: nextIsGoal ? 'Goal' : 'Play',
+          scene: !state.active ? 'goal' : state.nextScene,
+          nextScene: nextIsGoal ? 'goal' : 'play',
           round: phraseBuilder ? 0 : state.round + 1,
           active: false,
           goalPhrase: phraseBuilder ? phraseBuilder.build() : state.goalPhrase,
@@ -42,7 +45,10 @@ export class StageState {
         };
       }
       case StageActions.VICTORY: {
-        return new StageState('Victory', 'Goal');
+        return _.defaults({
+          scene: 'victory',
+          nextScene: 'count'
+        }, state);
       }
       case StageActions.PLAY: {
         let [note, beat, tick] = action.payload;
@@ -54,7 +60,7 @@ export class StageState {
       case PlayerActions.UNSET:
       case PlayerActions.PULSES: {
         return _.defaults({
-          active: state.nextScene !== 'Goal'
+          active: state.nextScene !== 'goal'
         }, state);
       }
       default: {

@@ -5,6 +5,7 @@ import { Action } from '@ngrx/store';
 import { Grid as A1Grid } from '../../main/a1/grid/grid.model';
 import { Grid } from '../../a2/main/grid/grid.model';
 import { PlayerActions } from './player.actions';
+import { StageActions } from '../stage/stage.actions';
 import { Surface } from '../surface/surface.model';
 
 export class PlayerState {
@@ -46,6 +47,7 @@ export class PlayerState {
           return state;
         }
       }
+      case StageActions.VICTORY:
       case PlayerActions.UNSELECT: {
         if (!state.selected) {
           return state;

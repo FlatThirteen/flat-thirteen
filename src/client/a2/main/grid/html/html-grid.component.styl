@@ -14,10 +14,8 @@ faces-height = 5vh;
   user-select: none;
   width: 80vw;
 
-.controls-container
-  position: absolute;
-  top: 0;
-  width: 100%;
+.blur
+  filter: blur(3px);
 
 .overlay
   position: absolute;
@@ -26,19 +24,6 @@ faces-height = 5vh;
   right: 0;
   top: 0;
   margin-bottom: 15px;
-
-alpha-blue = alpha(fx-blue, 0.5)
-
-.loop .back-fx
-  box-shadow: 0 0 5px 0 alpha-blue, inset 0 0 150px 0px alpha-blue;
-  animation: burst 500ms linear infinite;
-
-@keyframes burst
-  0%
-    transform: scale(1)
-
-  100%
-    transform: scale(1.5, 5)
 
 .counter-container
   display: flex;
@@ -78,14 +63,15 @@ alpha-blue = alpha(fx-blue, 0.5)
   .strip-container &, /.faces
     background-color: back-blue;
 
-  .goal .strip-container &, /.goal .faces
-    background-color: back-grey;
+    .goal &, .count &, /.goal .faces, /.count .faces
+      background-color: back-grey;
 
 .beat, .face
   transition: background-color 150ms ease-in-out;
 
-.goal .strip-container .beat, .goal .face
-  background-color: main-grey;
+.goal, .count
+  .strip-container .beat, .face
+    background-color: main-grey;
 
 .strip-container .beat:not(:last-child):after
   background-color: #FFF;
@@ -160,10 +146,10 @@ alpha-blue = alpha(fx-blue, 0.5)
     right: eyes-padding;
 
 
-.eyes:hover, .goal .eyes
-  &:before, &:after
-    border: 0;
-    height: 2px;
+  &:hover, .goal &, .count &
+    &:before, &:after
+      border: 0;
+      height: 2px;
 
 .eyes:hover:active
   animation: shake 750ms ease infinite;
@@ -235,14 +221,15 @@ sixteenth-size = 4vw;
   .strip-container .beat &, &.face
     background-color: active-blue;
 
-  .goal .strip-container .beat &, .goal &.face
-    background-color: active-grey;
+  .strip-container .beat &, &.face
+    .goal &, .count &
+      background-color: active-grey;
 
 .pulse
   .strip-container &:not(:last-child)
     border-right: dotted 3px back-blue;
 
-    .goal &
+    .goal &, .count &
       border-right-color: back-grey;
 
   display: inline-flex;
@@ -283,6 +270,9 @@ sixteenth-size = 4vw;
 
   .goal &
     opacity: 0.3;
+
+  &.fx
+    background-color: transparent;
 
 .controls
   align-items: center;
@@ -356,12 +346,40 @@ sixteenth-size = 4vw;
     bottom: 13%;
     height: 3px;
 
-.demo .actual.note, .loop .active .actual.note
-  animation: active;
-  animation-duration: 250ms;
+alpha-blue-dark = alpha(lightness(active-blue, 20%), 0.5);
+alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
 
-  &.on
-    background-color: rgba(0, 0, 0, 1);
+.fx.note
+  &:before, &:after
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+
+.demo, .loop .active, .play .active, .victory .active
+  .actual.note
+    animation: active;
+    animation-duration: 250ms;
+
+  .fx.note
+    animation: burst;
+    animation-duration: 250ms;
+    opacity: 0;
+    position: relative;
+
+    &:before
+      box-shadow: 0 0 15px 3px alpha-blue-dark;
+      left: 7%;
+      top: @left;
+      bottom: @left;
+      right: @left;
+
+    &:after
+      box-shadow: 0 0 20px 4px alpha-blue-dark;
+      left: 15%;
+      top: @left;
+      bottom: @left;
+      right: @left;
+
 
 @keyframes active
   0%
@@ -375,3 +393,17 @@ sixteenth-size = 4vw;
 
   100%
     transform: scale(1);
+
+@keyframes burst
+  0%
+    box-shadow: 0 0 5px 0 alpha-blue-light, inset 0 0 150px 0px alpha-blue-light;
+    transform: scale(1);
+    opacity: 1;
+
+  50%
+    opacity: .7;
+
+  100%
+    box-shadow: 0 0 100px 50px alpha-blue-light, inset 0 0 150px 50px alpha-blue-light;
+    transform: scale(2);
+    opacity: 0;
