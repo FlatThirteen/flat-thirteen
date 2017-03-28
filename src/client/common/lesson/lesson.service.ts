@@ -18,41 +18,41 @@ export class LessonService {
   static getLesson = (state: AppState) => state.lesson;
   static getSurfaces = createSelector(LessonService.getLesson, lesson => lesson && lesson.surfaces);
   static getEnd = createSelector(LessonService.getLesson, lesson => lesson && lesson.end);
-  static getStages = createSelector(LessonService.getLesson, lesson => lesson && lesson.stages);
+  static getStage = createSelector(LessonService.getLesson, lesson => lesson && lesson.stage);
 
   private surfaces$: Observable<Surface[]>;
   private end$: Observable<EndCondition>;
-  private stages$: Observable<number>;
+  private stage$: Observable<number>;
 
-  private surfaces_: Surface[];
+  private _surfaces: Surface[];
   private end: EndCondition;
-  private stages: number;
+  private _stage: number;
 
-  private soundNames_: SoundName[];
-  private initialData_: _.Dictionary<Surface.Data>;
+  private _soundNames: SoundName[];
+  private _initialData: _.Dictionary<Surface.Data>;
 
-  private rhythm_: Rhythm;
-  private minNotes_: number;
-  private maxNotes_: number;
+  private _rhythm: Rhythm;
+  private _minNotes: number;
+  private _maxNotes: number;
 
   constructor(private store: Store<AppState>, private lesson: LessonActions) {
     this.surfaces$ = this.store.select(LessonService.getSurfaces);
     this.end$ = this.store.select(LessonService.getEnd);
-    this.stages$ = this.store.select(LessonService.getStages);
+    this.stage$ = this.store.select(LessonService.getStage);
 
     this.surfaces$.subscribe(surfaces => {
-      this.surfaces_ = surfaces;
-      this.soundNames_ = <SoundName[]>_.flatten(_.map(surfaces, 'soundNames'));
-      this.initialData_ = _.reduce(surfaces, (result, surface) => {
+      this._surfaces = surfaces;
+      this._soundNames = <SoundName[]>_.flatten(_.map(surfaces, 'soundNames'));
+      this._initialData = _.reduce(surfaces, (result, surface) => {
         return _.set(result, surface.id, surface.initialData);
       }, {});
     });
-    this.end$.subscribe(end => { this.end = end });
-    this.stages$.subscribe(stages => { this.stages = stages});
+    this.end$.subscribe(end => { this.end = end; });
+    this.stage$.subscribe(stage => { this._stage = stage; });
 
-    this.rhythm_ = new Rhythm([1, 1, 1, 1]);
-    this.minNotes_ = 3;
-    this.maxNotes_ = 16;
+    this._rhythm = new Rhythm([1, 1, 1, 1]);
+    this._minNotes = 3;
+    this._maxNotes = 16;
   }
 
   init(surfaces: Surface[], end: EndCondition) {
@@ -68,54 +68,58 @@ export class LessonService {
   }
 
   set rhythm(rhythm: Rhythm) {
-    this.rhythm_ = rhythm;
+    this._rhythm = rhythm;
   }
 
   set min(min: number) {
     if (min) {
-      this.minNotes_ = _.clamp(min, 2, this.maxNotes_);
+      this._minNotes = _.clamp(min, 2, this._maxNotes);
     }
   }
 
   set max(max: number) {
     if (max) {
-      this.maxNotes_ = _.clamp(max, this.minNotes_, 16);
+      this._maxNotes = _.clamp(max, this._minNotes, 16);
     }
   }
 
   get surfaces() {
-    return this.surfaces_;
+    return this._surfaces;
+  }
+
+  get stage() {
+    return this._stage;
   }
 
   get soundNames() {
-    return this.soundNames_;
+    return this._soundNames;
   }
 
   get initialData() {
-    return this.initialData_;
+    return this._initialData;
   }
 
   get phraseBuilder() {
-    if (this.end && this.end.stages && this.end.stages <= this.stages) {
+    if (this.end && this.end.stages && this.end.stages <= this._stage) {
       return null;
     }
-    return new MonophonicMonotonePhraseBuilder(this.soundNames_, this.rhythm_,
-        this.minNotes_, this.maxNotes_);
+    return new MonophonicMonotonePhraseBuilder(this._soundNames, this._rhythm,
+        this._minNotes, this._maxNotes);
   }
 
   get pulsesByBeat() {
-    return this.rhythm_.pulsesByBeat;
+    return this._rhythm.pulsesByBeat;
   }
 
   get beatsPerMeasure() {
-    return this.pulsesByBeat.length
+    return this.pulsesByBeat.length;
   }
 
   get supportedPulses() {
-    return this.rhythm_.supportedPulses;
+    return this._rhythm.supportedPulses;
   }
 
   surfaceFor(key: string): Surface {
-    return key ? _.find(this.surfaces_, (surface: Surface) => surface.listens(key)) : null;
+    return key ? _.find(this._surfaces, (surface: Surface) => surface.listens(key)) : null;
   }
 }

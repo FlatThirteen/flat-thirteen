@@ -3,14 +3,18 @@
   height: 100%;
   padding: 2vw 10vw;
   text-align: center;
-
-.info
   display: flex;
   font-size: 5vw;
-  justify-content: space-around;
+  justify-content: space-between;
+
+  .notes, .round, .tempo
+    flex: 1;
+
+  .info
+    display: inline;
 
   .note
-    background-color: #000;
+    background-color: black;
     border-radius: 50%;
     display: inline-block;
     height: 5vw;
@@ -18,3 +22,58 @@
     vertical-align: top;
     width: 5vw;
 
+  .note-count
+    display: inline;
+
+    &.over
+      color: red;
+
+  .round
+    font-size: 2vw;
+
+  .metronome
+    border-bottom: 4vw solid black;
+    border-left: 1vw solid transparent;
+    border-right: 1vw solid transparent;
+    display: inline-block;
+    height: 0;
+    position: relative;
+    width: 2vw;
+
+    .arm
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      height: 3vw;
+      width: 2px;
+      margin-left: -1px;
+      background-color: #EEE;
+
+      &:after
+        content: '';
+        position: absolute;
+        top: 2.5vw;
+        left: 50%;
+        height: 1vw;
+        width: 1vw;
+        margin-left: -.5vw;
+        background-color: #EEE;
+        border-radius: 50%;
+
+
+      &.active
+        animation: tick 1s linear infinite;
+
+@keyframes tick
+  0%, 100%
+    transform: rotate(0);
+  10%, 40%
+    transform: rotate(20deg);
+  20%, 30%
+    transform: rotate(30deg);
+  50%
+    transform: rotate(0);
+  60%, 90%
+    transform: rotate(-20deg);
+  70%, 80%
+    transform: rotate(-30deg);

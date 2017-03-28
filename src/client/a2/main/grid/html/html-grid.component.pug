@@ -23,7 +23,7 @@
             .note([ngClass]="controlNoteClass(key, pulseIndex, pulses)",
                 (click)="player.toggle(key, pulseIndex)")
               | {{player.cursor === pulseIndex ? key : ''}}
-  .faces
+  .faces([class.blur]="stage.isCount")
     .face(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
         [ngClass]="{active: transport.active(beat), cursor: player.beat === beat}")
       .eyes([ngClass]="{left: player.beat + 1 === beat, right: player.beat - 1 === beat}")

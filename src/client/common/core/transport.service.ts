@@ -100,6 +100,10 @@ export class TransportService {
     Tone.Transport.bpm.value = bpm;
   }
 
+  get bpm() {
+    return Tone.Transport.bpm.value;
+  }
+
   start() {
     this.paused = false;
     Tone.Transport.start();

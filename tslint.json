@@ -5,8 +5,7 @@
   "rules": {
     "member-access": false,
     "member-ordering": [
-      true,
-      "static-before-instance"
+      true
     ],
     "no-any": false,
     "no-inferrable-types": false,

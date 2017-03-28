@@ -39,8 +39,8 @@ export class Grid implements Surface {
   }
 
   beatPulseFor(cursor: number): [number, number] {
-    return <[number, number]>_.reduce(this.pulsesByBeat, ([beat, cursor, working], pulses) => {
-      return working && cursor >= pulses ? [beat + 1, cursor - pulses, 1] : [beat, cursor];
+    return <[number, number]>_.reduce(this.pulsesByBeat, ([beat, pulse, working], pulses) => {
+      return working && pulse >= pulses ? [beat + 1, pulse - pulses, 1] : [beat, pulse];
     }, [0, cursor, 1]);
   }
 
@@ -80,5 +80,10 @@ export class GridData implements Surface.Data {
     if (sound) {
       return new Note(sound);
     }
+  }
+
+  noteCount(): number {
+    return _.reduce(this.notes, (sum, note, pulse) =>
+        sum + (note && pulse < this.pulses ? 1 : 0), 0);
   }
 }
