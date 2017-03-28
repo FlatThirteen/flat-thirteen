@@ -4,9 +4,7 @@
   ],
   "rules": {
     "member-access": false,
-    "member-ordering": [
-      true
-    ],
+    "member-ordering": false,
     "no-any": false,
     "no-inferrable-types": false,
     "no-internal-module": true,

@@ -5,13 +5,13 @@ declare let ENV: string;
 import { enableProdMode } from '@angular/core';
 import { platformBrowser } from '@angular/platform-browser';
 
-export function load(AppModuleNgFactory) {
+export function load(appModuleNgFactory) {
   if ('production' === ENV) {
     enableProdMode();
   }
 
   function main() {
-    return platformBrowser().bootstrapModuleFactory(AppModuleNgFactory)
+    return platformBrowser().bootstrapModuleFactory(appModuleNgFactory)
       .catch(err => console.log(err));
   }
 

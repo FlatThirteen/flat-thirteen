@@ -36,6 +36,6 @@ export class StageActions {
     return {
       type: StageActions.PLAY,
       payload: [note, beat, tick]
-    }
+    };
   }
 }

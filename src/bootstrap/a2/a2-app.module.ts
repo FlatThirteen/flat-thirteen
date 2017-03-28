@@ -13,7 +13,7 @@ import { HttpModule } from '@angular/http';
 import { Store } from '@ngrx/store';
 
 import { AppState } from '../../client/common/app.reducer';
-import { HmrAppModule } from "../hmr-app.module";
+import { HmrAppModule } from '../hmr-app.module';
 
 import { A2AppComponent } from '../../client/a2/a2-app.component';
 import { APP_DECLARATIONS } from '../../client/a2/a2-app.config';

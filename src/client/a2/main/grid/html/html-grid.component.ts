@@ -46,17 +46,15 @@ export class HtmlGridComponent implements OnInit {
   }
 
   noteClass(pulses: number) {
-    return noteTypes[pulses];
+    return {
+      1: 'quarter',
+      2: 'eighth',
+      3: 'triplet',
+      4: 'sixteenth'
+    }[pulses];
   }
 
   controlNoteClass(key: string, pulseIndex: number, pulses: number) {
     return this.noteClass(pulses) + (this.player.value(key, pulseIndex) ? ' on' : '');
   }
 }
-
-const noteTypes = {
-  1: 'quarter',
-  2: 'eighth',
-  3: 'triplet',
-  4: 'sixteenth'
-};
