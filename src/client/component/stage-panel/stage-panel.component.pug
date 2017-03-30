@@ -1,13 +1,13 @@
 .container
   .notes
-    .info(*ngIf="stage.goalNotes")
-      .note
-      | =
-      .note-count([ngClass]="{over: player.noteCount > stage.goalNotes}") {{player.noteCount}}
-      | /{{stage.goalNotes}}
+    .note
+    .info
+      .note-count([ngClass]="{over: stage.goalNotes && player.noteCount > stage.goalNotes}") {{player.noteCount}}
+      span(*ngIf="stage.goalNotes") /{{stage.goalNotes}}
+      span(*ngIf="!stage.goalNotes") &nbsp;&nbsp;
   .round
     .info(*ngIf="!stage.isDemo && !stage.isLoop") Stage {{lesson.stage + 1}}
   .tempo
     .metronome
       .arm([class.active]="!transport.paused")
-    .info ={{transport.bpm}}
+    .info {{transport.bpm}}
