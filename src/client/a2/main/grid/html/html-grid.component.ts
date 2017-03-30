@@ -20,11 +20,19 @@ import { TransportService } from '../../../../common/core/transport.service';
 export class HtmlGridComponent implements OnInit {
   @Input() private grid: Grid;
   public gridClass$: Observable<string>;
+  public particleCount$: Observable<number>;
+  public particleType: string;
 
   constructor(public transport: TransportService, public player: PlayerService,
               public stage: StageService) {
     this.gridClass$ = combineLatest(stage.scene$, player.selected$).map(
         ([scene, selected]) => scene + (this.grid.listens(selected) ? ' selected' : ''));
+    this.particleCount$ = stage.scene$.map(scene => {
+      if (scene === 'victory') {
+        this.particleType = 'confetti';
+      }
+      return scene !== 'victory' ? 0 : Math.max(110 - (10 * stage.round), 10);
+    });
   }
 
   ngOnInit() {

@@ -13,6 +13,11 @@
           .fx.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
   .position(*ngIf="stage.showPosition",
       [style.left]="(transport.progress() * 100) + '%'")
+  .faces([class.blur]="stage.isCount")
+    particle-fx([type]="particleType", [count]="particleCount$ | async")
+    .face(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
+        [ngClass]="{active: transport.active(beat), cursor: player.beat === beat}")
+      .eyes([ngClass]="{left: player.beat + 1 === beat, right: player.beat - 1 === beat}")
   .overlay
     .strip(*ngFor="let key of grid.keys")
       .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
@@ -23,10 +28,6 @@
             .note([ngClass]="controlNoteClass(key, pulseIndex, pulses)",
                 (click)="player.toggle(key, pulseIndex)")
               | {{player.cursor === pulseIndex ? key : ''}}
-  .faces([class.blur]="stage.isCount")
-    .face(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
-        [ngClass]="{active: transport.active(beat), cursor: player.beat === beat}")
-      .eyes([ngClass]="{left: player.beat + 1 === beat, right: player.beat - 1 === beat}")
   .counter-container.overlay(*ngIf="stage.isCount || stage.isVictory")
     .counter([class.active]="transport.active()", *ngIf="stage.isCount")
       | {{transport.count()}}

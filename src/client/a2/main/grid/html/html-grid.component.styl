@@ -13,6 +13,7 @@ faces-height = 5vh;
   position: relative;
   user-select: none;
   width: 80vw;
+  max-width: 80vh;
 
 .blur
   filter: blur(3px);
@@ -86,6 +87,15 @@ faces-height = 5vh;
 .faces
   display: flex;
   margin-top: 5px;
+  position: relative;
+
+particle-fx
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: - faces-height 0;
 
 .face
   flex: 1 1 0;
@@ -199,11 +209,6 @@ faces-height = 5vh;
   80%
     transform: translate3D(-.3vw, -.1vh, 0)
 
-quarter-size = 16vw;
-eighth-size = 9vw;
-triplet-size = 6vw;
-sixteenth-size = 4vw;
-
 .beat
   align-items: center;
   display: inline-flex;
@@ -237,36 +242,33 @@ sixteenth-size = 4vw;
   height: 100%;
   position: relative;
 
+note-size(percent, line-adjust = 0)
+  line-height: (percent - line-adjust)vh;
+  height: (percent)vh;
+  width: (percent)vw;
+  max-height: (percent)vw;
+  max-width: (percent)vh;
+
 .quarter
   font-size: 10vh;
-  line-height: quarter-size - 1vw;
-  height: quarter-size;
-  width: quarter-size;
+  note-size(16, 1);
 
 .eighth
   font-size: 6vh;
-  line-height: eighth-size - 1vw;
-  height: eighth-size;
-  width: eighth-size;
+  note-size(9, 1);
 
 .triplet
   font-size: 4vh;
-  line-height: triplet-size;
-  height: triplet-size;
-  width: triplet-size;
+  note-size(6);
 
 .sixteenth
   font-size: 2vh;
-  line-height: sixteenth-size;
-  height: sixteenth-size;
-  width: sixteenth-size;
+  note-size(4);
 
 .note
   background-color: #000;
   border-radius: 50%;
   margin: auto;
-  max-height: 90%;
-  max-width: 90%;
 
   .goal &.actual
     opacity: 0.3;
