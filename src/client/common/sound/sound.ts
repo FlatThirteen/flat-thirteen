@@ -111,19 +111,24 @@ export class CowbellSound implements Sound {
       frequency: 10,
       envelope: {
         attack: 0.001,
-        decay: 1.0,
+        decay: 0.1,
         release: 0.01
       },
       harmonicity: 1.0,
+      modulationIndex: 10,
       volume: -20
     });
     this.hit.chain(Tone.Master);
 
     this.click = new Tone.MembraneSynth({
       pitchDecay: 0.01,
-      octaves: 6,
+      octaves: 1,
       oscillator: { type: 'square4' },
-      envelope: membraneEnvelopeOptions,
+      envelope: {
+        attack: 0.001,
+        sustain: 0.02,
+        decay: 0.1,
+      },
       volume: -10
     });
     this.click.chain(Tone.Master);
