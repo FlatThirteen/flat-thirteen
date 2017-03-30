@@ -11,7 +11,7 @@ export interface EndCondition {
 }
 
 export class LessonState {
-  readonly stages: number = 0;
+  readonly stage: number = 0;
   readonly rounds: number = 0;
 
   constructor(readonly surfaces: Surface[], readonly end: EndCondition) {}
@@ -28,7 +28,7 @@ export class LessonState {
       case LessonActions.ADVANCE: {
         let rounds = action.payload;
         return _.defaults({
-          stages: state.stages + 1,
+          stage: state.stage + 1,
           rounds: state.rounds + rounds
         }, state);
       }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import {Sound, ClickSound, KickSound, SnareSound, Variation, SoundName } from "./sound";
+import { Sound, ClickSound, KickSound, SnareSound, Variation, SoundName } from './sound';
 
 
 @Injectable()

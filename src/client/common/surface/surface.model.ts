@@ -10,5 +10,6 @@ export interface Surface {
 export declare namespace Surface {
   export interface Data {
     noteAt(tick: number): Note;
+    noteCount(): number;
   }
 }

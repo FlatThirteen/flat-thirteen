@@ -3,6 +3,8 @@ import { Action } from '@ngrx/store';
 
 import { LessonService } from '../lesson/lesson.service';
 
+const noAction = { type: null };
+
 @Injectable()
 export class PlayerActions {
 
@@ -29,7 +31,7 @@ export class PlayerActions {
   unselect(): Action {
     return {
       type: PlayerActions.UNSELECT
-    }
+    };
   }
 
   static SET = '[PLAYER] Set';
@@ -59,4 +61,3 @@ export class PlayerActions {
   }
 }
 
-const noAction = { type: null };

@@ -30,6 +30,7 @@ export class PlayerService {
   readonly touched$: Observable<boolean>;
 
   private _data: _.Dictionary<Surface.Data[]>;
+  private _noteCount: number;
   private _selected: string;
   private _beat: number;
   private _cursor: number;
@@ -42,10 +43,19 @@ export class PlayerService {
     this.cursor$ = this.store.select(PlayerService.getCursor);
     this.touched$ = this.store.select(PlayerService.getTouched);
 
-    this.data$.subscribe(data => { this._data = data; });
+    this.data$.subscribe(data => {
+      this._data = data;
+      this._noteCount = _.reduce(_.values(data), (sum, surfaceData: Surface.Data[]) =>
+          sum + _.reduce(surfaceData, (beatSum, beatData: Surface.Data) =>
+          beatSum + beatData.noteCount(), 0), 0);
+    });
     this.selected$.subscribe(selected => { this._selected = selected; });
     this.beat$.subscribe(beat => { this._beat = beat; });
     this.cursor$.subscribe(cursor => { this._cursor = cursor; });
+  }
+
+  get noteCount() {
+    return this._noteCount;
   }
 
   get selected() {

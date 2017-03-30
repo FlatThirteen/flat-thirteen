@@ -100,6 +100,10 @@ export class TransportService {
     Tone.Transport.bpm.value = bpm;
   }
 
+  get bpm() {
+    return Tone.Transport.bpm.value;
+  }
+
   start() {
     this.paused = false;
     Tone.Transport.start();
@@ -112,8 +116,12 @@ export class TransportService {
     Tone.Transport.stop();
     if (shouldDestroy) {
       this.quarterLoop.dispose();
-      this.pulsesPart && this.pulsesPart.dispose();
-      this.onTopId !== undefined && Tone.Transport.clear(this.onTopId);
+      if (this.pulsesPart) {
+        this.pulsesPart.dispose();
+      }
+      if (this.onTopId !== undefined) {
+        Tone.Transport.clear(this.onTopId);
+      }
       this.onPulse = undefined;
     }
   }

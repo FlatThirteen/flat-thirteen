@@ -21,7 +21,7 @@ export class LessonActions {
   reset(): Action {
     return {
       type: LessonActions.RESET
-    }
+    };
   }
 
   static ADVANCE = '[LESSON] Advance';

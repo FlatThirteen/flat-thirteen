@@ -25,7 +25,7 @@ export class Grid implements Surface {
     this.supportedPulses = supportedPulses;
     this.infoByKey = _.transform(shortcutKeysBySound, (result, keys, sound) => {
       _.forEach(keys, (key, beat) => {
-        result[key] = new GridInfo(<SoundName>sound, beat)
+        result[key] = new GridInfo(<SoundName>sound, beat);
       });
     }, <_.Dictionary<GridInfo>>{});
     this.initialData = _.times(this.beats, _.constant(new GridData([], 1)));
@@ -92,5 +92,10 @@ export class GridData implements Surface.Data {
     if (sound) {
       return new Note(sound);
     }
+  }
+
+  noteCount(): number {
+    return _.reduce(this.notes, (sum, note, pulse) =>
+        sum + (note && pulse < this.pulses ? 1 : 0), 0);
   }
 }
