@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 
-export type SoundName = 'click' | 'kick' | 'snare';
+export type SoundName = 'click' | 'kick' | 'snare' | 'cowbell';
 export type Variation = 'normal' | 'light' | 'heavy';
 
 export interface Sound {
@@ -98,6 +98,28 @@ export class ClickSound implements Sound {
         break;
       case 'light':
         this.click.triggerAttackRelease('A5', '16n', time, 0.5);
+    }
+  }
+}
+
+export class CowbellSound implements Sound {
+  hit: Tone.MetalSynth;
+
+  constructor() {
+    this.hit = new Tone.MetalSynth();
+    this.hit.connect(Tone.Master);
+  }
+
+  play(time?: number, variation: Variation = 'normal') {
+    switch (variation) {
+      case 'heavy':
+        this.hit.triggerAttackRelease(0.5, time, 1.0);
+        break;
+      case 'normal':
+        this.hit.triggerAttackRelease(0.5, time, 0.5);
+        break;
+      case 'light':
+        this.hit.triggerAttackRelease(0.5, time, 0.25);
     }
   }
 }
