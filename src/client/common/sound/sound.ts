@@ -126,8 +126,8 @@ export class CowbellSound implements Sound {
       oscillator: { type: 'square4' },
       envelope: {
         attack: 0.001,
-        sustain: 0.02,
-        decay: 0.1,
+        sustain: 0.01,
+        decay: 0.05,
       },
       volume: -10
     });

@@ -49,7 +49,7 @@ export class TransportService {
         return;
       }
       this.beatIndex++;
-      this.sound.play('cowbell', time, this.beat ? 'normal' : 'heavy');
+      this.sound.play('click', time, this.beat ? 'normal' : 'heavy');
 
       if (this.onPulse) {
         this.onPulse(time, this.beatIndex, 0);
