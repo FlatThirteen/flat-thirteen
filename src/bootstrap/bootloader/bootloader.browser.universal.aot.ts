@@ -5,13 +5,13 @@ declare let ENV: string;
 import { enableProdMode } from '@angular/core';
 import { platformUniversalDynamic } from 'angular2-universal';
 
-export function load(AppModuleNgFactory) {
+export function load(appModuleNgFactory) {
   if ('production' === ENV) {
     enableProdMode();
   }
 
   function main() {
-    return platformUniversalDynamic().bootstrapModuleFactory(AppModuleNgFactory)
+    return platformUniversalDynamic().bootstrapModuleFactory(appModuleNgFactory)
       .catch(err => console.log(err));
   }
 

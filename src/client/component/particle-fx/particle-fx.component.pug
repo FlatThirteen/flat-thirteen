@@ -1,0 +1,5 @@
+.container(*ngIf="type", [ngClass]="type")
+  .particle(*ngFor="let particle of particles", [ngClass]="particle.color",
+      [style.top]="particle.top", [style.left]="particle.left",
+      [style.width]="particle.width", [style.height]="particle.height",
+      [style.animation-delay]="particle.animationDelay")

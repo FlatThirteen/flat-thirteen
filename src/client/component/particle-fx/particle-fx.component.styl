@@ -1,0 +1,30 @@
+.container
+  position: relative;
+
+  >.particle
+    position: absolute;
+
+.confetti
+  >.particle
+    opacity: 0;
+    animation: confetti 1s ease-in;
+
+    &.c1
+      background-color: rgba(76,175,80,0.5);
+
+    &.c2
+      background-color: rgba(156,39,176,0.5);
+
+@keyframes confetti
+  0%
+    opacity: 0;
+    transform: translateY(300%) rotate(0deg);
+  10%
+    opacity: 1;
+  35%
+    transform: translateY(0) rotate(270deg);
+  80%
+    opacity: 1;
+  100%
+    opacity: 0;
+    transform: translateY(2000%) rotate(1440deg);

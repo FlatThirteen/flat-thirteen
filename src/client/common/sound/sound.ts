@@ -98,6 +98,8 @@ export class ClickSound implements Sound {
         break;
       case 'light':
         this.click.triggerAttackRelease('A5', '16n', time, 0.5);
+        break;
+      default:
     }
   }
 }

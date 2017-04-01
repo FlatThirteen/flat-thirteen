@@ -4,7 +4,6 @@ import * as _ from 'lodash';
 
 import {Sound, ClickSound, KickSound, SnareSound, CowbellSound, Variation, SoundName } from "./sound";
 
-
 @Injectable()
 export class SoundService {
   readonly sounds: _.Dictionary<Sound> = {

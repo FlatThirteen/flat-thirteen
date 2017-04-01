@@ -4,10 +4,7 @@
   ],
   "rules": {
     "member-access": false,
-    "member-ordering": [
-      true,
-      "static-before-instance"
-    ],
+    "member-ordering": false,
     "no-any": false,
     "no-inferrable-types": false,
     "no-internal-module": true,
