@@ -1,14 +1,18 @@
 .container
   background-color: #EEE;
   height: 100%;
-  padding: 2vw 10vw;
-  text-align: center;
+  padding: 2vh 10vw;
   display: flex;
-  font-size: 5vw;
+  font-size: 8vh;
+  line-height: 7vh;
   justify-content: space-between;
+  text-align: center;
 
   .notes, .round, .tempo
     flex: 1;
+
+  .note, .metronome
+    vertical-align: bottom;
 
   .info
     display: inline;
@@ -17,10 +21,9 @@
     background-color: black;
     border-radius: 50%;
     display: inline-block;
-    height: 5vw;
-    margin-right: 1vw;
-    vertical-align: top;
-    width: 5vw;
+    height: 8vh;
+    margin-right: 1vh;
+    width: 8vh;
 
   .note-count
     display: inline;
@@ -29,22 +32,22 @@
       color: red;
 
   .round
-    font-size: 2vw;
-
+    font-size: 4vh;
+    
   .metronome
-    border-bottom: 4vw solid black;
-    border-left: 1vw solid transparent;
-    border-right: 1vw solid transparent;
+    border-bottom: 8vh solid black;
+    border-left: 2vh solid transparent;
+    border-right: 2vh solid transparent;
     display: inline-block;
     height: 0;
     position: relative;
-    width: 2vw;
+    width: 4vh;
 
     .arm
       position: absolute;
       top: 3px;
       left: 50%;
-      height: 3vw;
+      height: 6vh;
       width: 2px;
       margin-left: -1px;
       background-color: #EEE;
@@ -52,11 +55,11 @@
       &:after
         content: '';
         position: absolute;
-        top: 2.5vw;
+        top: 5vh;
         left: 50%;
-        height: 1vw;
-        width: 1vw;
-        margin-left: -.5vw;
+        height: 2vh;
+        width: 2vh;
+        margin-left: -1vh;
         background-color: #EEE;
         border-radius: 50%;
 
