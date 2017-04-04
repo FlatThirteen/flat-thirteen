@@ -1,6 +1,6 @@
 import * as Tone from 'tone';
 
-export type SoundName = 'click' | 'kick' | 'snare';
+export type SoundName = 'click' | 'kick' | 'snare' | 'cowbell';
 export type Variation = 'normal' | 'light' | 'heavy';
 
 export interface Sound {
@@ -100,6 +100,55 @@ export class ClickSound implements Sound {
         this.click.triggerAttackRelease('A5', '16n', time, 0.5);
         break;
       default:
+    }
+  }
+}
+
+export class CowbellSound implements Sound {
+  hit: Tone.MetalSynth;
+  click: Tone.MembraneSynth;
+
+  constructor() {
+    this.hit = new Tone.MetalSynth({
+      frequency: 10,
+      envelope: {
+        attack: 0.001,
+        decay: 0.1,
+        release: 0.01
+      },
+      harmonicity: 1.0,
+      modulationIndex: 10,
+      volume: -20
+    });
+    this.hit.chain(Tone.Master);
+
+    this.click = new Tone.MembraneSynth({
+      pitchDecay: 0.01,
+      octaves: 1,
+      oscillator: { type: 'square4' },
+      envelope: {
+        attack: 0.001,
+        sustain: 0.01,
+        decay: 0.05,
+      },
+      volume: -10
+    });
+    this.click.chain(Tone.Master);
+  }
+
+  play(time?: number, variation: Variation = 'normal') {
+    switch (variation) {
+      case 'heavy':
+        this.hit.triggerAttackRelease(0.5, time, 1.0);
+        this.click.triggerAttackRelease('A6', '16n', time);
+        break;
+      case 'normal':
+        this.hit.triggerAttackRelease(0.5, time, 0.5);
+        this.click.triggerAttackRelease('A5', '16n', time);
+        break;
+      case 'light':
+        this.hit.triggerAttackRelease(0.5, time, 0.25);
+        this.click.triggerAttackRelease('A5', '16n', time, 0.5);
     }
   }
 }
