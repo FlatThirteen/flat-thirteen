@@ -1,0 +1,36 @@
+primary-blue = #008FFF;
+
+.ball-container
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  .ball
+    background-color: primary-blue;
+    border-radius: 50%;
+    bottom: 150%;
+    height: 3vw;
+    margin-left: -0.5 * @height;
+    opacity: 0;
+    position: absolute;
+    transform-origin: bottom;
+    width: @height;
+    animation: bouncing ease-in infinite;
+    transition: all cubic-bezier(0.81, 0.16, 0.38, 0.56);
+
+    &.active
+      bottom: 0;
+      opacity: 1;
+
+
+@keyframes bouncing
+  0%, 100%
+    transform: translateY(1vh) scale(0.8, 1.2);
+  30%
+    transform: translateY(-9vh) scale(0.9, 1.1);
+  40%
+    transform: translateY(-10vh) scale(1.1, 0.9);
+  80%
+    transform: translateY(0.5vh) scale(0.9, 1.1);
+  90%
+    transform: translateY(1vh) scale(1.2, 0.6);

@@ -106,7 +106,7 @@ export class TransportService {
 
   start() {
     this.paused = false;
-    Tone.Transport.start();
+    Tone.Transport.start('+4n');
   }
 
   stop(shouldDestroy: boolean = false) {
@@ -132,6 +132,10 @@ export class TransportService {
 
   counts() {
     return _.times(this.numBeats);
+  }
+
+  lastBeat() {
+    return this.beatIndex === this.numBeats - 1;
   }
 
   progress() {
