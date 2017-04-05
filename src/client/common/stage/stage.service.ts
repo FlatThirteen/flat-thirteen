@@ -34,7 +34,7 @@ export class StageService {
   private _scene: StageScene;
   private nextScene: StageScene;
   private _round: number;
-  private active: boolean;
+  private _active: boolean;
   private goalPhrase: Phrase;
   private playedPhrase: Phrase;
   private _goalPlayed: boolean;
@@ -52,7 +52,7 @@ export class StageService {
     this.scene$.subscribe(scene => { this._scene = scene; });
     this.nextScene$.subscribe(nextScene => { this.nextScene = nextScene; });
     this.round$.subscribe(round => { this._round = round; });
-    this.active$.subscribe(active => { this.active = active; });
+    this.active$.subscribe(active => { this._active = active; });
     this.goalPhrase$.subscribe(goalPhrase => {
       this.goalPhrase = goalPhrase;
       this._goalPlayed = false;
@@ -101,6 +101,10 @@ export class StageService {
     }
   }
 
+  get active() {
+    return this._active;
+  }
+
   get round() {
     return this._round;
   }
@@ -127,6 +131,10 @@ export class StageService {
 
   get isVictory() {
     return this._scene === 'victory';
+  }
+
+  showBall(lastBeat: boolean) {
+    return this.isLoop || (lastBeat ? this.nextScene === 'play' : this._scene === 'play');
   }
 
   get showPosition() {

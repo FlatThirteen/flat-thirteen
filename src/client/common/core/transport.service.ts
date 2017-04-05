@@ -4,12 +4,20 @@ import * as _ from 'lodash';
 import * as Tone from 'tone';
 
 import { SoundService } from '../sound/sound.service';
+import { Subject } from 'rxjs';
 
 export const ticksPerBeat = Tone.Transport.PPQ; // 192
 const livePlayWithin: number = 0.3;
 
 export function ticks(pulse: number, pulses: number) {
   return pulse * ticksPerBeat / pulses;
+}
+
+export class Pulse {
+  time: number;
+  beat: number;
+  nextBeat: number;
+  tick: number;
 }
 
 @Injectable()
@@ -20,6 +28,10 @@ export class TransportService {
   beatsPerMeasure: number[];
   numBeats: number;
   supportedTicks: number[];
+
+  paused$: Subject<boolean> = new Subject();
+  pulse$: Subject<Pulse> = new Subject();
+  lastBeat$: Subject<boolean> = new Subject();
 
   measure: number = 0;
   beat: number = 0;
@@ -51,9 +63,16 @@ export class TransportService {
       this.beatIndex++;
       this.sound.play('click', time, this.beat ? 'normal' : 'heavy');
 
+      this.pulse$.next({
+        time: time,
+        beat: this.beatIndex,
+        nextBeat: this.nextBeat(),
+        tick: 0
+      });
       if (this.onPulse) {
         this.onPulse(time, this.beatIndex, 0);
       }
+      this.lastBeat$.next(this.lastBeat());
 
       this.beat++;
       if (this.beat === beatsPerMeasure[this.measure]) {
@@ -72,6 +91,12 @@ export class TransportService {
     }, {});
     this.supportedTicks = <number[]>_.sortBy(_.values(tickEvents));
     this.pulsesPart = new Tone.Part((time: number, tick) => {
+      this.pulse$.next({
+        time: time,
+        beat: this.beatIndex,
+        nextBeat: this.nextBeat(),
+        tick: tick
+      });
       if (this.onPulse) {
         this.onPulse(time, this.beatIndex, tick);
       }
@@ -106,11 +131,13 @@ export class TransportService {
 
   start() {
     this.paused = false;
-    Tone.Transport.start();
+    this.paused$.next(false);
+    Tone.Transport.start('+4n');
   }
 
   stop(shouldDestroy: boolean = false) {
     this.paused = true;
+    this.paused$.next(true);
     this.measure = 0;
     this.beat = 0;
     Tone.Transport.stop();
@@ -132,6 +159,14 @@ export class TransportService {
 
   counts() {
     return _.times(this.numBeats);
+  }
+
+  nextBeat() {
+    return this.beatIndex === this.numBeats - 1 ? 0 : this.beatIndex + 1;
+  }
+
+  lastBeat() {
+    return this.beatIndex === this.numBeats - 1;
   }
 
   progress() {

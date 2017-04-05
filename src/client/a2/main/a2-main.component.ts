@@ -31,9 +31,9 @@ export class A2MainComponent implements OnInit, OnDestroy {
               public player: PlayerService, public stage: StageService,
               public lesson: LessonService) {
     this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
-        ([scene, active, touched]) => scene === 'goal' && active ? 'waiting' :
-        scene === 'goal' && !touched ? 'just' :
-        (scene === 'demo' || scene === 'goal') && touched ? 'enable' : '');
+        ([scene, active, touched]) =>
+          scene === 'goal' && active && !this.transport.lastBeat() ? 'waiting' :
+          scene === 'goal' && !active || scene === 'demo' && touched ? 'enable' : '');
   }
 
   /**
@@ -50,7 +50,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
 
     this.transport.setOnTop((time) => this.onTop());
-    this.transport.setOnPulse((time, beat, pulse) => this.stage.pulse(time, beat, pulse));
+    this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
@@ -82,13 +82,17 @@ export class A2MainComponent implements OnInit, OnDestroy {
     }
   }
 
+  start() {
+    this.transport.start();
+  }
+
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') { // Enter: Start/stop
       this.lesson.reset();
       if (this.transport.paused) {
         this.player.init();
-        this.transport.start();
+        this.start();
       } else {
         this.transport.stop();
       }
@@ -113,7 +117,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
 
   onListen() {
     if (this.transport.paused) {
-      this.transport.start();
+      this.start();
     }
     this.stage.listen();
   }
@@ -121,7 +125,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
   onStart() {
     this.lesson.reset();
     this.player.init();
-    this.transport.start();
+    this.start();
   }
 
   onStop() {
