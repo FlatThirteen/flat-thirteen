@@ -3,8 +3,6 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { Ball } from '../../component/bouncing-ball/bouncing-ball.component';
-
 import { Grid } from './grid/grid.model';
 import { LessonService } from '../../common/lesson/lesson.service';
 import { PlayerService } from '../../common/player/player.service';
@@ -28,7 +26,6 @@ let requestAnimationFrameId: number;
 export class A2MainComponent implements OnInit, OnDestroy {
   public listenClass$: Observable<string>;
   public showStart: boolean = false;
-  public ball: Ball;
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
@@ -53,7 +50,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
 
     this.transport.setOnTop((time) => this.onTop());
-    this.transport.setOnPulse((time, beat, tick) => this.onPulse(time, beat, tick));
+    this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
@@ -85,24 +82,8 @@ export class A2MainComponent implements OnInit, OnDestroy {
     }
   }
 
-  onPulse(time, beat, tick) {
-    this.stage.pulse(time, beat, tick);
-    if (!tick) {
-      let showBall = this.stage.showBall(this.transport.lastBeat());
-      this.ball = {
-        active: showBall,
-        beat: !showBall ? beat :
-          beat === this.lesson.beatsPerMeasure - 1 ? 0 : beat + 1
-      };
-    }
-  }
-
   start() {
     this.transport.start();
-    this.ball = {
-      active: false,
-      beat: 0
-    }
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -137,12 +118,6 @@ export class A2MainComponent implements OnInit, OnDestroy {
   onListen() {
     if (this.transport.paused) {
       this.start();
-      setTimeout(() => {
-        this.ball = {
-          active: true,
-          beat: 0
-        }
-      }, 10);
     }
     this.stage.listen();
   }
@@ -156,10 +131,6 @@ export class A2MainComponent implements OnInit, OnDestroy {
   onStop() {
     this.transport.stop();
     this.lesson.reset();
-    this.ball = {
-      active: false
-    };
-    setTimeout(() => { this.ball = null; }, 100);
   }
 
   isGrid(surface: Surface) {

@@ -15,8 +15,10 @@ primary-blue = #008FFF;
     position: absolute;
     transform-origin: bottom;
     width: @height;
-    animation: bouncing ease-in infinite;
     transition: all cubic-bezier(0.81, 0.16, 0.38, 0.56);
+
+    &.calibrate
+      animation: bouncing ease-in infinite;
 
     &.active
       bottom: 0;
