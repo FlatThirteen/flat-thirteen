@@ -1,17 +1,14 @@
-import { Injectable } from '@angular/core';
-
 import * as _ from 'lodash';
 import * as Tone from 'tone';
 
-import { SoundService } from '../sound/sound.service';
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export const ticksPerBeat = Tone.Transport.PPQ; // 192
-const livePlayWithin: number = 0.3;
+import { SoundService } from '../sound/sound.service';
+import { ticksPerBeat, ticks } from './beat-tick.model';
 
-export function ticks(pulse: number, pulses: number) {
-  return pulse * ticksPerBeat / pulses;
-}
+const supportedPulses = [3, 4];
+const livePlayWithin: number = 0.3;
 
 export class Pulse {
   time: number;
@@ -44,8 +41,7 @@ export class TransportService {
 
   constructor(private sound: SoundService) {}
 
-  reset(beatsPerMeasure: number[] = [4],
-        supportedPulses: number[] = [1]) {
+  reset(beatsPerMeasure: number[] = [4]) {
     this.beatsPerMeasure = beatsPerMeasure;
     this.numBeats = _.sum(beatsPerMeasure);
 
@@ -61,7 +57,7 @@ export class TransportService {
         return;
       }
       this.beatIndex++;
-      this.sound.play('click', time, this.beat ? 'normal' : 'heavy');
+      this.sound.play('click', time, {variation: this.beat ? 'normal' : 'heavy'});
 
       this.pulse$.next({
         time: time,
@@ -121,7 +117,7 @@ export class TransportService {
     this.onPulse = callback;
   }
 
-  setBpm(bpm: number) {
+  set bpm(bpm: number) {
     Tone.Transport.bpm.value = bpm;
   }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import {Sound, ClickSound, KickSound, SnareSound, CowbellSound, Variation, SoundName } from "./sound";
+import { Sound, ClickSound, KickSound, SnareSound, CowbellSound, SoundName, Params } from "./sound";
 
 @Injectable()
 export class SoundService {
@@ -13,10 +13,10 @@ export class SoundService {
     cowbell: new CowbellSound()
   };
 
-  play(soundName: SoundName, time?: number, variation?: Variation) {
+  play(soundName: SoundName, time?: number, params?: Params) {
     let sound = this.sounds[soundName];
     if (sound) {
-      sound.play(time, variation);
+      sound.play(time, params);
     } else {
       throw new Error('Invalid sound: ' + soundName);
     }

@@ -1,12 +1,6 @@
 import * as _ from 'lodash';
 
-import { ticks } from './transport.service';
-
-export type BeatTick = string; // 'b:ttt', e.g. '0:048', '3:096'
-
-export function mapKey(beat: number, tick: number): BeatTick {
-  return beat + ':' + _.padStart(tick.toString(), 3, '0');
-}
+import { BeatTick, ticks, beatTickFrom } from './beat-tick.model';
 
 export class Rhythm {
   private readonly map: _.Dictionary<number>;
@@ -18,11 +12,11 @@ export class Rhythm {
   constructor(private readonly timings: _.List<number | number[]>) {
     this.map = _.reduce(timings, (result, probabilities: number | number[], beat: number) => {
       if (_.isNumber(probabilities)) {
-        result[mapKey(beat, 0)] = probabilities;
+        result[beatTickFrom(beat, 0)] = probabilities;
       } else {
         let pulses = probabilities.length;
         _.each(probabilities, (probability: number, pulse: number) => {
-          result[mapKey(beat, ticks(pulse, pulses))] = probability;
+          result[beatTickFrom(beat, ticks(pulse, pulses))] = probability;
         });
       }
       return result;

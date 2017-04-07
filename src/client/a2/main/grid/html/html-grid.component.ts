@@ -31,7 +31,7 @@ export class HtmlGridComponent implements OnInit {
       if (scene === 'victory') {
         this.particleType = 'confetti';
       }
-      return scene !== 'victory' ? 0 : Math.max(110 - (10 * stage.round), 10);
+      return scene !== 'victory' ? 0 : stage.basePoints;
     });
   }
 
