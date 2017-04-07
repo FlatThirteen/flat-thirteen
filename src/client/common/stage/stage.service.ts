@@ -23,6 +23,7 @@ export class StageService {
   static getActive = createSelector(StageService.getStage, stage => stage && stage.active);
   static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
   static getPlayedPhrase = createSelector(StageService.getStage, stage => stage && stage.playedPhrase);
+  static getVictoryPhrase = createSelector(StageService.getStage, stage => stage && stage.victoryPhrase);
 
   readonly scene$: Observable<StageScene>;
   readonly nextScene$: Observable<StageScene>;
@@ -30,6 +31,7 @@ export class StageService {
   readonly active$: Observable<boolean>;
   readonly goalPhrase$: Observable<Phrase>;
   readonly playedPhrase$: Observable<Phrase>;
+  readonly victoryPhrase$: Observable<Phrase>;
 
   private _scene: StageScene;
   private nextScene: StageScene;
@@ -37,6 +39,7 @@ export class StageService {
   private _active: boolean;
   private goalPhrase: Phrase;
   private playedPhrase: Phrase;
+  private victoryPhrase: Phrase;
   private _goalPlayed: boolean;
   private _goalNotes: number;
 
@@ -48,6 +51,7 @@ export class StageService {
     this.active$ = this.store.select(StageService.getActive);
     this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
     this.playedPhrase$ = this.store.select(StageService.getPlayedPhrase);
+    this.victoryPhrase$ = this.store.select(StageService.getVictoryPhrase);
 
     this.scene$.subscribe(scene => { this._scene = scene; });
     this.nextScene$.subscribe(nextScene => { this.nextScene = nextScene; });
@@ -62,6 +66,9 @@ export class StageService {
       this.playedPhrase = playedPhrase;
       this._goalPlayed = playedPhrase && _.isEqual(this.goalPhrase, this.playedPhrase);
     });
+    this.victoryPhrase$.subscribe(victoryPhrase => {
+      this.victoryPhrase = victoryPhrase;
+    });
   }
 
   listen() {
@@ -73,7 +80,7 @@ export class StageService {
   }
 
   victory() {
-    this.store.dispatch(this.stage.victory());
+    this.store.dispatch(this.stage.victory(this.basePoints));
   }
 
   play(note: Note, beat: number, tick: number, time?: number) {
@@ -82,22 +89,32 @@ export class StageService {
   }
 
   pulse(time: number, beat: number, tick: number) {
-    if (this._scene === 'goal' || this._scene === 'victory') {
-      for (let note of this.goalPhrase.getNotes(beat, tick)) {
-        this.sound.play(note.soundName, time);
-      }
-    } else if (this._scene === 'play') {
-      _.forEach(this.player.notesAt(beat, tick), note => {
-        if (note) {
-          this.play(note, beat, tick, time);
+    switch (this._scene) {
+      case 'victory':
+        for (let note of this.victoryPhrase.getNotes(beat, tick)) {
+          this.sound.play(note.soundName, time, note.params);
         }
-      });
-    } else if (this._scene === 'loop') {
-      _.forEach(this.player.notesAt(beat, tick), note => {
-        if (note) {
+        // falls through
+      case 'goal':
+        for (let note of this.goalPhrase.getNotes(beat, tick)) {
           this.sound.play(note.soundName, time);
         }
-      });
+        break;
+      case 'play':
+        _.forEach(this.player.notesAt(beat, tick), note => {
+          if (note) {
+            this.play(note, beat, tick, time);
+          }
+        });
+        break;
+      case 'loop':
+        _.forEach(this.player.notesAt(beat, tick), note => {
+          if (note) {
+            this.sound.play(note.soundName, time);
+          }
+        });
+        break;
+      default:
     }
   }
 
@@ -147,5 +164,9 @@ export class StageService {
 
   get goalNotes() {
     return this._goalNotes;
+  }
+
+  get basePoints() {
+    return Math.max(110 - (10 * this._round), 10);
   }
 }

@@ -42,7 +42,7 @@ export class A1Component implements OnInit, OnDestroy {
       4, this.lesson.supportedPulses);
     this.lesson.init([grid], {});
     this.player.init();
-    this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
+    this.transport.reset([this.lesson.beatsPerMeasure]);
 
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, pulse) => this.onPulse(time, beat, pulse));

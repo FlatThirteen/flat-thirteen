@@ -47,7 +47,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
     this.lesson.init([grid], {stages: 5});
     this.player.init();
-    this.transport.reset([this.lesson.beatsPerMeasure], this.lesson.supportedPulses);
+    this.transport.reset([this.lesson.beatsPerMeasure]);
 
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));

@@ -3,17 +3,25 @@ import * as Tone from 'tone';
 export type SoundName = 'click' | 'kick' | 'snare' | 'cowbell';
 export type Variation = 'normal' | 'light' | 'heavy';
 
+export interface Params {
+  variation?: Variation;
+  pitch?: string;
+  duration?: string;
+}
+
 export interface Sound {
-  play(time?: number, variation?: Variation): any;
+  play(time?: number, params?: Params): any;
 }
 
 export class Note {
   constructor(public readonly soundName: SoundName,
-              public readonly variation?: Variation) {}
+              public readonly params: Params = {}) {}
 
   toString(): string {
-    let accent = this.variation === 'heavy' ? '>' : this.variation === 'light' ? '*' : '';
-    return this.soundName + accent;
+    let pitch = this.params.pitch ? '(' + this.params.pitch + ')' : '';
+    let accent = this.params.variation === 'heavy' ? '>' :
+        this.params.variation === 'light' ? '*' : '';
+    return accent + this.soundName + pitch;
   }
 }
 
@@ -88,18 +96,16 @@ export class ClickSound implements Sound {
     this.click.connect(Tone.Master);
   }
 
-  play(time?: number, variation: Variation = 'normal') {
-    switch (variation) {
+  play(time?: number, params: Params = {variation: 'normal'}) {
+    switch (params.variation) {
       case 'heavy':
         this.click.triggerAttackRelease('A6', '16n', time);
-        break;
-      case 'normal':
-        this.click.triggerAttackRelease('A5', '16n', time);
         break;
       case 'light':
         this.click.triggerAttackRelease('A5', '16n', time, 0.5);
         break;
       default:
+        this.click.triggerAttackRelease('A5', '16n', time);
     }
   }
 }
@@ -118,7 +124,7 @@ export class CowbellSound implements Sound {
       },
       harmonicity: 1.0,
       modulationIndex: 10,
-      volume: -20
+      volume: -10
     });
     this.hit.chain(Tone.Master);
 
@@ -131,24 +137,24 @@ export class CowbellSound implements Sound {
         sustain: 0.01,
         decay: 0.05,
       },
-      volume: -10
+      volume: 0
     });
     this.click.chain(Tone.Master);
   }
 
-  play(time?: number, variation: Variation = 'normal') {
-    switch (variation) {
+  play(time?: number, params: Params = {pitch: 'A5', variation: 'normal'}) {
+    switch (params.variation) {
       case 'heavy':
         this.hit.triggerAttackRelease(0.5, time, 1.0);
-        this.click.triggerAttackRelease('A6', '16n', time);
-        break;
-      case 'normal':
-        this.hit.triggerAttackRelease(0.5, time, 0.5);
-        this.click.triggerAttackRelease('A5', '16n', time);
+        this.click.triggerAttackRelease(params.pitch, '16n', time);
         break;
       case 'light':
-        this.hit.triggerAttackRelease(0.5, time, 0.25);
-        this.click.triggerAttackRelease('A5', '16n', time, 0.5);
+        this.hit.triggerAttackRelease(0.5, time, 0.50);
+        this.click.triggerAttackRelease(params.pitch, '16n', time);
+        break;
+      default:
+        this.hit.triggerAttackRelease(0.5, time, 1.0);
+        this.click.triggerAttackRelease(params.pitch, '16n', time, 0.8);
     }
   }
 }

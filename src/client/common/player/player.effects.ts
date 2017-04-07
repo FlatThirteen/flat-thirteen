@@ -7,7 +7,8 @@ import { Note } from '../sound/sound';
 import { PlayerActions } from './player.actions';
 import { SoundService } from '../sound/sound.service';
 import { StageService } from '../stage/stage.service';
-import { TransportService, ticks } from '../core/transport.service';
+import { TransportService } from '../core/transport.service';
+import { ticks } from '../core/beat-tick.model';
 
 @Injectable()
 export class PlayerEffects {

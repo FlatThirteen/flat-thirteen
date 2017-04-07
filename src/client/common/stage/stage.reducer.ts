@@ -5,6 +5,7 @@ import { LessonActions } from '../lesson/lesson.actions';
 import { Phrase } from '../phrase/phrase.model';
 import { PlayerActions } from '../player/player.actions';
 import { StageActions } from './stage.actions';
+import { VictoryPhraseBuilder } from '../phrase/victory.phrase';
 
 export type StageScene = 'demo' | 'loop' | 'count' | 'goal' | 'play' | 'victory';
 
@@ -13,6 +14,7 @@ export class StageState {
   readonly active: boolean = true;
   readonly goalPhrase: Phrase = null;
   readonly playedPhrase: Phrase = null;
+  readonly victoryPhrase: Phrase = null;
 
   constructor(readonly scene: StageScene, readonly nextScene: StageScene) {}
 
@@ -43,13 +45,16 @@ export class StageState {
           round: phraseBuilder ? 0 : state.round + 1,
           active: false,
           goalPhrase: phraseBuilder ? phraseBuilder.build() : state.goalPhrase,
-          playedPhrase: new Phrase()
+          playedPhrase: new Phrase(),
+          victoryPhrase: null
         };
       }
       case StageActions.VICTORY: {
+        let basePoints = action.payload;
         return _.defaults({
           scene: 'victory',
-          nextScene: 'count'
+          nextScene: 'count',
+          victoryPhrase: new VictoryPhraseBuilder(basePoints / 10).build()
         }, state);
       }
       case StageActions.PLAY: {

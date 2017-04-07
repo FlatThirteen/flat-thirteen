@@ -25,9 +25,10 @@ export class StageActions {
   }
 
   static VICTORY = '[STAGE] Victory';
-  victory(): Action {
+  victory(basePoints: number): Action {
     return {
-      type: StageActions.VICTORY
+      type: StageActions.VICTORY,
+      payload: basePoints
     };
   }
 

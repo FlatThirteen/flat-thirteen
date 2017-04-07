@@ -1,7 +1,8 @@
 import * as _ from 'lodash';
 
 import { SoundName, Note } from '../sound/sound';
-import { Rhythm, BeatTick, mapKey } from '../core/rhythm.model';
+import { BeatTick, beatTickFrom } from '../core/beat-tick.model';
+import { Rhythm } from '../core/rhythm.model';
 
 export class Phrase {
   private notes: _.Dictionary<Note[]>;
@@ -14,7 +15,7 @@ export class Phrase {
 
   add(note: Note, beatTick: BeatTick | number, tick?: number) {
     if (_.isNumber(beatTick)) {
-      beatTick = mapKey(beatTick, tick);
+      beatTick = beatTickFrom(beatTick, tick);
     }
     if (this.notes[beatTick]) {
       this.notes[beatTick].push(note);
@@ -26,7 +27,7 @@ export class Phrase {
   }
 
   getNotes(beat: number, tick: number = 0): Note[] {
-    return this.notes[mapKey(beat, tick)] || [];
+    return this.notes[beatTickFrom(beat, tick)] || [];
   }
 
   numNotes(beatTick?: BeatTick): number {
