@@ -145,7 +145,8 @@ export class PlayerService {
   }
 
   notesAt(beat: number, tick: number): Note[] {
-    return _.map(_.values(this._data), (data: Surface.Data[]) => data[beat].noteAt(tick));
+    return _.filter(_.map(_.values(this._data),
+        (data: Surface.Data[]) => data[beat].noteAt(tick)));
   }
 
   toggle(key: string, cursor?: number) {
