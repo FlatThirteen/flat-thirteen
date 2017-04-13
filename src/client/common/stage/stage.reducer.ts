@@ -70,8 +70,7 @@ export class StageState {
         }, state);
       }
       case PlayerActions.SET:
-      case PlayerActions.UNSET:
-      case PlayerActions.PULSES: {
+      case PlayerActions.UNSET: {
         return _.defaults({
           active: true,
           nextScene: state.scene === 'loop' ? 'loop' : 'play'

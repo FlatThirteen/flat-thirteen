@@ -1,7 +1,0 @@
-<header></header>
-<div class="surface" *ngFor="let surface of lesson.surfaces; let i = index">
-  <html-grid *ngIf="isGrid(surface) && renderer==='html'" [grid]="surface"></html-grid>
-  <pixi-grid *ngIf="isGrid(surface) && renderer==='pixi'" [grid]="surface"></pixi-grid>
-</div>
-<stage-panel></stage-panel>
-

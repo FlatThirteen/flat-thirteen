@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 
 import { Action } from '@ngrx/store';
 
-import { Grid as A1Grid } from '../../main/a1/grid/grid.model';
 import { Grid } from '../../a2/main/grid/grid.model';
 import { PlayerActions } from './player.actions';
 import { StageActions } from '../stage/stage.actions';
@@ -36,13 +35,6 @@ export class PlayerState {
             beat: beat,
             cursor: cursor
           }, state);
-        } else if (surface instanceof A1Grid) {
-          let beat = surface.infoFor(key).beat;
-          return <PlayerState>_.defaults({
-            selected: key,
-            beat: beat,
-            cursor: state.beat === beat ? state.cursor : 0
-          }, state);
         } else {
           return state;
         }
@@ -67,14 +59,6 @@ export class PlayerState {
             data: surface.set(data, key, cursor),
             touched: true
           }, state);
-        } else if (surface instanceof A1Grid) {
-          let [info, data] = surface.infoDataFor(key, state.data);
-          return <PlayerState>_.defaultsDeep({
-            selected: key,
-            beat: info.beat,
-            cursor: surface.advanceCursor(data, cursor),
-            data: surface.set(info, data, cursor),
-          }, state);
         } else {
           return state;
         }
@@ -88,24 +72,6 @@ export class PlayerState {
           return <PlayerState>_.defaultsDeep({
             cursor: cursor,
             data: surface.unset(data, cursor)
-          }, state);
-        } else if (surface instanceof A1Grid) {
-          let [info, data] = surface.infoDataFor(key, state.data);
-          return <PlayerState>_.defaultsDeep({
-            cursor: surface.advanceCursor(data, cursor),
-            data: surface.unset(info, data, cursor)
-          }, state);
-        } else {
-          return state;
-        }
-      }
-      case PlayerActions.PULSES: {
-        let [surface, key, pulses] = action.payload;
-        if (surface instanceof A1Grid) {
-          let [info, data] = surface.infoDataFor(key, state.data);
-          return <PlayerState>_.defaultsDeep({
-            cursor: 0,
-            data: surface.setPulses(info, pulses, data)
           }, state);
         } else {
           return state;

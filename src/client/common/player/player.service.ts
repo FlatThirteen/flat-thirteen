@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../app.reducer';
-import { Grid as A1Grid } from '../../main/a1/grid/grid.model';
 import { Grid } from '../../a2/main/grid/grid.model';
 import { LessonService } from '../lesson/lesson.service';
 import { Observable } from 'rxjs';
@@ -90,13 +89,6 @@ export class PlayerService {
     if (surface instanceof Grid) {
       // Send pulsesByBeat so player effect knows cursor is calculated from
       pulses = surface.pulsesByBeat;
-    } else if (surface instanceof A1Grid) {
-      let [info, data] = surface.infoDataFor(key, this._data);
-      if (info.beat !== this._beat) {
-        // Reset cursor ahead of action dispatch so player effect gets it
-        cursor = 0;
-      }
-      pulses = data.pulses;
     }
     if (surface) {
       this.store.dispatch(this.player.set(key, cursor, pulses));
@@ -108,28 +100,8 @@ export class PlayerService {
     this.store.dispatch(this.player.unset(key, cursor));
   }
 
-  pulses(key: string, pulses?: number) {
-    if (pulses) {
-      this.store.dispatch(this.player.pulses(key, pulses));
-    } else {
-      let surface = this.lesson.surfaceFor(key);
-      if (surface instanceof A1Grid) {
-        let data = surface.infoDataFor(key, this._data)[1];
-        return data.pulses;
-      }
-    }
-  }
-
   isSelected(beat: number) {
     return this._beat === beat;
-  }
-
-  isPulses(beat: number, pulses: number) {
-    let surface = this.lesson.surfaceFor(this._selected);
-    if (surface instanceof A1Grid) {
-      let [info, data] = surface.infoDataFor(this._selected, this._data);
-      return info.beat === beat && data.pulses === pulses;
-    }
   }
 
   value(key: string, cursor: number = 0): boolean {
@@ -138,9 +110,6 @@ export class PlayerService {
       let [beat, pulse] = surface.beatPulseFor(cursor);
       let data = surface.dataFor(beat, this._data);
       return data.notes[pulse] === surface.soundByKey[key];
-    } else if (surface instanceof A1Grid) {
-      let [info, data] = surface.infoDataFor(key, this._data);
-      return data.notes[cursor] === info.sound;
     }
   }
 

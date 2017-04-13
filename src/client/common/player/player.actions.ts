@@ -51,13 +51,5 @@ export class PlayerActions {
       payload: [surface, key, cursor]
     };
   }
-
-  static PULSES = '[PLAYER] Pulses';
-  pulses(key: string, pulses: number): Action {
-    return !key ? noAction : {
-      type: PlayerActions.PULSES,
-      payload: [this.lesson.surfaceFor(key), key, pulses]
-    };
-  }
 }
 
