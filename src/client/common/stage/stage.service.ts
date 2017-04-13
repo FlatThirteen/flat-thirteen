@@ -20,6 +20,7 @@ export class StageService {
   static getScene = createSelector(StageService.getStage, stage => stage && stage.scene);
   static getNextScene = createSelector(StageService.getStage, stage => stage && stage.nextScene);
   static getRound = createSelector(StageService.getStage, stage => stage && stage.round);
+  static getWrong = createSelector(StageService.getStage, stage => stage && stage.wrong);
   static getActive = createSelector(StageService.getStage, stage => stage && stage.active);
   static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
   static getPlayedPhrase = createSelector(StageService.getStage, stage => stage && stage.playedPhrase);
@@ -28,6 +29,7 @@ export class StageService {
   readonly scene$: Observable<StageScene>;
   readonly nextScene$: Observable<StageScene>;
   readonly round$: Observable<number>;
+  readonly wrong$: Observable<number>;
   readonly active$: Observable<boolean>;
   readonly goalPhrase$: Observable<Phrase>;
   readonly playedPhrase$: Observable<Phrase>;
@@ -36,6 +38,7 @@ export class StageService {
   private _scene: StageScene;
   private nextScene: StageScene;
   private _round: number;
+  private _wrong: number;
   private _active: boolean;
   private goalPhrase: Phrase;
   private playedPhrase: Phrase;
@@ -48,6 +51,7 @@ export class StageService {
     this.scene$ = this.store.select(StageService.getScene);
     this.nextScene$ = this.store.select(StageService.getNextScene);
     this.round$ = this.store.select(StageService.getRound);
+    this.wrong$ = this.store.select(StageService.getWrong);
     this.active$ = this.store.select(StageService.getActive);
     this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
     this.playedPhrase$ = this.store.select(StageService.getPlayedPhrase);
@@ -56,6 +60,7 @@ export class StageService {
     this.scene$.subscribe(scene => { this._scene = scene; });
     this.nextScene$.subscribe(nextScene => { this.nextScene = nextScene; });
     this.round$.subscribe(round => { this._round = round; });
+    this.wrong$.subscribe(wrong => { this._wrong = wrong; });
     this.active$.subscribe(active => { this._active = active; });
     this.goalPhrase$.subscribe(goalPhrase => {
       this.goalPhrase = goalPhrase;
@@ -89,30 +94,23 @@ export class StageService {
   }
 
   pulse(time: number, beat: number, tick: number) {
+    let playNote = note => {
+      this.sound.play(note.soundName, time, note.params);
+    };
     switch (this._scene) {
       case 'victory':
-        for (let note of this.victoryPhrase.getNotes(beat, tick)) {
-          this.sound.play(note.soundName, time, note.params);
-        }
+        _.forEach(this.victoryPhrase.getNotes(beat, tick), playNote);
         // falls through
       case 'goal':
-        for (let note of this.goalPhrase.getNotes(beat, tick)) {
-          this.sound.play(note.soundName, time);
-        }
+        _.forEach(this.goalPhrase.getNotes(beat, tick), playNote);
         break;
       case 'play':
         _.forEach(this.player.notesAt(beat, tick), note => {
-          if (note) {
-            this.play(note, beat, tick, time);
-          }
+          this.play(note, beat, tick, time);
         });
         break;
       case 'loop':
-        _.forEach(this.player.notesAt(beat, tick), note => {
-          if (note) {
-            this.sound.play(note.soundName, time);
-          }
-        });
+        _.forEach(this.player.notesAt(beat, tick), playNote);
         break;
       default:
     }
@@ -124,6 +122,10 @@ export class StageService {
 
   get round() {
     return this._round;
+  }
+
+  get wrong() {
+    return this._wrong;
   }
 
   get scene() {
@@ -167,6 +169,6 @@ export class StageService {
   }
 
   get basePoints() {
-    return Math.max(110 - (10 * this._round), 10);
+    return Math.max(110 - (10 * this._round), 50) - Math.min(10 * this._wrong, 40);
   }
 }

@@ -11,6 +11,7 @@ export type StageScene = 'demo' | 'loop' | 'count' | 'goal' | 'play' | 'victory'
 
 export class StageState {
   readonly round: number = 0;
+  readonly wrong: number = 0;
   readonly active: boolean = true;
   readonly goalPhrase: Phrase = null;
   readonly playedPhrase: Phrase = null;
@@ -39,13 +40,16 @@ export class StageState {
       }
       case StageActions.NEXT: {
         let phraseBuilder = action.payload;
+        let wrong = state.playedPhrase && state.playedPhrase.numNotes() &&
+            state.scene === 'goal';
         return {
           scene: state.nextScene,
           nextScene: 'goal',
           round: phraseBuilder ? 0 : state.round + 1,
+          wrong: phraseBuilder ? 0 : state.wrong + (wrong ? 1 : 0),
           active: false,
           goalPhrase: phraseBuilder ? phraseBuilder.build() : state.goalPhrase,
-          playedPhrase: new Phrase(),
+          playedPhrase: state.nextScene === 'play' ? new Phrase() : state.playedPhrase,
           victoryPhrase: null
         };
       }
@@ -66,8 +70,7 @@ export class StageState {
         }, state);
       }
       case PlayerActions.SET:
-      case PlayerActions.UNSET:
-      case PlayerActions.PULSES: {
+      case PlayerActions.UNSET: {
         return _.defaults({
           active: true,
           nextScene: state.scene === 'loop' ? 'loop' : 'play'

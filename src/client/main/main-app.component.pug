@@ -1,6 +1,7 @@
+img.logo(src="assets/Logo.png")
 header
   h1 Flat Thirteen, Inc.
-  div Teaching music through gaming
+  h3 Teaching music through gaming
 .menu
   a(*ngFor="let view of views", [routerLink]="view.link", routerLinkActive="active-link") {{view.name}}
 router-outlet((activate)="activateEvent($event)", (deactivate)="deactivateEvent($event)")

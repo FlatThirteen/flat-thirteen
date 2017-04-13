@@ -1,15 +1,23 @@
+@require '../variables';
+
 // using Modernizer CSS classes to detect if browser supports the W3C Touch Events API
 :host-context(.mod-touchevents) [md-button]:hover::after, [md-icon-button]:hover::after
   content: none;
 
+img.logo
+  margin: 1vw 3vw;
+  position: absolute;
+  width: 7vw;
+  height: 7vw;
+
 h1
-  color: #1777CB;
+  color: main-blue;
 
 .menu
-  background-color: #1777CB;
+  background-color: main-blue;
   display: block;
   height: 48px;
-  padding: 0 1vw 0 12vw;
+  padding: 0 1vw 0 content-side-margin;
 
   a
     display: inline-block;

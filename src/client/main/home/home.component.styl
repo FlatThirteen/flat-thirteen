@@ -1,9 +1,21 @@
+@require '../../variables';
+
 .content
-  margin: 1vw 12vw;
+  margin: 3vw content-side-margin;
+  position: relative;
 
   .button
-    border: solid 1px black;
-    border-radius: 5px;
+    background-color: main-blue;
+    border-radius: 50%;
+    color: main-blue;
     font-size: 1em;
     text-decoration: none;
-    padding: 10px 20px;
+    margin: -1vw -5vw;
+    padding: 1vw;
+    position: absolute;
+    height: 2vw;
+    width: 2vw;
+    text-align: center;
+
+    &:hover
+      color: white;
