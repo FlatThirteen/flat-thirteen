@@ -13,6 +13,7 @@ export class StageState {
   readonly round: number = 0;
   readonly wrong: number = 0;
   readonly active: boolean = true;
+  readonly goalPlayed: boolean = false;
   readonly goalPhrase: Phrase = null;
   readonly playedPhrase: Phrase = null;
   readonly victoryPhrase: Phrase = null;
@@ -40,14 +41,13 @@ export class StageState {
       }
       case StageActions.NEXT: {
         let phraseBuilder = action.payload;
-        let wrong = state.playedPhrase && state.playedPhrase.numNotes() &&
-            state.scene === 'goal';
         return {
           scene: state.nextScene,
           nextScene: 'goal',
-          round: phraseBuilder ? 0 : state.round + 1,
-          wrong: phraseBuilder ? 0 : state.wrong + (wrong ? 1 : 0),
+          round: state.round + (state.nextScene === 'play' ? 1 : 0),
+          wrong: state.wrong + (state.scene === 'play' && state.nextScene === 'goal' ? 1 : 0),
           active: false,
+          goalPlayed: false,
           goalPhrase: phraseBuilder ? phraseBuilder.build() : state.goalPhrase,
           playedPhrase: state.nextScene === 'play' ? new Phrase() : state.playedPhrase,
           victoryPhrase: null
@@ -62,17 +62,23 @@ export class StageState {
         }, state);
       }
       case StageActions.PLAY: {
+        if (state.scene === 'loop') {
+          return state;
+        }
         let [note, beat, tick] = action.payload;
         let playedPhrase = _.cloneDeep(state.playedPhrase).add(note, beat, tick);
+        let goalPlayed = _.isEqual(state.goalPhrase, playedPhrase);
         return _.defaults({
           playedPhrase: playedPhrase,
-          nextScene: _.isEqual(state.goalPhrase, playedPhrase) ? 'victory' : state.nextScene
+          goalPlayed: goalPlayed,
+          nextScene: goalPlayed ? 'victory' : state.active ? 'play' : 'goal'
         }, state);
       }
       case PlayerActions.SET:
       case PlayerActions.UNSET: {
         return _.defaults({
           active: true,
+          goalPlayed: false,
           nextScene: state.scene === 'loop' ? 'loop' : 'play'
         }, state);
       }

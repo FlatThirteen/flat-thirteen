@@ -47,6 +47,10 @@ faces-height = 5vh;
     animation: active;
     animation-duration: 250ms;
 
+  .starting &
+    animation: grow;
+    animation-duration: 450ms;
+
 .position
   background-color: rgba(255,255,255,0.5);
   position: absolute;
@@ -54,6 +58,17 @@ faces-height = 5vh;
   bottom: 0;
   left: 0;
   width: 1.5vw;
+
+  .starting &
+    animation: start;
+    animation-duration: 450ms;
+
+@keyframes start
+  0%
+    bottom: 100%;
+
+  100%
+    bottom: 0;
 
 .strip, .faces
   display: flex;
@@ -100,44 +115,64 @@ particle-fx
 .face
   flex: 1 1 0;
   height: faces-height;
+  min-height: 25px;
   margin: 5px;
   background-color: main-blue;
+
+eyes-path(tl, bl = 100% - tl, tr = tl, br = bl, tl2 = tl, bl2 = bl, tr2 = tr, br2 = br)
+  polygon(0% tl, 50% tl2, 50% tr2, 100% tr,
+          100% br, 50% br2, 50% bl2, 0% bl);
 
 .eyes
   position: relative;
   top: 25%;
   left: 0;
-  margin: auto;
-  height: 1vh;
+  margin: 0 auto;
+  height: 17px;
   width: 4vw;
   min-width: 30px;
   max-width: 40px;
-  padding: 1vh eyes-padding = 0.5vw;
-  transition: all 150ms ease-in-out;
+  padding: 1px;
+  transition: all 100ms ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  clip-path: eyes-path(0%);
+
+  .goal &, .count &
+    clip-path: eyes-path(60%, 70%);
+
+  .goal &.wrong
+    clip-path: eyes-path(50%, 70%, 35%, 60%, 65%, 70%, 55%);
+    animation-duration: 50ms;
+
+  .victory &
+    clip-path: none;
+
+  .active &
+    animation: blink;
+    animation-duration: 250ms;
 
   .selected:not(.goal) .faces:not(:hover) &
-    &.left, &.right
-      padding-top: 0;
+    &.look-left, &.look-right
+      top: 10%;
 
-    &.left
+    &.look-left
       left: -1vw;
 
-    &.right
+    &.look-right
       left: 1vw;
 
-
   .selected:not(.goal) .faces:not(:hover) .cursor &
-    top: -10%;
+    top: 0;
 
   &:before, &:after
     background-color: eye-color = #000;
     content: '';
-    border: solid 1px eye-color;
+    border: solid 0 eye-color;
     border-radius: 50%;
-    bottom: 1vh;
-    position: absolute;
-    height: 15px;
-    width: 10px;
+    height: 17px;
+    width: 12px;
+    transition: all 150ms ease-in-out;
 
     .victory &
       animation: bounce 500ms ease infinite;
@@ -145,24 +180,20 @@ particle-fx
       border-radius: 50% 50% 0 0;
       border-width: 3px 0 0 0;
 
-    .active &
-      animation: blink;
-      animation-duration: 250ms;
-
   &:before
-    left: eyes-padding;
+    left: 0;
 
   &:after
-    right: eyes-padding;
+    right: 0;
 
+  &:hover
+    margin-top: 8px;
 
-  &:hover, .goal &, .count &
     &:before, &:after
-      border: 0;
       height: 2px;
 
 .eyes:hover:active
-  animation: shake 750ms ease infinite;
+  animation: shake 500ms ease infinite;
 
 @keyframes blink
   0%, 100%
@@ -172,7 +203,7 @@ particle-fx
     transform: translateY(1vh) scaleY(.3)
 
   40%
-    transform: translateY(1.5vh) scaleY(.1);
+    transform: translateY(1.4vh) scaleY(.2);
 
   80%
     transform: translateY(1vh) scaleY(.5)
@@ -382,6 +413,11 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
       bottom: @left;
       right: @left;
 
+@keyframes grow
+  0%
+    transform: scale(0);
+  100%
+    transform: scale(1);
 
 @keyframes active
   0%
