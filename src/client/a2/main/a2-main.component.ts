@@ -82,17 +82,13 @@ export class A2MainComponent implements OnInit, OnDestroy {
     }
   }
 
-  start() {
-    this.transport.start();
-  }
-
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') { // Enter: Start/stop
       this.lesson.reset();
       if (this.transport.paused) {
         this.player.init();
-        this.start();
+        this.transport.start();
       } else {
         this.transport.stop();
       }
@@ -107,7 +103,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
       this.player.select(this.player.selected, this.player.cursor - 1);
     } else if (event.key === 'ArrowRight') { // Right: Select next
       this.player.select(this.player.selected, this.player.cursor + 1);
-    } else { // Key: Set
+    } else if (!this.transport.starting) { // Key: Set, disallow while starting
       if (this.player.set(event.key, this.player.cursor)) {
         this.player.select(this.player.selected, this.player.cursor + 1);
       }
@@ -117,7 +113,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
 
   onListen() {
     if (this.transport.paused) {
-      this.start();
+      this.transport.start();
     }
     this.stage.listen();
   }
@@ -125,7 +121,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
   onStart() {
     this.lesson.reset();
     this.player.init();
-    this.start();
+    this.transport.start();
   }
 
   onStop() {

@@ -26,10 +26,11 @@
     width: 8vh;
 
   .note-count
-    display: inline;
+    display: inline-block;
 
     &.over
       color: red;
+      animation: pulse 1s linear infinite;
 
   .round
     font-size: 4vh;
@@ -69,6 +70,14 @@
 
       &.active
         animation: tick 1s linear infinite;
+
+@keyframes pulse
+  0%, 100%
+    transform: scale(1);
+  20%, 25%
+    transform: scale(1.2);
+  75%
+    transform: scale(0.8);
 
 @keyframes tick
   0%, 100%

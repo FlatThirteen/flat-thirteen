@@ -65,4 +65,12 @@ export class HtmlGridComponent implements OnInit {
   controlNoteClass(key: string, pulseIndex: number, pulses: number) {
     return this.noteClass(pulses) + (this.player.value(key, pulseIndex) ? ' on' : '');
   }
+
+  eyesClass(beat: number) {
+    return {
+      'look-left': this.player.beat + 1 === beat,
+      'look-right': this.player.beat - 1 === beat,
+      wrong: (this.stage.beatWrong === beat) && (this.player.noteCount === this.stage.goalNotes)
+    }
+  }
 }

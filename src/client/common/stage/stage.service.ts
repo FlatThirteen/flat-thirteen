@@ -22,6 +22,7 @@ export class StageService {
   static getRound = createSelector(StageService.getStage, stage => stage && stage.round);
   static getWrong = createSelector(StageService.getStage, stage => stage && stage.wrong);
   static getActive = createSelector(StageService.getStage, stage => stage && stage.active);
+  static getGoalPlayed = createSelector(StageService.getStage, stage => stage && stage.goalPlayed);
   static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
   static getPlayedPhrase = createSelector(StageService.getStage, stage => stage && stage.playedPhrase);
   static getVictoryPhrase = createSelector(StageService.getStage, stage => stage && stage.victoryPhrase);
@@ -31,6 +32,7 @@ export class StageService {
   readonly round$: Observable<number>;
   readonly wrong$: Observable<number>;
   readonly active$: Observable<boolean>;
+  readonly goalPlayed$: Observable<boolean>;
   readonly goalPhrase$: Observable<Phrase>;
   readonly playedPhrase$: Observable<Phrase>;
   readonly victoryPhrase$: Observable<Phrase>;
@@ -40,10 +42,11 @@ export class StageService {
   private _round: number;
   private _wrong: number;
   private _active: boolean;
+  private _goalPlayed: boolean;
   private goalPhrase: Phrase;
   private playedPhrase: Phrase;
   private victoryPhrase: Phrase;
-  private _goalPlayed: boolean;
+  private _beatWrong: number;
   private _goalNotes: number;
 
   constructor(private store: Store<AppState>, private stage: StageActions,
@@ -53,6 +56,7 @@ export class StageService {
     this.round$ = this.store.select(StageService.getRound);
     this.wrong$ = this.store.select(StageService.getWrong);
     this.active$ = this.store.select(StageService.getActive);
+    this.goalPlayed$ = this.store.select(StageService.getGoalPlayed);
     this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
     this.playedPhrase$ = this.store.select(StageService.getPlayedPhrase);
     this.victoryPhrase$ = this.store.select(StageService.getVictoryPhrase);
@@ -62,18 +66,13 @@ export class StageService {
     this.round$.subscribe(round => { this._round = round; });
     this.wrong$.subscribe(wrong => { this._wrong = wrong; });
     this.active$.subscribe(active => { this._active = active; });
+    this.goalPlayed$.subscribe(goalPlayed => { this._goalPlayed = goalPlayed; });
     this.goalPhrase$.subscribe(goalPhrase => {
       this.goalPhrase = goalPhrase;
-      this._goalPlayed = false;
       this._goalNotes = goalPhrase && goalPhrase.numNotes();
     });
-    this.playedPhrase$.subscribe(playedPhrase => {
-      this.playedPhrase = playedPhrase;
-      this._goalPlayed = playedPhrase && _.isEqual(this.goalPhrase, this.playedPhrase);
-    });
-    this.victoryPhrase$.subscribe(victoryPhrase => {
-      this.victoryPhrase = victoryPhrase;
-    });
+    this.playedPhrase$.subscribe(playedPhrase => { this.playedPhrase = playedPhrase; });
+    this.victoryPhrase$.subscribe(victoryPhrase => { this.victoryPhrase = victoryPhrase; });
   }
 
   listen() {
@@ -97,20 +96,29 @@ export class StageService {
     let playNote = note => {
       this.sound.play(note.soundName, time, note.params);
     };
+    let playedNotes = this.player.notesAt(beat, tick);
+    let goalNotes = this.goalPhrase && this.goalPhrase.getNotes(beat, tick);
+    if (goalNotes) {
+      if (_.xor(_.invokeMap(goalNotes, 'toString'), _.invokeMap(playedNotes, 'toString')).length) {
+        this._beatWrong = beat;
+      } else if (beat !== this._beatWrong) {
+        this._beatWrong = null;
+      }
+    }
     switch (this._scene) {
       case 'victory':
         _.forEach(this.victoryPhrase.getNotes(beat, tick), playNote);
         // falls through
       case 'goal':
-        _.forEach(this.goalPhrase.getNotes(beat, tick), playNote);
+        _.forEach(goalNotes, playNote);
         break;
       case 'play':
-        _.forEach(this.player.notesAt(beat, tick), note => {
+        _.forEach(playedNotes, note => {
           this.play(note, beat, tick, time);
         });
         break;
       case 'loop':
-        _.forEach(this.player.notesAt(beat, tick), playNote);
+        _.forEach(playedNotes, playNote);
         break;
       default:
     }
@@ -158,6 +166,10 @@ export class StageService {
 
   get showPosition() {
     return this._scene === 'loop' || this._scene === 'goal' || this._scene === 'play';
+  }
+
+  get beatWrong() {
+    return this._beatWrong;
   }
 
   get goalPlayed() {

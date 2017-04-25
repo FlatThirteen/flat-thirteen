@@ -125,6 +125,13 @@ export class TransportService {
     return Tone.Transport.bpm.value;
   }
 
+  get started() {
+    return Tone.Transport.state === 'started';
+  }
+
+  get starting() {
+    return !this.paused && !this.started;
+  }
   start() {
     this.paused = false;
     this.paused$.next(false);
@@ -176,7 +183,7 @@ export class TransportService {
   active(beat?: number, pulse: number = 0, pulses: number = 1) {
     let start = pulse / pulses;
     let end = beat !== undefined ? (pulse + 1) / pulses : 0.9;
-    return !this.paused && (beat === this.beatIndex || beat === undefined) &&
+    return this.started && (beat === this.beatIndex || beat === undefined) &&
       _.inRange(this.quarterLoop.progress, start, end);
   }
 
