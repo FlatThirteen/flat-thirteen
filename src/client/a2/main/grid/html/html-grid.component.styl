@@ -40,6 +40,11 @@ faces-height = 5vh;
   line-height: 30vh;
   padding: 2vh;
   position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
   text-align: center;
   width: 30vh;
 
@@ -75,12 +80,11 @@ faces-height = 5vh;
   margin: 0;
   width: 100%;
 
-.strip
-  .strip-container &, /.faces
-    background-color: back-blue;
+.strip-container, .faces
+  background-color: back-blue;
 
-    .goal &, .count &, /.goal .faces, /.count .faces
-      background-color: back-grey;
+  .goal &, .count &
+    background-color: back-grey;
 
 .beat, .face
   transition: background-color 150ms ease-in-out;
@@ -95,7 +99,9 @@ faces-height = 5vh;
   height: 8vh;
   max-height: 8vw;
   left: 100%;
-  margin: 4px;
+  top: 0;
+  bottom: 0;
+  margin: auto 4px;
   position: absolute;
   width: 2px;
 
@@ -153,13 +159,13 @@ eyes-path(tl, bl = 100% - tl, tr = tl, br = bl, tl2 = tl, bl2 = bl, tr2 = tr, br
     animation-duration: 250ms;
 
   .selected:not(.goal) .faces:not(:hover) &
-    &.look-left, &.look-right
+    &.left, &.right
       top: 10%;
 
-    &.look-left
+    &.left
       left: -1vw;
 
-    &.look-right
+    &.right
       left: 1vw;
 
   .selected:not(.goal) .faces:not(:hover) .cursor &
