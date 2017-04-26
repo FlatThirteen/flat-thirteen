@@ -46,13 +46,6 @@ export class HtmlGridComponent implements OnInit {
     return _.times(this.grid.pulsesByBeat[beat], (i) => offset + i);
   }
 
-  pulseClass(beat, pulse, pulses, pulseIndex) {
-    return {
-      active: this.transport.active(beat, pulse, pulses),
-      cursor: this.player.cursor === pulseIndex
-    };
-  }
-
   noteClass(pulses: number) {
     return {
       1: 'quarter',
@@ -64,13 +57,5 @@ export class HtmlGridComponent implements OnInit {
 
   controlNoteClass(key: string, pulseIndex: number, pulses: number) {
     return this.noteClass(pulses) + (this.player.value(key, pulseIndex) ? ' on' : '');
-  }
-
-  eyesClass(beat: number) {
-    return {
-      'look-left': this.player.beat + 1 === beat,
-      'look-right': this.player.beat - 1 === beat,
-      wrong: (this.stage.beatWrong === beat) && (this.player.noteCount === this.stage.goalNotes)
-    }
   }
 }
