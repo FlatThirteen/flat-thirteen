@@ -129,6 +129,10 @@ eyes-path(tl, bl = 100% - tl, tr = tl, br = bl, tl2 = tl, bl2 = bl, tr2 = tr, br
   polygon(0% tl, 50% tl2, 50% tr2, 100% tr,
           100% br, 50% br2, 50% bl2, 0% bl);
 
+clip-path(param)
+  clip-path: param;
+  -webkit-clip-path: param;
+
 .eyes
   position: relative;
   top: 25%;
@@ -142,13 +146,13 @@ eyes-path(tl, bl = 100% - tl, tr = tl, br = bl, tl2 = tl, bl2 = bl, tr2 = tr, br
   transition: all 100ms ease-in-out;
   display: flex;
   justify-content: space-between;
-  clip-path: eyes-path(0%);
+  clip-path(eyes-path(0%));
 
   .goal &, .count &
-    clip-path: eyes-path(60%, 70%);
+    clip-path(eyes-path(60%, 70%));
 
   .goal &.wrong
-    clip-path: eyes-path(50%, 70%, 35%, 60%, 65%, 70%, 55%);
+    clip-path(eyes-path(50%, 70%, 35%, 60%, 65%, 70%, 55%));
     animation-duration: 50ms;
 
   .victory &
