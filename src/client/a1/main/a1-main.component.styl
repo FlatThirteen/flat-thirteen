@@ -1,0 +1,136 @@
+bottom-size = 20vh;
+button-height = 40px;
+button-padding = 10px;
+button-shadow-size = 4px;
+button-shadow = 0 button-shadow-size 0 #000;
+primary-blue = #008FFF;
+primary-green = #50FFA0;
+primary-red = #FF6e56;
+
+.surface-container
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: bottom-size;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: scroll;
+
+bouncing-ball
+  height: 20vh;
+  margin: 0 auto;
+  width: 80vw;
+  max-width: 80vh;
+
+.controls
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 15px 10vw;
+
+.surface
+  margin: 2px 0;
+  position: relative;
+
+stage-panel
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: bottom-size;
+
+.button
+  cursor: pointer;
+  display: inline-block;
+  height: button-height;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
+  user-select: none;
+  vertical-align: top;
+
+  &:hover:not(:active)
+    margin-top: - button-shadow-size;
+    margin-bottom: button-shadow-size;
+    filter: drop-shadow(button-shadow);
+
+.start
+  position: relative;
+  background-color: primary-green;
+  border-right: none;
+  font-size: 4vw;
+  @media (min-width: 1000px)
+    font-size 40px;
+  line-height: 40px;
+  padding: button-padding 2vw;
+
+  &:after
+    height = (button-height / 2 + button-padding);
+    content: '';
+    display: block;
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: 0;
+    left: 100%;
+    border-left: height solid primary-green;
+    border-top: height solid transparent;
+    border-bottom: height solid transparent;
+
+.stop
+  root2 = math(2, 'sqrt');
+  side = ceil((button-height + 2 * button-padding) / (root2 + 1));
+  offset = ceil(side / root2);
+  background-color: primary-red;
+  position: relative;
+  float: right;
+  font-size: (button-height / 2);
+  top: offset;
+  height: side;
+  width: side + 2 * offset;
+
+  &:before, &:after
+    content: '';
+    position: absolute;
+    left: 0;
+    height: 0;
+    width: side;
+    border-left: offset solid transparent;
+    border-right: offset solid transparent;
+
+  &:before
+    top: - offset;
+    border-bottom: offset solid primary-red;
+
+  &:after
+    bottom: - offset;
+    border-top: offset solid primary-red;
+
+.listen
+  background-color: primary-blue;
+  position: absolute;
+  height: 1.5 * button-height;
+  left: 50%;
+  margin-left: -(button-height);
+  border-radius: 50%;
+  transform: translateY(-100%) scale(0, 0);
+  transition: transform 150ms ease-in-out;
+  width: 1.5 * button-height;
+  padding: button-padding
+
+  &.waiting
+    transform: translateY(0) scale(0.5, 0.5);
+    opacity: 0.5;
+
+  &.enable
+    cursor: pointer;
+    transform: translateY(0) scale(1, 1);
+    transition-delay: 500ms;
+
+  img
+    height: 100%;
+    width: 100%;

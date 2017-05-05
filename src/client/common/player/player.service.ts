@@ -6,7 +6,8 @@ import { Store } from '@ngrx/store';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../app.reducer';
-import { Grid } from '../../a2/main/grid/grid.model';
+import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
+import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
 import { LessonService } from '../lesson/lesson.service';
 import { Observable } from 'rxjs';
 import { PlayerActions } from './player.actions';
@@ -86,7 +87,7 @@ export class PlayerService {
   set(key: string, cursor: number) {
     let surface = this.lesson.surfaceFor(key);
     let pulses: number | number[] = 1;
-    if (surface instanceof Grid) {
+    if (surface instanceof A1Grid || surface instanceof A2Grid) {
       // Send pulsesByBeat so player effect knows cursor is calculated from
       pulses = surface.pulsesByBeat;
     }
@@ -106,7 +107,7 @@ export class PlayerService {
 
   value(key: string, cursor: number = 0): boolean {
     let surface = this.lesson.surfaceFor(key);
-    if (surface instanceof Grid) {
+    if (surface instanceof A1Grid || surface instanceof A2Grid) {
       let [beat, pulse] = surface.beatPulseFor(cursor);
       let data = surface.dataFor(beat, this._data);
       return data.notes[pulse] === surface.soundByKey[key];

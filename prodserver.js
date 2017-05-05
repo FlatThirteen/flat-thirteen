@@ -13,6 +13,12 @@ const ROOT = path.join(path.resolve(__dirname, '..'));
 app.use(compression());
 app.use(express.static('dist/client'));
 
+const renderA1 = (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist/client/a1.html'));
+};
+app.get('/A1', renderA1);
+app.get('/A1/*', renderA1);
+
 const renderA2 = (req, res) => {
   res.sendFile(path.resolve(__dirname, 'dist/client/a2.html'));
 };

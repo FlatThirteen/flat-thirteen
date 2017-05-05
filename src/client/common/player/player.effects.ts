@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 
-import { Grid } from '../../a2/main/grid/grid.model';
+import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
+import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
 import { Note } from '../sound/sound';
 import { PlayerActions } from './player.actions';
 import { SoundService } from '../sound/sound.service';
@@ -25,7 +26,7 @@ export class PlayerEffects {
     .filter(([surface]) => surface)
     .do(([surface, key, cursor, pulses]) => {
       let sound, beat, tick;
-      if (surface instanceof Grid) {
+      if (surface instanceof A1Grid || surface instanceof A2Grid) {
         let pulse;
         [beat, pulse] = surface.beatPulseFor(cursor);
         sound = surface.soundByKey[key];

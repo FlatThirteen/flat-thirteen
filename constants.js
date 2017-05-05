@@ -51,7 +51,7 @@ exports.EXCLUDE_SOURCE_MAPS = [
 ];
 
 exports.MY_ENTRY_PAGES = [
-  'main', 'a2'
+  'main', 'a1', 'a2'
 ];
 
 exports.MY_COPY_FOLDERS = [

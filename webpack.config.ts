@@ -101,6 +101,7 @@ const COPY_FOLDERS = [
   { from: 'src/assets', to: 'assets' },
   { from: 'node_modules/hammerjs/hammer.min.js' },
   { from: 'node_modules/hammerjs/hammer.min.js.map' },
+  { from: 'src/client/a1/a1.css' },
   { from: 'src/client/a2/a2.css' },
   { from: 'src/client/main/main.css' },
   { from: 'src/client/styles.css' },
@@ -109,6 +110,7 @@ const COPY_FOLDERS = [
 
 if (!DEV_SERVER) {
   COPY_FOLDERS.unshift({ from: 'src/client/main/main.html', to: 'index.html' });
+  COPY_FOLDERS.unshift({ from: 'src/client/a1/a1.html', to: 'A1/index.html' });
   COPY_FOLDERS.unshift({ from: 'src/client/a2/a2.html', to: 'A2/index.html' });
 } else {
   COPY_FOLDERS.push({ from: 'dll' });
@@ -169,6 +171,11 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       }),
       new HtmlWebpackPlugin({
         template: 'src/client/main/main.html',
+        inject: false
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'A1/index.html',
+        template: 'src/client/a1/a1.html',
         inject: false
       }),
       new HtmlWebpackPlugin({
