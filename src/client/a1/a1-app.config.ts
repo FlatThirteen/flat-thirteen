@@ -10,6 +10,7 @@ import { routes } from './a1-app.routing';
 import { rootReducer } from '../common/app.reducer';
 import { GridModule } from './main/grid/grid.module';
 import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
+import { CounterBallModule } from '../component/counter-ball/counter-ball.module';
 import { StagePanelModule } from '../component/stage-panel/stage-panel.module';
 
 import { A1MainComponent } from './main/a1-main.component';
@@ -31,6 +32,7 @@ export const APP_IMPORTS = [
   StoreModule.provideStore(rootReducer),
   GridModule,
   BouncingBallModule,
+  CounterBallModule,
   StagePanelModule,
   EffectsModule.run(PlayerEffects),
 ];

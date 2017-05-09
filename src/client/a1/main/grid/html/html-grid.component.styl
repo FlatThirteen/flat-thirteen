@@ -31,30 +31,30 @@ faces-height = 5vh;
   align-items: center;
   justify-content: center;
 
-.counter
-  background-color: #FFF;
-  border-radius: 50%;
-  font-size: 30vh;
-  font-weight: 400;
-  height: 30vh;
-  line-height: 30vh;
-  padding: 2vh;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  text-align: center;
-  width: 30vh;
+  .counter
+    background-color: #FFF;
+    border-radius: 50%;
+    font-size: 30vh;
+    font-weight: 400;
+    height: 30vh;
+    line-height: 30vh;
+    padding: 2vh;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    width: 30vh;
 
-  &.active
-    animation: active;
-    animation-duration: 250ms;
+    &.active
+      animation: active;
+      animation-duration: 250ms;
 
-  .starting &
-    animation: grow;
-    animation-duration: 450ms;
+    .starting &
+      animation: grow;
+      animation-duration: 450ms;
 
 .position
   background-color: rgba(255,255,255,0.5);
@@ -109,6 +109,13 @@ faces-height = 5vh;
   display: flex;
   margin-top: 5px;
   position: relative;
+
+  counter-ball
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
 particle-fx
   position: absolute;
