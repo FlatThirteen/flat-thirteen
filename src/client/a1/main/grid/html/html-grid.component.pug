@@ -1,0 +1,34 @@
+.grid([ngClass]="gridClass$ | async", [class.starting]="transport.starting", (mouseleave)="player.unselect()")
+  .strip-container([class.blur]="stage.isCount")
+    .strip(*ngFor="let key of grid.keys")
+      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
+        .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
+            [ngClass]="{active: transport.active(beat, pulse, pulses), cursor: player.cursor === pulseIndex}")
+          .actual.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
+  .top-fx.overlay
+    .strip(*ngFor="let key of grid.keys")
+      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
+        .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
+            [ngClass]="{active: transport.active(beat, pulse, pulses), cursor: player.cursor === pulseIndex}")
+          .fx.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
+  .position(*ngIf="stage.showPosition", [style.left]="(transport.progress() * 100) + '%'")
+  .faces([class.blur]="stage.isCount")
+    particle-fx([type]="particleType", [count]="particleCount$ | async")
+    .face(*ngFor="let pulses of grid.pulsesByBeat; let beat = index",
+        [ngClass]="{active: transport.active(beat), cursor: player.beat === beat}")
+      .eyes([ngClass]="{left: player.beat + 1 === beat, right: player.beat - 1 === beat, " +
+          "wrong: (stage.beatWrong === beat) && (player.noteCount === stage.goalNotes)}")
+    //counter-ball {{transport.count()}}
+  .overlay
+    .strip(*ngFor="let key of grid.keys")
+      .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
+        .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
+            [ngClass]="{active: transport.active(beat, pulse, pulses), cursor: player.cursor === pulseIndex}",
+            (mouseenter)="!transport.starting && player.select(key, pulseIndex)")
+          .controls
+            .note([ngClass]="controlNoteClass(key, pulseIndex, pulses)",
+                (click)="!transport.starting && player.toggle(key, pulseIndex)")
+              | {{player.cursor === pulseIndex ? key : ''}}
+  .counter-container.overlay(*ngIf="stage.isCount || stage.isVictory || !stage.isLoop && transport.starting")
+    .counter([class.active]="transport.active()", *ngIf="stage.isCount || transport.starting")
+      | {{transport.count()}}

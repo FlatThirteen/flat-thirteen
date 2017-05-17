@@ -6,7 +6,7 @@ import { bootloader } from '@angularclass/hmr';
 
 import { decorateModuleRef } from '../environment';
 
-import { BrowserAppModule } from './main-app.browser.module';
+import { BrowserAppModule } from './a1-app.browser.module';
 
 if ('production' === ENV) {
   enableProdMode();

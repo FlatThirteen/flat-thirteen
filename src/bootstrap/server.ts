@@ -1,37 +1,29 @@
-// the polyfills must be the first thing imported in node.js
+/* tslint:disable no-console */
+const compression = require('compression');
+import 'zone.js/dist/zone-node';
 import './polyfills.server';
 import './rxjs.imports';
-import 'angular2-universal-polyfills';
 
-import * as path from 'path';
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as compression from 'compression';
+import * as path from 'path';
 
-// Angular 2
-import { enableProdMode } from '@angular/core';
-// Angular 2 Universal
-import { createEngine } from 'angular2-express-engine';
-
-// App
-import { AppModule } from './main/main-app.module.universal.node';
+import { ServerAppModule } from './main/main-app.server.module';
+import { ngExpressEngine } from '@nguniversal/express-engine';
 import { routes } from './server.routes';
-import { HOST, UNIVERSAL_PORT } from '../../constants';
-
-// enable prod for faster renders
+import { enableProdMode } from '@angular/core';
+import { UNIVERSAL_PORT } from '../../constants';
 enableProdMode();
-
 const app = express();
+const baseUrl = `http://localhost:${UNIVERSAL_PORT}`;
+
 const ROOT = path.join(path.resolve(__dirname, '..'));
 
 // Express View
-app.engine('.html', createEngine({}));
+app.engine('html', ngExpressEngine({ bootstrap: ServerAppModule }));
+
 app.set('views', __dirname);
 app.set('view engine', 'html');
 app.use(compression());
-app.use(cookieParser('Angular 2 Universal'));
-app.use(bodyParser.json());
 
 // Serve static files
 
@@ -42,8 +34,6 @@ function ngApp(req, res) {
   res.render('main', {
     req,
     res,
-    ngModule: AppModule,
-    preboot: true,
     baseUrl: '/',
     requestUrl: req.originalUrl,
     originUrl: req.hostname
@@ -64,6 +54,6 @@ app.get('*', function(req, res) {
 });
 
 // Server
-let server = app.listen(process.env.PORT || UNIVERSAL_PORT, () => {
-  console.log(`Listening on: http://${HOST}:${server.address().port}`);
+app.listen(UNIVERSAL_PORT, () => {
+  console.log(`Listening at ${baseUrl}`);
 });

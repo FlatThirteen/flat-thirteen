@@ -2,7 +2,8 @@ import * as _ from 'lodash';
 
 import { Action } from '@ngrx/store';
 
-import { Grid } from '../../a2/main/grid/grid.model';
+import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
+import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
 import { PlayerActions } from './player.actions';
 import { StageActions } from '../stage/stage.actions';
 import { Surface } from '../surface/surface.model';
@@ -27,7 +28,7 @@ export class PlayerState {
       }
       case PlayerActions.SELECT: {
         let [surface, key, cursor] = action.payload;
-        if (surface instanceof Grid) {
+        if (surface instanceof A1Grid || surface instanceof A2Grid) {
           let beat = surface.beatPulseFor(cursor)[0];
           cursor = surface.wrapCursor(cursor);
           return <PlayerState>_.defaults({
@@ -49,7 +50,7 @@ export class PlayerState {
       }
       case PlayerActions.SET: {
         let [surface, key, cursor] = action.payload;
-        if (surface instanceof Grid) {
+        if (surface instanceof A1Grid || surface instanceof A2Grid) {
           let beat = surface.beatPulseFor(cursor)[0];
           let data = surface.dataFor(beat, state.data);
           return <PlayerState>_.defaultsDeep({
@@ -65,7 +66,7 @@ export class PlayerState {
       }
       case PlayerActions.UNSET: {
         let [surface, key, cursor] = action.payload;
-        if (surface instanceof Grid) {
+        if (surface instanceof A1Grid || surface instanceof A2Grid) {
           cursor = surface.wrapCursor(cursor);
           let beat = surface.beatPulseFor(cursor)[0];
           let data = surface.dataFor(beat, state.data);

@@ -1,0 +1,33 @@
+primary-blue = #008FFF;
+primary-green = #50FFA0;
+
+.ball-container
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  .ball
+    background-color: primary-green;
+    border-radius: 50%;
+    position: absolute;
+    height: 30px;
+    line-height: @height;
+    width: @height;
+    bottom: -0.5 * @height;
+    margin-left: -18px;
+    padding: 2px;
+    text-align: center;
+    transition: all cubic-bezier(0.81, 0.16, 0.38, 0.56);
+
+    &.calibrate
+      animation: scooting ease-in infinite;
+
+    &.active
+      opacity: 1;
+
+@keyframes scooting
+  0%, 40%, 95%
+    transform: scale(1);
+
+  70%
+    transform: scale(.5);
