@@ -6,7 +6,7 @@ import { bootloader } from '@angularclass/hmr';
 
 import { decorateModuleRef } from '../environment';
 
-import { AppModule } from './a2-app.module';
+import { BrowserAppModule } from './a2-app.browser.module';
 
 if ('production' === ENV) {
   enableProdMode();
@@ -14,7 +14,7 @@ if ('production' === ENV) {
 
 function main(): Promise<any> {
   return platformBrowserDynamic()
-    .bootstrapModule(AppModule)
+    .bootstrapModule(BrowserAppModule)
     .then(decorateModuleRef)
     .catch(err => console.error(err));
 }

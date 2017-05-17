@@ -9,8 +9,8 @@ import {
   DEV_PORT, PROD_PORT, UNIVERSAL_PORT, EXCLUDE_SOURCE_MAPS, HOST,
   USE_DEV_SERVER_PROXY, DEV_SERVER_PROXY_CONFIG, DEV_SERVER_WATCH_OPTIONS,
   DEV_SOURCE_MAPS, PROD_SOURCE_MAPS, STORE_DEV_TOOLS, MY_ENTRY_PAGES,
-  MY_COPY_FOLDERS, MY_POLYFILL_DLLS, MY_VENDOR_DLLS, MY_CLIENT_PLUGINS, MY_CLIENT_PRODUCTION_PLUGINS,
-  MY_CLIENT_RULES, MY_SERVER_RULES, MY_SERVER_INCLUDE_CLIENT_PACKAGES
+  MY_COPY_FOLDERS, MY_POLYFILL_DLLS, MY_VENDOR_DLLS, MY_CLIENT_PLUGINS,
+  MY_CLIENT_PRODUCTION_PLUGINS, MY_CLIENT_RULES, SHOW_WEBPACK_BUNDLE_ANALYZER
 } from './constants';
 
 const {
@@ -22,14 +22,15 @@ const {
   NoEmitOnErrorsPlugin
 } = require('webpack');
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CheckerPlugin } = require('awesome-typescript-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
+const ScriptExtPlugin = require('script-ext-html-webpack-plugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const webpackMerge = require('webpack-merge');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const { hasProcessFlag, includeClientPackages, root, testDll } = require('./helpers.js');
 
@@ -142,14 +143,13 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       { test: /\.html/,
         loader: 'raw-loader',
         exclude: MY_ENTRY_PAGES.map((name) => root(`src/client/${ name }/${ name }.html`)) },
-      { test: /\.css$/, loader: 'raw-loader' },
-      ...MY_CLIENT_RULES
+      { test: /\.css$/, loader: 'raw-loader' }
     ]
   };
 
   config.plugins = [
     new ContextReplacementPlugin(
-      /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
+      /angular(\\|\/)core(\\|\/)@angular/,
       root('./src')
     ),
     new ProgressPlugin(),
@@ -203,10 +203,6 @@ const commonConfig = function webpackConfig(): WebpackConfig {
   if (PROD) {
     config.plugins.push(
       new NoEmitOnErrorsPlugin(),
-      new UglifyJsPlugin({
-        beautify: false,
-        comments: false
-      }),
       new CompressionPlugin({
         asset: '[path].gz[query]',
         algorithm: 'gzip',
@@ -216,9 +212,9 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       }),
       ...MY_CLIENT_PRODUCTION_PLUGINS,
     );
-    if (!E2E && !WATCH && !UNIVERSAL && !DEPLOY) {
+    if (!E2E && !WATCH && !UNIVERSAL && !DEPLOY && SHOW_WEBPACK_BUNDLE_ANALYZER) {
       config.plugins.push(
-        new BundleAnalyzerPlugin({analyzerPort: 5000})
+        new BundleAnalyzerPlugin({ analyzerPort: 5000 })
       );
     }
   }
@@ -233,7 +229,20 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
   config.cache = true;
   PROD ? config.devtool = PROD_SOURCE_MAPS : config.devtool = DEV_SOURCE_MAPS;
+  config.plugins = [];
 
+  if (PROD) {
+    config.plugins.push(new UglifyJsPlugin({
+      beautify: false,
+      comments: false
+    }));
+  }
+
+  if (UNIVERSAL) {
+    config.plugins.push(new ScriptExtPlugin({
+      defaultAttribute: 'defer'
+    }));
+  }
   if (DLL) {
     config.entry = {
       app_assets: MY_ENTRY_PAGES.map((name) =>
@@ -259,10 +268,9 @@ const clientConfig = function webpackConfig(): WebpackConfig {
       vendor: [...DLL_VENDORS]
     };
   } else {
-    let universal = UNIVERSAL ? '.universal' : '';
     let aot = AOT ? '.aot' : '';
     config.entry = MY_ENTRY_PAGES.reduce((result, name) => {
-      result[name] = `./src/bootstrap/${ name }/${ name }.browser${ universal }${ aot }`;
+      result[name] = `./src/bootstrap/${ name }/${ name }.browser${ aot }`;
       return result;
     }, {});
   }
@@ -319,27 +327,10 @@ const clientConfig = function webpackConfig(): WebpackConfig {
 
 const serverConfig: WebpackConfig = {
   target: 'node',
-  entry: './src/bootstrap/server',
+  entry: AOT ? './src/bootstrap/server.aot' : './src/bootstrap/server',
   output: {
-    filename: 'index.js',
-    path: root('dist/server'),
-    libraryTarget: 'commonjs2'
-  },
-  module: {
-    rules: [
-      ...MY_SERVER_RULES
-    ],
-  },
-  externals: includeClientPackages([
-    // include these client packages so we can transform their source with webpack loaders
-    ...MY_SERVER_INCLUDE_CLIENT_PACKAGES
-  ]),
-  node: {
-    global: true,
-    __dirname: true,
-    __filename: true,
-    process: true,
-    Buffer: true
+    filename: 'server.js',
+    path: root('dist')
   }
 };
 
