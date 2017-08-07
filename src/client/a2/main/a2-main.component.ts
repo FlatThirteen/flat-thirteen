@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
@@ -21,11 +22,24 @@ let requestAnimationFrameId: number;
   moduleId: module.id,
   selector: 'a2-main',
   templateUrl: 'a2-main.component.pug',
-  styleUrls: ['a2-main.component.styl']
+  styleUrls: ['a2-main.component.styl'],
+  animations: [
+    trigger('weenie', [
+      state('active', style({
+        transform: 'scale(1.4)'
+      })),
+      state('inactive', style({
+        transform: 'scale(1)'
+      })),
+      transition('inactive => active', animate('300ms ease-in-out')),
+      transition('active => inactive', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class A2MainComponent implements OnInit, OnDestroy {
   public listenClass$: Observable<string>;
   public showStart: boolean = false;
+  public weenieStart: string = 'inactive';
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
@@ -114,17 +128,20 @@ export class A2MainComponent implements OnInit, OnDestroy {
   onListen() {
     if (this.transport.paused) {
       this.transport.start();
+      this.weenieStart = 'active';
     }
     this.stage.listen();
   }
 
   onStart() {
+    this.weenieStart = 'inactive';
     this.lesson.reset();
     this.player.init();
     this.transport.start();
   }
 
   onStop() {
+    this.weenieStart = 'inactive';
     this.transport.stop();
     this.lesson.reset();
   }
