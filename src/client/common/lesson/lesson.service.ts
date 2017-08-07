@@ -10,7 +10,7 @@ import { EndCondition } from './lesson.reducer';
 import { LessonActions } from './lesson.actions';
 import { MonophonicMonotonePhraseBuilder } from '../phrase/phrase.model';
 import { Rhythm } from '../core/rhythm.model';
-import { SoundName } from '../sound/sound';
+import { SoundName } from '../core/note.model';
 import { Surface } from '../surface/surface.model';
 
 @Injectable()

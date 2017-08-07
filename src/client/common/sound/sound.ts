@@ -1,6 +1,5 @@
 import * as Tone from 'tone';
 
-export type SoundName = 'click' | 'kick' | 'snare' | 'cowbell';
 export type Variation = 'normal' | 'light' | 'heavy';
 
 export interface Params {
@@ -11,18 +10,6 @@ export interface Params {
 
 export interface Sound {
   play(time?: number, params?: Params): any;
-}
-
-export class Note {
-  constructor(public readonly soundName: SoundName,
-              public readonly params: Params = {}) {}
-
-  toString(): string {
-    let pitch = this.params.pitch ? '(' + this.params.pitch + ')' : '';
-    let accent = this.params.variation === 'heavy' ? '>' :
-        this.params.variation === 'light' ? '*' : '';
-    return accent + this.soundName + pitch;
-  }
 }
 
 const membraneEnvelopeOptions = {

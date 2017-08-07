@@ -7,7 +7,7 @@ import { createSelector } from 'reselect';
 
 import { AppState } from '../app.reducer';
 
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 import { Phrase, PhraseBuilder } from '../phrase/phrase.model';
 import { PlayerService } from '../player/player.service';
 import { SoundService } from '../sound/sound.service';

@@ -3,7 +3,7 @@ import { Actions, Effect } from '@ngrx/effects';
 
 import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
 import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 import { PlayerActions } from './player.actions';
 import { SoundService } from '../sound/sound.service';
 import { StageService } from '../stage/stage.service';

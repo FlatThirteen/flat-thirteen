@@ -1,5 +1,5 @@
 import { PhraseBuilder, Phrase } from './phrase.model';
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 import { ticks } from '../core/beat-tick.model';
 
 const hiNote = new Note('cowbell', {pitch: 'A5'});
