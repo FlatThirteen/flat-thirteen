@@ -11,7 +11,6 @@ const tick3 = ticks(3, 4);
 
 export class VictoryPhraseBuilder implements PhraseBuilder {
 
-
   constructor(private notes: number) {}
 
   build(): Phrase {

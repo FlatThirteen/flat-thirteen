@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { EndCondition } from './lesson.reducer';
-import { Surface } from '../surface/surface.model';
+import { Plan } from './lesson.reducer';
 
 @Injectable()
 export class LessonActions {
@@ -10,10 +9,10 @@ export class LessonActions {
   constructor() {}
 
   static INIT = '[LESSON] Init';
-  init(surface: Surface[], end: EndCondition): Action {
+  init(plan: Plan): Action {
     return {
       type: LessonActions.INIT,
-      payload: [surface, end]
+      payload: plan
     };
   }
 

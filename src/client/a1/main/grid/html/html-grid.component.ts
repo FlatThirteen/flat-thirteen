@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Grid } from '../grid.model';
-import { PlayerService } from '../../../../common/player/player.service';
-import { StageService } from '../../../../common/stage/stage.service';
+import { PlayerService } from '../../../model/player/player.service';
+import { StageService } from '../../../model/stage/stage.service';
 import { TransportService } from '../../../../common/core/transport.service';
 
 /**

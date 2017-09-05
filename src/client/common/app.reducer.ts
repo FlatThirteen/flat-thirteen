@@ -4,11 +4,19 @@ import { storeFreeze } from 'ngrx-store-freeze';
 import { storeLogger } from 'ngrx-store-logger';
 import { routerReducer, RouterState } from '@ngrx/router-store';
 
+import { LessonState as A1LessonState } from '../a1/model/lesson/lesson.reducer';
+import { PlayerState as A1PlayerState } from '../a1/model/player/player.reducer';
+import { StageState as A1StageState} from '../a1/model/stage/stage.reducer';
 import { LessonState } from './lesson/lesson.reducer';
 import { PlayerState } from './player/player.reducer';
 import { StageState } from './stage/stage.reducer';
 
 export interface AppState {
+  a1: {
+    lesson: A1LessonState,
+    stage: A1StageState,
+    player: A1PlayerState,
+  };
   lesson: LessonState;
   stage: StageState;
   player: PlayerState;
@@ -16,6 +24,11 @@ export interface AppState {
 }
 
 export const reducers = {
+  a1: combineReducers({
+    lesson: A1LessonState.reducer,
+    stage: A1StageState.reducer,
+    player: A1PlayerState.reducer
+  }),
   lesson: LessonState.reducer,
   stage: StageState.reducer,
   player: PlayerState.reducer,

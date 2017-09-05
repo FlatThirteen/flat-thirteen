@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Grid } from './grid/grid.model';
-import { LessonService } from '../../common/lesson/lesson.service';
-import { PlayerService } from '../../common/player/player.service';
-import { StageService } from '../../common/stage/stage.service';
+import { LessonService } from '../model/lesson/lesson.service';
+import { PlayerService } from '../model/player/player.service';
+import { StageService } from '../model/stage/stage.service';
 import { Surface } from '../../common/surface/surface.model';
 import { TransportService } from '../../common/core/transport.service';
 import { ActivatedRoute } from '@angular/router';
 import { Rhythm } from '../../common/core/rhythm.model';
+import { Phrase } from '../../common/phrase/phrase.model';
 
 let requestAnimationFrameId: number;
 
@@ -25,15 +26,15 @@ let requestAnimationFrameId: number;
 })
 export class A1MainComponent implements OnInit, OnDestroy {
   public listenClass$: Observable<string>;
-  public showStart: boolean = false;
+  public shouldStopAtTop: boolean = false;
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
               public lesson: LessonService) {
-    this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
+    /*this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
         ([scene, active, touched]) =>
           scene === 'goal' && active && !this.transport.lastBeat() ? 'waiting' :
-          scene === 'goal' && !active || scene === 'demo' && touched ? 'enable' : '');
+          scene === 'goal' && !active || touched ? 'enable' : '');*/
   }
 
   /**
@@ -45,7 +46,12 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
     this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
     let grid = new Grid({a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.init([grid], {stages: 5});
+    this.lesson.init({ surfaces: [grid], stages: [
+      new Phrase('kick@0:000,1:000,2:000,3:000'),
+      new Phrase('kick@0:000,1:000,2:000'),
+      new Phrase('kick@0:000,2:000,3:000'),
+      new Phrase('kick@0:000,1:000,3:000')
+    ] });
     this.player.init();
     this.transport.reset([this.lesson.beatsPerMeasure]);
 
@@ -64,27 +70,25 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onTop() {
-    this.showStart = true;
-    if (this.stage.goalPlayed) {
-      if (this.stage.isVictory) {
-        this.lesson.advance(this.stage.round);
-        if (this.lesson.phraseBuilder) {
-          this.player.init();
-        } else {
-          this.transport.stop();
-          this.lesson.reset();
-        }
-      } else {
-        this.stage.victory();
-      }
-    } else if (!this.stage.isLoop) {
-      this.stage.next(this.stage.isCount && this.lesson.phraseBuilder);
+    if (this.stage.isVictory) {
+      this.transport.stop();
+      this.onStage();
+    } else if (this.stage.isPlayback && this.stage.goalPlayed) {
+      this.shouldStopAtTop = false;
+      this.stage.victory();
+      this.lesson.complete(this.stage.round, this.lesson.stage);
+    }
+    if (!this.shouldStopAtTop) {
+      this.shouldStopAtTop = true;
+    } else {
+      this.stage.standby();
+      this.transport.stop();
     }
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') { // Enter: Start/stop
+    /*if (event.key === 'Enter') { // Enter: Start/stop
       this.lesson.reset();
       if (this.transport.paused) {
         this.player.init();
@@ -92,7 +96,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
       } else {
         this.transport.stop();
       }
-    } else if (event.key === 'Escape') { // Esc: Unselect
+    } else*/ if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();
     } else if (event.key === ' ') { // Space: Unset
       this.player.unset(this.player.selected, this.player.cursor);
@@ -111,22 +115,28 @@ export class A1MainComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  onListen() {
-    if (this.transport.paused) {
-      this.transport.start();
+  onStage(stage?: number) {
+    if (stage !== undefined && this.lesson.completed(stage)) {
+      return;
     }
-    this.stage.listen();
+    this.lesson.stage = stage;
+    let goal = stage !== undefined && this.lesson.stages[stage];
+    if (goal) {
+      this.stage.standby(goal.builder());
+    }
+    this.player.init();
   }
 
-  onStart() {
-    this.lesson.reset();
-    this.player.init();
+  onGoal() {
+    this.shouldStopAtTop = false;
+    this.stage.goal();
     this.transport.start();
   }
 
-  onStop() {
-    this.transport.stop();
-    this.lesson.reset();
+  onPlayback() {
+    this.shouldStopAtTop = false;
+    this.stage.playback();
+    this.transport.start();
   }
 
   isGrid(surface: Surface) {

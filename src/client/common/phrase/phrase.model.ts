@@ -51,6 +51,10 @@ export class Phrase {
     }
   }
 
+  builder(): PhraseBuilder {
+    return new ConstantPhraseBuilder(this);
+  }
+
   toString(): string {
     return _.toString(_.toPairs(this.notes));
   }

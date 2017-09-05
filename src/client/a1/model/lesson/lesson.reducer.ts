@@ -3,22 +3,22 @@ import * as _ from 'lodash';
 import { Action } from '@ngrx/store';
 
 import { LessonActions } from './lesson.actions';
-import { Phrase } from '../phrase/phrase.model';
-import { Surface } from '../surface/surface.model';
+import { Phrase } from '../../../common/phrase/phrase.model';
+import { Surface } from '../../../common/surface/surface.model';
 
 export interface Plan {
   surfaces: Surface[];
-  stages: Phrase[] | number;
+  stages: Phrase[];
 }
 
 export class LessonState {
-  readonly stage: number = 0;
-  readonly complete: boolean[];
+  readonly stage: number = undefined;
+  readonly completed: boolean[];
   readonly rounds: number = 0;
 
   constructor(readonly plan: Plan) {
     if (plan && _.isArray(plan.stages)) {
-      this.complete = [];
+      this.completed = [];
     }
   }
 
@@ -30,10 +30,22 @@ export class LessonState {
       case LessonActions.RESET: {
         return new LessonState(state.plan);
       }
-      case LessonActions.ADVANCE: {
-        let rounds = action.payload;
+      case LessonActions.STAGE: {
+        let stage = action.payload;
+        return {
+          plan: state.plan,
+          stage: stage, // Easiest way to set undefined
+          completed: state.completed,
+          rounds: state.rounds
+        };
+      }
+      case LessonActions.COMPLETE: {
+        let [rounds, stage] = action.payload;
+        let completed = state.completed.slice();
+        completed[stage] = true;
         return _.defaults({
-          stage: state.stage + 1,
+          stage: undefined,
+          completed: completed,
           rounds: state.rounds + rounds
         }, state);
       }

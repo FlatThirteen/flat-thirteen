@@ -59,7 +59,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
     this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
     let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.init([grid], {stages: 5});
+    this.lesson.init({ surfaces: [grid], stages: 5 });
     this.player.init();
     this.transport.reset([this.lesson.beatsPerMeasure]);
 

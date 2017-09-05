@@ -5,25 +5,28 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { createSelector } from 'reselect';
 
-import { AppState } from '../app.reducer';
+import { AppState } from '../../../common/app.reducer';
 import { LessonActions } from './lesson.actions';
 import { Plan } from './lesson.reducer';
-import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../phrase/phrase.model';
-import { Rhythm } from '../core/rhythm.model';
-import { SoundName } from '../core/note.model';
-import { Surface } from '../surface/surface.model';
+import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../../../common/phrase/phrase.model';
+import { Rhythm } from '../../../common/core/rhythm.model';
+import { SoundName } from '../../../common/core/note.model';
+import { Surface } from '../../../common/surface/surface.model';
 
 @Injectable()
 export class LessonService {
-  static getLesson = (state: AppState) => state.lesson;
+  static getLesson = (state: AppState) => state.a1.lesson;
   static getPlan = createSelector(LessonService.getLesson, lesson => lesson && lesson.plan);
   static getStage = createSelector(LessonService.getLesson, lesson => lesson && lesson.stage);
+  static getCompleted = createSelector(LessonService.getLesson, lesson => lesson && lesson.completed);
 
   private plan$: Observable<Plan>;
   private stage$: Observable<number>;
+  private completed$: Observable<boolean[]>;
 
   private _plan : Plan;
   private _stage: number;
+  private _completed: boolean[];
 
   private _soundNames: SoundName[];
   private _initialData: _.Dictionary<Surface.Data>;
@@ -35,6 +38,7 @@ export class LessonService {
   constructor(private store: Store<AppState>, private lesson: LessonActions) {
     this.plan$ = this.store.select(LessonService.getPlan);
     this.stage$ = this.store.select(LessonService.getStage);
+    this.completed$ = this.store.select(LessonService.getCompleted);
 
     this.plan$.subscribe(plan => {
       this._plan = plan;
@@ -46,6 +50,7 @@ export class LessonService {
       }
     });
     this.stage$.subscribe(stage => { this._stage = stage; });
+    this.completed$.subscribe(completed => { this._completed = completed; });
 
     this._rhythm = new Rhythm([1, 1, 1, 1]);
     this._minNotes = 3;
@@ -60,8 +65,12 @@ export class LessonService {
     this.store.dispatch(this.lesson.reset());
   }
 
-  advance(rounds: number) {
-    this.store.dispatch(this.lesson.advance(rounds));
+  set stage(stage: number) {
+    this.store.dispatch(this.lesson.stage(stage));
+  }
+
+  complete(rounds: number, stage?: number) {
+    this.store.dispatch(this.lesson.complete(rounds, stage));
   }
 
   set rhythm(rhythm: Rhythm) {
@@ -81,15 +90,19 @@ export class LessonService {
   }
 
   get surfaces() {
-    return this._plan.surfaces;
+    return this._plan && this._plan.surfaces;
   }
 
   get stages() {
-    return this._plan.stages;
+    return this._plan && this._plan.stages;
   }
 
   get stage() {
     return this._stage;
+  }
+
+  completed(stage: number) {
+    return this._completed && this._completed[stage];
   }
 
   get soundNames() {

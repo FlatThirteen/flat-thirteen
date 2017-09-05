@@ -1,10 +1,14 @@
-.surface-container
-  bouncing-ball
-  .surface(*ngFor="let surface of lesson.surfaces; let i = index")
+.lesson-container([class.fade]="lesson.stage !== undefined")
+  .stage(*ngFor="let stage of lesson.stages; let i = index",
+      (click)="onStage(i)", [class.completed]="lesson.completed(i)")
+.surface-container(*ngIf="lesson.stage !== undefined")
+  //bouncing-ball
+  .surface(*ngFor="let surface of lesson.surfaces")
+    .controls
+      .goal.button((click)="onGoal()")
+      .spacer
+      .play.button((click)="onPlayback()")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface")
-  .controls
-    .start.button(*ngIf="transport.paused || stage.isLoop", (click)="onStart()") Enter
-    .stop.button(*ngIf="!transport.paused", (click)="onStop()") Stop
-    .listen.button([ngClass]="listenClass$ | async", (click)="onListen()")
-      img(src="/assets/listen-music-128.png", alt="Listen!")
-stage-panel
+  .back((click)="onStage()") &larr;
+stage-panel([class.fade]="lesson.stage === undefined")
+
