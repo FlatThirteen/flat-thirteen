@@ -29,6 +29,6 @@
             .note([ngClass]="controlNoteClass(key, pulseIndex, pulses)",
                 (click)="!transport.starting && player.toggle(key, pulseIndex)")
               | {{player.cursor === pulseIndex ? key : ''}}
-  .counter-container.overlay(*ngIf="stage.isCount || stage.isVictory || !stage.isLoop && transport.starting")
+  .counter-container.overlay(*ngIf="stage.isCount || stage.isVictory")
     .counter([class.active]="transport.active()", *ngIf="stage.isCount || transport.starting")
       | {{transport.count()}}
