@@ -19,9 +19,9 @@ export class StageState {
   static reducer(state: StageState, action: Action): StageState {
     switch(action.type) {
       case StageActions.STANDBY:
-        let phraseBuilder = action.payload;
-        if (phraseBuilder) {
-          return new StageState('standby', phraseBuilder.build());
+        let phrase = action.payload;
+        if (phrase) {
+          return new StageState('standby', phrase);
         } else {
           return _.defaults({
             scene: 'standby'

@@ -9,6 +9,7 @@ import { Surface } from '../../../common/surface/surface.model';
 export interface Plan {
   surfaces: Surface[];
   stages: Phrase[];
+  numberOfStages: number;
 }
 
 export class LessonState {
@@ -17,9 +18,7 @@ export class LessonState {
   readonly rounds: number = 0;
 
   constructor(readonly plan: Plan) {
-    if (plan && _.isArray(plan.stages)) {
-      this.completed = [];
-    }
+    this.completed = [];
   }
 
   static reducer(state: LessonState, action: Action): LessonState {

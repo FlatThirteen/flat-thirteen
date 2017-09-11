@@ -2,6 +2,9 @@ fx-blue = #00AFFF;
 active-blue = #009FFF;
 main-blue = #008FFF;
 back-blue = #007FFF;
+active-green = #50FFA0;
+main-green = #50EFA0;
+back-green = #50DFA0;
 active-grey = #999;
 main-grey = #888;
 back-grey = #777;
@@ -83,15 +86,15 @@ faces-height = 5vh;
 .strip-container, .faces
   background-color: back-blue;
 
-  .goal &, .count &
-    background-color: back-grey;
+  .victory &
+    background-color: back-green;
 
 .beat, .face
   transition: background-color 150ms ease-in-out;
 
-.goal, .count
+.victory
   .strip-container .beat, .face
-    background-color: main-grey;
+    background-color: main-green;
 
 .strip-container .beat:not(:last-child):after
   background-color: #FFF;
@@ -109,13 +112,6 @@ faces-height = 5vh;
   display: flex;
   margin-top: 5px;
   position: relative;
-
-  counter-ball
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
 
 particle-fx
   position: absolute;
@@ -275,15 +271,15 @@ clip-path(param)
     background-color: active-blue;
 
   .strip-container .beat &, &.face
-    .goal &, .count &
-      background-color: active-grey;
+    .victory &
+      background-color: active-green;
 
 .pulse
   .strip-container &:not(:last-child)
     border-right: dotted 3px back-blue;
 
-    .goal &, .count &
-      border-right-color: back-grey;
+    .victory &
+      border-right-color: back-green;
 
   display: inline-flex;
   flex: 1;
@@ -405,7 +401,7 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
     content: '';
     position: absolute;
 
-.demo, .loop .active, .play .active, .victory .active
+.standby, .playback .active, .victory .active
   .actual.note
     animation: active;
     animation-duration: 250ms;

@@ -1,14 +1,16 @@
 .lesson-container([class.fade]="lesson.stage !== undefined")
-  .stage(*ngFor="let stage of lesson.stages; let i = index",
-      (click)="onStage(i)", [class.completed]="lesson.completed(i)")
-.surface-container(*ngIf="lesson.stage !== undefined")
+  .stage.on-hover(*ngFor="let stage of lesson.stages; let i = index", (click)="onStage(i)",
+      [ngClass]="{completed: lesson.completed(i), weenie: isStageWeenie(i)}")
+  .again.weenie(*ngIf="isCompleted()", (click)="onAgain()") Again?
+.surface-container(*ngIf="lesson.stage !== undefined", [@fadeInOut]="")
   //bouncing-ball
-  .surface(*ngFor="let surface of lesson.surfaces")
+  .surface(*ngFor="let surface of lesson.surfaces", [@zoomInOut]="")
     .controls
-      .goal.button((click)="onGoal()")
+      .goal.button((click)="onGoal()", [class.weenie]="isGoalWeenie()")
+        img(src="/assets/listen-music-128.png", alt="Listen!")
       .spacer
-      .play.button((click)="onPlayback()")
-    html-grid(*ngIf="isGrid(surface)", [grid]="surface")
-  .back((click)="onStage()") &larr;
-stage-panel([class.fade]="lesson.stage === undefined")
+      .play.button((click)="onPlayback()", [class.weenie]="isPlaybackWeenie()")
+    html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
+  .back((click)="onStage()", *ngIf="lesson.stage !== undefined", [@slideTop]="") &larr;
+stage-panel(*ngIf="lesson.stage !== undefined", [@slideBottom]="")
 

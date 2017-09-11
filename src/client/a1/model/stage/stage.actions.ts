@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { PhraseBuilder } from '../../../common/phrase/phrase.model';
+import { Phrase } from '../../../common/phrase/phrase.model';
 import { Note } from '../../../common/core/note.model';
 
 @Injectable()
@@ -10,10 +10,10 @@ export class StageActions {
   constructor() {}
 
   static STANDBY = '[A1 STAGE] Standby';
-  standby(phraseBuilder?: PhraseBuilder): Action {
+  standby(phrase?: Phrase): Action {
     return {
       type: StageActions.STANDBY,
-      payload: phraseBuilder
+      payload: phrase
     };
   }
 

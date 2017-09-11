@@ -3,6 +3,7 @@ button-height = 60px;
 button-padding = 10px;
 button-shadow-size = 4px;
 button-shadow = 0 button-shadow-size 0 #000;
+weenie-shadow = 0 button-shadow-size 3px #555;
 primary-blue = #008FFF;
 primary-green = #50FFA0;
 primary-red = #FF6e56;
@@ -17,12 +18,17 @@ primary-red = #FF6e56;
   left: 0;
   right: 0;
   bottom: 0;
+  overflow-y: scroll;
 
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
+  transform: scale(1) translateY(0)
+  transition-duration: 150ms;
+
+  &.fade
+    transform: scale(.5) translateY(30vh)
 
   .stage
     background-color: primary-blue;
@@ -35,6 +41,13 @@ primary-red = #FF6e56;
     &.completed
       background-color: primary-green;
       cursor: not-allowed;
+
+  .again
+    position: absolute;
+    background-color: primary-blue;
+    cursor: pointer;
+    font-size: 15vh;
+    padding: 30px;
 
 .surface-container
   position: fixed;
@@ -66,9 +79,14 @@ bouncing-ball
 .controls
   margin: 10px;
 
-  .goal
+  .goal.button
     background-color: primary-blue;
     border-radius: 50%;
+    display: flex;
+
+    img
+      height: (2 / 3) * button-height;
+      margin: auto;
 
   .play
     width: 0;
@@ -117,11 +135,15 @@ stage-panel
   padding: 10px;
   text-align: center;
 
-.weenie
-  animation: pulse 5s infinite;
+.weenie:not(:hover), .weenie.on-hover
+  animation: weenie 1s infinite;
 
-@keyframes pulse
-  0%
-    transform: scale(1);
-  100%
-    transform: scale(1.4);
+@keyframes weenie
+  0%, 100%
+    transform: translateY(0)
+    filter: drop-shadow(0);
+    opacity: 1;
+  50%
+    transform: translateY(- button-shadow-size)
+    filter: drop-shadow(weenie-shadow);
+    opacity: 0.9;

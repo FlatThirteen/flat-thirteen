@@ -7,6 +7,7 @@
  */
 
 import { ApplicationRef, NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 
@@ -31,6 +32,7 @@ import { APP_PROVIDERS } from '../../client/a1/a1-app.config';
   imports: [
     APP_IMPORTS,
     BrowserModule,
+    BrowserAnimationsModule,
     HttpModule,
   ],
   providers: [APP_PROVIDERS]

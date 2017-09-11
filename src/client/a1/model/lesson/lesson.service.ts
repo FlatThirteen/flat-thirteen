@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
 import { AppState } from '../../../common/app.reducer';
 import { LessonActions } from './lesson.actions';
 import { Plan } from './lesson.reducer';
-import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../../../common/phrase/phrase.model';
+import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
 import { Rhythm } from '../../../common/core/rhythm.model';
 import { SoundName } from '../../../common/core/note.model';
 import { Surface } from '../../../common/surface/surface.model';
@@ -30,6 +30,7 @@ export class LessonService {
 
   private _soundNames: SoundName[];
   private _initialData: _.Dictionary<Surface.Data>;
+  private _weenieStage: number;
 
   private _rhythm: Rhythm;
   private _minNotes: number;
@@ -47,10 +48,18 @@ export class LessonService {
         this._initialData = _.reduce(plan.surfaces, (result, surface) => {
           return _.set(result, surface.id, surface.initialData);
         }, {});
+        this._weenieStage = 0;
       }
     });
     this.stage$.subscribe(stage => { this._stage = stage; });
-    this.completed$.subscribe(completed => { this._completed = completed; });
+    this.completed$.subscribe(completed => {
+      this._completed = completed;
+      if (this._completed) {
+        while (this._completed[this._weenieStage]) {
+          this._weenieStage++;
+        }
+      }
+    });
 
     this._rhythm = new Rhythm([1, 1, 1, 1]);
     this._minNotes = 3;
@@ -59,6 +68,22 @@ export class LessonService {
 
   init(plan: Plan) {
     this.store.dispatch(this.lesson.init(plan));
+  }
+
+  initConstantPlan(surfaces: Surface[], stages: Phrase[]) {
+    this.store.dispatch(this.lesson.init({
+      surfaces: surfaces,
+      stages: stages,
+      numberOfStages: stages.length
+    }));
+  }
+
+  initGeneratedPlan(surfaces: Surface[], numberOfStages: number) {
+    this.store.dispatch(this.lesson.init({
+      surfaces: surfaces,
+      stages: _.times(numberOfStages, () => this.phraseBuilder.build()),
+      numberOfStages: numberOfStages
+    }));
   }
 
   reset() {
@@ -97,8 +122,16 @@ export class LessonService {
     return this._plan && this._plan.stages;
   }
 
+  get numberOfStages() {
+    return this._plan ? this._plan.numberOfStages : 0;
+  }
+
   get stage() {
     return this._stage;
+  }
+
+  get weenieStage() {
+    return this._weenieStage;
   }
 
   completed(stage: number) {
@@ -114,17 +147,6 @@ export class LessonService {
   }
 
   get phraseBuilder() {
-    if (this._plan && this._plan.stages) {
-      if (_.isNumber(this._plan.stages) && this._plan.stages <= this._stage) {
-        return null;
-      } else if (_.isArray(this._plan.stages)) {
-        if (this._plan.stages[this._stage]) {
-          return new ConstantPhraseBuilder(this._plan.stages[this._stage]);
-        } else {
-          return null;
-        }
-      }
-    }
     return new MonophonicMonotonePhraseBuilder(this._soundNames, this._rhythm,
       this._minNotes, this._maxNotes);
   }

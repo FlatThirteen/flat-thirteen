@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
 import { AppState } from '../../../common/app.reducer';
 
 import { Note } from '../../../common/core/note.model';
-import { Phrase, PhraseBuilder } from '../../../common/phrase/phrase.model';
+import { Phrase } from '../../../common/phrase/phrase.model';
 import { PlayerService } from '../player/player.service';
 import { SoundService } from '../../../common/sound/sound.service';
 import { StageScene } from './stage.reducer';
@@ -66,8 +66,8 @@ export class StageService {
     this.goalPlayed$.subscribe(goalPlayed => { this._goalPlayed = goalPlayed; });
   }
 
-  standby(phraseBuilder?: PhraseBuilder) {
-    this.store.dispatch(this.stage.standby(phraseBuilder));
+  standby(phrase?: Phrase) {
+    this.store.dispatch(this.stage.standby(phrase));
   }
 
   goal() {
