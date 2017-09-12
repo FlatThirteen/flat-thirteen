@@ -38,6 +38,7 @@ let requestAnimationFrameId: number;
 })
 export class A2MainComponent implements OnInit, OnDestroy {
   public listenClass$: Observable<string>;
+  public showBall$: Observable<boolean>;
   public showStart: boolean = false;
   public weenieStart: string = 'inactive';
 
@@ -48,6 +49,9 @@ export class A2MainComponent implements OnInit, OnDestroy {
         ([scene, active, touched]) =>
           scene === 'goal' && active && !this.transport.lastBeat() ? 'waiting' :
           scene === 'goal' && !active || scene === 'demo' && touched ? 'enable' : '');
+    this.showBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
+      ([paused, lastBeat]) => !paused && stage.showBall(lastBeat)
+    )
   }
 
   /**
@@ -126,11 +130,11 @@ export class A2MainComponent implements OnInit, OnDestroy {
   }
 
   onListen() {
-    if (this.transport.paused) {
-      this.transport.start();
-      this.weenieStart = 'active';
-    }
     this.stage.listen();
+    if (this.transport.paused) {
+      this.weenieStart = 'active';
+      this.transport.start();
+    }
   }
 
   onStart() {

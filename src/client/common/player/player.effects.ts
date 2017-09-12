@@ -35,7 +35,7 @@ export class PlayerEffects {
       }
       if (this.stage.isDemo) {
         this.sound.play(sound);
-      } else if (this.transport.canLivePlay(beat, cursor, pulses)) {
+      } else if (this.stage.isPlay && this.transport.canLivePlay(beat, cursor, pulses)) {
         this.stage.play(new Note(sound), beat, tick);
       }
     }).ignoreElements();

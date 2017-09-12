@@ -1,5 +1,5 @@
 .ball-container
-  .ball([ngClass]="{active: active, calibrate: !transport.paused}",
+  .ball([ngClass]="{active: showBall$ | async, calibrate: !transport.paused}",
     [style.left]="left",
     [style.animation-duration]="animationDuration",
     [style.animation-delay]="animationDelay",

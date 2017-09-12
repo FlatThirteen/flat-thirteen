@@ -135,6 +135,7 @@ export class TransportService {
   start() {
     this.paused = false;
     this.paused$.next(false);
+    this.lastBeat$.next(false);
     Tone.Transport.start('+4n');
   }
 

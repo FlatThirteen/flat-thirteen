@@ -1,5 +1,5 @@
 .surface-container
-  bouncing-ball
+  bouncing-ball([showBall$]="showBall$")
   .surface(*ngFor="let surface of lesson.surfaces; let i = index")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface")
   .controls

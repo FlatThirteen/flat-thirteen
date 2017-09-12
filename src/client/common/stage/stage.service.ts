@@ -156,6 +156,10 @@ export class StageService {
     return this._scene === 'goal';
   }
 
+  get isPlay() {
+    return this._scene === 'play';
+  }
+
   get isVictory() {
     return this._scene === 'victory';
   }
