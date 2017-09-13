@@ -1,18 +1,16 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
-//import { Observable } from 'rxjs';
-//import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Grid } from './grid/grid.model';
 import { LessonService } from '../model/lesson/lesson.service';
 import { PlayerService } from '../model/player/player.service';
+import { ProgressService } from '../model/progress/progress.service';
 import { StageService } from '../model/stage/stage.service';
 import { Surface } from '../../common/surface/surface.model';
 import { TransportService } from '../../common/core/transport.service';
 import { ActivatedRoute } from '@angular/router';
 import { Rhythm } from '../../common/core/rhythm.model';
-import { Phrase } from '../../common/phrase/phrase.model';
 
 let requestAnimationFrameId: number;
 
@@ -64,36 +62,23 @@ let requestAnimationFrameId: number;
   ]
 })
 export class A1MainComponent implements OnInit, OnDestroy {
-  //public listenClass$: Observable<string>;
   public shouldStopAtTop: boolean = false;
   private _isGoalWeenie: boolean = false;
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
-              public lesson: LessonService) {
-    /*this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
-        ([scene, active, touched]) =>
-          scene === 'goal' && active && !this.transport.lastBeat() ? 'waiting' :
-          scene === 'goal' && !active || touched ? 'enable' : '');*/
-  }
+              public lesson: LessonService, public progress: ProgressService) {}
 
   /**
    * Starts up the requestAnimationFrame loop so that the browser redraws the
    * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
-    this.lesson.rhythm = Rhythm.fromParam(this.route.snapshot.queryParams['p'] || '1111');
-    this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
-    this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
-    let grid = new Grid({a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.initConstantPlan([grid], [
-      new Phrase('kick@0:000,1:000,2:000,3:000'),
-      new Phrase('kick@0:000,1:000,2:000'),
-      new Phrase('kick@0:000,2:000,3:000'),
-      new Phrase('kick@0:000,1:000,3:000')
-    ]);
-    this.player.init();
-    this.transport.reset([this.lesson.beatsPerMeasure]);
+    this.progress.init({
+      rhythm: Rhythm.fromParam(this.route.snapshot.queryParams['p'] || '1111'),
+      minNotes: _.parseInt(this.route.snapshot.queryParams['min']) || 3,
+      maxNotes: _.parseInt(this.route.snapshot.queryParams['max']) || 16
+    });
 
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
@@ -134,7 +119,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
       } else if (this.isPlaybackWeenie()) {
         this.onPlayback();
       } else if (this.isCompleted()) {
-        this.onAgain();
+        this.onNext();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();
@@ -201,9 +186,8 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.transport.start();
   }
 
-  onAgain() {
-    let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.initGeneratedPlan([grid], 4);
+  onNext() {
+    this.progress.next();
   }
 
   isGrid(surface: Surface) {

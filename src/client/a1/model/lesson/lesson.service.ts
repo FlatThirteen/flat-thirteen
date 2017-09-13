@@ -6,12 +6,11 @@ import { Observable } from 'rxjs';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../../../common/app.reducer';
-import { LessonActions } from './lesson.actions';
-import { Plan } from './lesson.reducer';
-import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
-import { Rhythm } from '../../../common/core/rhythm.model';
 import { SoundName } from '../../../common/core/note.model';
 import { Surface } from '../../../common/surface/surface.model';
+
+import { LessonActions } from './lesson.actions';
+import { Plan } from './lesson.reducer';
 
 @Injectable()
 export class LessonService {
@@ -24,17 +23,13 @@ export class LessonService {
   private stage$: Observable<number>;
   private completed$: Observable<boolean[]>;
 
-  private _plan : Plan;
+  private _plan: Plan;
   private _stage: number;
   private _completed: boolean[];
 
   private _soundNames: SoundName[];
   private _initialData: _.Dictionary<Surface.Data>;
   private _weenieStage: number;
-
-  private _rhythm: Rhythm;
-  private _minNotes: number;
-  private _maxNotes: number;
 
   constructor(private store: Store<AppState>, private lesson: LessonActions) {
     this.plan$ = this.store.select(LessonService.getPlan);
@@ -60,30 +55,10 @@ export class LessonService {
         }
       }
     });
-
-    this._rhythm = new Rhythm([1, 1, 1, 1]);
-    this._minNotes = 3;
-    this._maxNotes = 16;
   }
 
   init(plan: Plan) {
     this.store.dispatch(this.lesson.init(plan));
-  }
-
-  initConstantPlan(surfaces: Surface[], stages: Phrase[]) {
-    this.store.dispatch(this.lesson.init({
-      surfaces: surfaces,
-      stages: stages,
-      numberOfStages: stages.length
-    }));
-  }
-
-  initGeneratedPlan(surfaces: Surface[], numberOfStages: number) {
-    this.store.dispatch(this.lesson.init({
-      surfaces: surfaces,
-      stages: _.times(numberOfStages, () => this.phraseBuilder.build()),
-      numberOfStages: numberOfStages
-    }));
   }
 
   reset() {
@@ -96,22 +71,6 @@ export class LessonService {
 
   complete(rounds: number, stage?: number) {
     this.store.dispatch(this.lesson.complete(rounds, stage));
-  }
-
-  set rhythm(rhythm: Rhythm) {
-    this._rhythm = rhythm;
-  }
-
-  set min(min: number) {
-    if (min) {
-      this._minNotes = _.clamp(min, 2, this._maxNotes);
-    }
-  }
-
-  set max(max: number) {
-    if (max) {
-      this._maxNotes = _.clamp(max, this._minNotes, 16);
-    }
   }
 
   get surfaces() {
@@ -144,23 +103,6 @@ export class LessonService {
 
   get initialData() {
     return this._initialData;
-  }
-
-  get phraseBuilder() {
-    return new MonophonicMonotonePhraseBuilder(this._soundNames, this._rhythm,
-      this._minNotes, this._maxNotes);
-  }
-
-  get pulsesByBeat() {
-    return this._rhythm.pulsesByBeat;
-  }
-
-  get beatsPerMeasure() {
-    return this.pulsesByBeat.length;
-  }
-
-  get supportedPulses() {
-    return this._rhythm.supportedPulses;
   }
 
   surfaceFor(key: string): Surface {

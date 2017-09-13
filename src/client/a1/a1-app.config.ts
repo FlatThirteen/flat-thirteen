@@ -19,6 +19,8 @@ import { LessonService } from './model/lesson/lesson.service';
 import { PlayerActions } from './model/player/player.actions';
 import { PlayerEffects } from './model/player/player.effects';
 import { PlayerService } from './model/player/player.service';
+import { ProgressActions } from './model/progress/progress.actions';
+import { ProgressService } from './model/progress/progress.service';
 import { TransportService } from '../common/core/transport.service';
 import { SoundService } from '../common/sound/sound.service';
 import { StageActions } from './model/stage/stage.actions';
@@ -49,6 +51,8 @@ export const APP_PROVIDERS = [
   PlayerActions,
   PlayerEffects,
   PlayerService,
+  ProgressActions,
+  ProgressService,
   TransportService,
   SoundService,
   StageActions,
