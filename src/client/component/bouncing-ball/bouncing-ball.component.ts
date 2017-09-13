@@ -2,10 +2,8 @@ import * as _ from 'lodash';
 
 import { Component, Input, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { TransportService } from '../../common/core/transport.service';
-import { StageService } from '../../common/stage/stage.service';
 
 const inactiveLeft = '25%';
 const duration = 500;
@@ -28,7 +26,7 @@ export class BouncingBallComponent implements OnDestroy  {
   public transitionDuration: string;
   public transitionDelay: string;
 
-  constructor(public transport: TransportService, private stage: StageService) {
+  constructor(public transport: TransportService) {
     this.animationDuration = duration + 'ms';
     this.animationDelay = '0';
     this.transitionDuration = .9 * duration + 'ms';
