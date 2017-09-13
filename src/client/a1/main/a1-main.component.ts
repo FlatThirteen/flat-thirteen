@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Grid } from './grid/grid.model';
 import { LessonService } from '../model/lesson/lesson.service';
@@ -62,12 +64,16 @@ let requestAnimationFrameId: number;
   ]
 })
 export class A1MainComponent implements OnInit, OnDestroy {
+  public showBall$: Observable<boolean>;
   public shouldStopAtTop: boolean = false;
   private _isGoalWeenie: boolean = false;
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
-              public lesson: LessonService, public progress: ProgressService) {}
+              public lesson: LessonService, public progress: ProgressService) {
+    this.showBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
+      ([paused, lastBeat]) => !paused && stage.isGoal && !lastBeat)
+  }
 
   /**
    * Starts up the requestAnimationFrame loop so that the browser redraws the

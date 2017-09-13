@@ -9,7 +9,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { routes } from './a1-app.routing';
 import { rootReducer } from '../common/app.reducer';
 import { GridModule } from './main/grid/grid.module';
-//import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
+import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
 //import { CounterBallModule } from '../component/counter-ball/counter-ball.module';
 import { StagePanelModule } from './main/stage-panel/stage-panel.module';
 
@@ -33,7 +33,7 @@ export const APP_IMPORTS = [
   RouterStoreModule.connectRouter(),
   StoreModule.provideStore(rootReducer),
   GridModule,
-  //BouncingBallModule,
+  BouncingBallModule,
   //CounterBallModule,
   StagePanelModule,
   EffectsModule.run(PlayerEffects),

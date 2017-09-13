@@ -3,7 +3,7 @@
       [ngClass]="{completed: lesson.completed(i), weenie: isStageWeenie(i)}")
   .next.weenie(*ngIf="isCompleted()", (click)="onNext()") {{progress.isEndGame() ? '&#8635;' : '&rarr;'}}
 .surface-container(*ngIf="lesson.stage !== undefined", [@fadeInOut]="")
-  //bouncing-ball
+  bouncing-ball([showBall$]="showBall$")
   .surface(*ngFor="let surface of lesson.surfaces", [@zoomInOut]="")
     .controls
       .goal.button((click)="onGoal()", [class.weenie]="isGoalWeenie()")
@@ -11,6 +11,8 @@
       .spacer
       .play.button((click)="onPlayback()", [class.weenie]="isPlaybackWeenie()")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
+    .controls
+      .spacer
   .back((click)="onStage()", *ngIf="lesson.stage !== undefined", [@slideTop]="") &larr;
 stage-panel(*ngIf="lesson.stage !== undefined", [@slideBottom]="")
 

@@ -139,10 +139,6 @@ export class StageService {
     return this._scene === 'victory';
   }
 
-  showBall(lastBeat: boolean) {
-    return this.isGoal; //this.isLoop || (lastBeat ? this.nextScene === 'play' : this._scene === 'play');
-  }
-
   get showPosition() {
     return this._scene === 'goal' || this._scene === 'playback';
   }
