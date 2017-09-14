@@ -117,12 +117,4 @@ export class PlayerService {
     return _.filter(_.map(_.values(this._data),
         (data: Surface.Data[]) => data[beat].noteAt(tick)));
   }
-
-  toggle(key: string, cursor?: number) {
-    if (this.value(key, cursor)) {
-      this.unset(key, cursor);
-    } else {
-      this.set(key, cursor);
-    }
-  }
 }

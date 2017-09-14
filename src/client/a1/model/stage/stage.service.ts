@@ -128,6 +128,10 @@ export class StageService {
     return this._scene;
   }
 
+  get isStandby() {
+    return this._scene === 'standby';
+  }
+
   get isGoal() {
     return this._scene === 'goal';
   }

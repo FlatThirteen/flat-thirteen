@@ -119,7 +119,7 @@ particle-fx
   bottom: 0;
   left: 0;
   right: 0;
-  margin: - faces-height 0;
+  margin: - faces-height 0 0;
 
 .face
   flex: 1 1 0;
@@ -371,27 +371,6 @@ note-size(percent, line-adjust = 0)
         text-align: center;
         width: 50%;
 
-  .quarter.on
-    &:after
-      bottom: 19%;
-      height: 10px;
-
-    &:hover:after
-      content: 'space';
-      color: #000;
-
-  .eighth.on:after
-    bottom: 18%;
-    height: 5px;
-
-  .triplet.on:after
-    bottom: 13%;
-    height: 4px;
-
-  .sixteenth.on:after
-    bottom: 13%;
-    height: 3px;
-
 alpha-blue-dark = alpha(lightness(active-blue, 20%), 0.5);
 alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
 
@@ -401,7 +380,7 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
     content: '';
     position: absolute;
 
-.standby, .playback .active, .victory .active
+.standby .active, .playback .active, .victory .active
   .actual.note
     animation: active;
     animation-duration: 250ms;
