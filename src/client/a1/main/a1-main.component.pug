@@ -9,7 +9,8 @@
       .goal.button((click)="onGoal()", [class.weenie]="isGoalWeenie()")
         img(src="/assets/listen-music-128.png", alt="Listen!")
       .spacer
-      .play.button((click)="onPlayback()", [class.weenie]="isPlaybackWeenie()")
+      .play.button((click)="isGoalWeenie() || onPlayback()",
+          [ngClass]="{disabled: isGoalWeenie(), weenie:isPlaybackWeenie()}")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
     .controls
       .spacer
