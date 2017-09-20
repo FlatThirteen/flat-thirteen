@@ -27,11 +27,11 @@ let requestAnimationFrameId: number;
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
-        style({ opacity:0 }),
-        animate(200, style({ opacity:1 }))
+        style({ opacity: 0 }),
+        animate(200, style({ opacity: 1 }))
       ]),
       transition(':leave', [
-        animate(500, style({ opacity:0, transform: 'scale(2)'}))
+        animate(500, style({ opacity:0, transform: 'scale(2)' }))
       ])
     ]),
     trigger('slideTop', [
@@ -103,7 +103,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   onTop() {
     if (this.stage.isVictory) {
       this.transport.stop();
-      this.lesson.complete(this.stage.round, this.lesson.stage);
+      this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
       this.onStage();
     } else if (this.stage.isPlayback && this.stage.goalPlayed) {
       this.shouldStopAtTop = false;
@@ -124,7 +124,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
         this.onGoal();
       } else if (this.isPlaybackWeenie()) {
         this.onPlayback();
-      } else if (this.isCompleted()) {
+      } else if (this.lesson.isCompleted) {
         this.onNext();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect
@@ -147,7 +147,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onStage(stage?: number) {
-    if (stage !== undefined && this.lesson.completed(stage)) {
+    if (stage !== undefined && this.lesson.pointsFor(stage)) {
       return;
     }
     this._isGoalWeenie = true;
@@ -175,10 +175,6 @@ export class A1MainComponent implements OnInit, OnDestroy {
     return !this._isGoalWeenie && !this.player.noteCount && this.transport.paused;
   }
 
-  isCompleted() {
-    return this.lesson.weenieStage === this.lesson.numberOfStages;
-  }
-
   onGoal() {
     this.shouldStopAtTop = false;
     this._isGoalWeenie = false;
@@ -193,6 +189,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onNext() {
+    this.progress.result(this.lesson.result);
     this.progress.next();
   }
 

@@ -32,10 +32,10 @@ export class LessonActions {
   }
 
   static COMPLETE = '[A1 LESSON] Complete';
-  complete(rounds: number, stage: number): Action {
+  complete(rounds: number, stage: number, points: number): Action {
     return {
       type: LessonActions.COMPLETE,
-      payload: [rounds, stage]
+      payload: [rounds, stage, points]
     }
   }
 }

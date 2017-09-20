@@ -46,7 +46,8 @@ export class StageState {
         }, state);
       case StageActions.PLAY: {
         let [note, beat, tick] = action.payload;
-        let playedPhrase = _.cloneDeep(state.playedPhrase).add(note, beat, tick);
+        let playedPhrase = state.playedPhrase ?
+            _.cloneDeep(state.playedPhrase).add(note, beat, tick) : null;
         let goalPlayed = _.isEqual(state.goalPhrase, playedPhrase);
         return _.defaults({
           playedPhrase: playedPhrase,

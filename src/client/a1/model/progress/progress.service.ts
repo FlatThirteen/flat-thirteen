@@ -12,6 +12,7 @@ import { TransportService } from '../../../common/core/transport.service';
 
 import { ProgressActions } from './progress.actions';
 import { Settings } from './progress.reducer';
+import { Result } from '../lesson/lesson.reducer';
 
 const numberOfStages = 4;
 
@@ -20,17 +21,21 @@ export class ProgressService {
   static getProgress = (state: AppState) => state.a1.progress;
   static getSettings = createSelector(ProgressService.getProgress, progress => progress && progress.settings);
   static getLessonNumber = createSelector(ProgressService.getProgress, progress => progress && progress.lessonNumber);
+  static getResults = createSelector(ProgressService.getProgress, progress => progress && progress.results);
 
   private settings$: Observable<Settings>;
   private lessonNumber$: Observable<number>;
+  private results$: Observable<Result[]>;
 
   private _settings: Settings;
   private _lessonNumber: number;
+  private _results: Result[];
 
   constructor(private store: Store<AppState>, private progress: ProgressActions,
               private lesson: LessonService, private transport: TransportService) {
     this.settings$ = this.store.select(ProgressService.getSettings);
     this.lessonNumber$ = this.store.select(ProgressService.getLessonNumber);
+    this.results$ = this.store.select(ProgressService.getResults);
 
     this.settings$.subscribe(settings => {
       this._settings = settings;
@@ -66,10 +71,16 @@ export class ProgressService {
           numberOfStages: numberOfStages });
       }
     });
+
+    this.results$.subscribe(results => { this._results = results; });
   }
 
   init(settings: Settings) {
     this.store.dispatch(this.progress.init(settings));
+  }
+
+  result(result: Result) {
+    this.store.dispatch(this.progress.result(result));
   }
 
   next() {
@@ -78,5 +89,9 @@ export class ProgressService {
 
   isEndGame() {
     return this._settings && !this._settings.rhythm.isSimple() || this._lessonNumber;
+  }
+
+  get results() {
+    return this._results || [];
   }
 }

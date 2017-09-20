@@ -12,13 +12,17 @@ export interface Plan {
   numberOfStages: number;
 }
 
+export interface Result {
+  points: number[]
+}
+
 export class LessonState {
   readonly stage: number = undefined;
-  readonly completed: boolean[];
+  readonly result: Result;
   readonly rounds: number = 0;
 
   constructor(readonly plan: Plan) {
-    this.completed = [];
+    this.result = { points: [] };
   }
 
   static reducer(state: LessonState, action: Action): LessonState {
@@ -34,17 +38,17 @@ export class LessonState {
         return {
           plan: state.plan,
           stage: stage, // Easiest way to set undefined
-          completed: state.completed,
+          result: state.result,
           rounds: state.rounds
         };
       }
       case LessonActions.COMPLETE: {
-        let [rounds, stage] = action.payload;
-        let completed = state.completed.slice();
-        completed[stage] = true;
+        let [rounds, stage, points] = action.payload;
+        let newPoints = state.result.points.slice();
+        newPoints[stage] = points;
         return _.defaults({
           stage: undefined,
-          completed: completed,
+          result: { points: newPoints },
           rounds: state.rounds + rounds
         }, state);
       }

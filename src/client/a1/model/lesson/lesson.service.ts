@@ -10,22 +10,22 @@ import { SoundName } from '../../../common/core/note.model';
 import { Surface } from '../../../common/surface/surface.model';
 
 import { LessonActions } from './lesson.actions';
-import { Plan } from './lesson.reducer';
+import { Plan, Result } from './lesson.reducer';
 
 @Injectable()
 export class LessonService {
   static getLesson = (state: AppState) => state.a1.lesson;
   static getPlan = createSelector(LessonService.getLesson, lesson => lesson && lesson.plan);
   static getStage = createSelector(LessonService.getLesson, lesson => lesson && lesson.stage);
-  static getCompleted = createSelector(LessonService.getLesson, lesson => lesson && lesson.completed);
+  static getResult = createSelector(LessonService.getLesson, lesson => lesson && lesson.result);
 
   private plan$: Observable<Plan>;
   private stage$: Observable<number>;
-  private completed$: Observable<boolean[]>;
+  private result$: Observable<Result>;
 
   private _plan: Plan;
   private _stage: number;
-  private _completed: boolean[];
+  private _result: Result;
 
   private _soundNames: SoundName[];
   private _initialData: _.Dictionary<Surface.Data>;
@@ -34,7 +34,7 @@ export class LessonService {
   constructor(private store: Store<AppState>, private lesson: LessonActions) {
     this.plan$ = this.store.select(LessonService.getPlan);
     this.stage$ = this.store.select(LessonService.getStage);
-    this.completed$ = this.store.select(LessonService.getCompleted);
+    this.result$ = this.store.select(LessonService.getResult);
 
     this.plan$.subscribe(plan => {
       this._plan = plan;
@@ -47,10 +47,10 @@ export class LessonService {
       }
     });
     this.stage$.subscribe(stage => { this._stage = stage; });
-    this.completed$.subscribe(completed => {
-      this._completed = completed;
-      if (this._completed) {
-        while (this._completed[this._weenieStage]) {
+    this.result$.subscribe(result => {
+      this._result = result;
+      if (this._result && this._result.points) {
+        while (this._result.points[this._weenieStage]) {
           this._weenieStage++;
         }
       }
@@ -69,8 +69,8 @@ export class LessonService {
     this.store.dispatch(this.lesson.stage(stage));
   }
 
-  complete(rounds: number, stage?: number) {
-    this.store.dispatch(this.lesson.complete(rounds, stage));
+  complete(rounds: number, stage: number, points: number) {
+    this.store.dispatch(this.lesson.complete(rounds, stage, points));
   }
 
   get surfaces() {
@@ -93,8 +93,12 @@ export class LessonService {
     return this._weenieStage;
   }
 
-  completed(stage: number) {
-    return this._completed && this._completed[stage];
+  get result() {
+    return this._result;
+  }
+
+  pointsFor(stage: number) {
+    return this._result && this._result.points && this._result.points[stage];
   }
 
   get soundNames() {
@@ -103,6 +107,10 @@ export class LessonService {
 
   get initialData() {
     return this._initialData;
+  }
+
+  get isCompleted() {
+    return this.weenieStage === this.numberOfStages;
   }
 
   surfaceFor(key: string): Surface {

@@ -1,7 +1,11 @@
 .lesson-container([class.fade]="lesson.stage !== undefined")
-  .stage.on-hover(*ngFor="let stage of lesson.stages; let i = index", (click)="onStage(i)",
-      [ngClass]="{completed: lesson.completed(i), weenie: isStageWeenie(i)}")
-  .next.weenie(*ngIf="isCompleted()", (click)="onNext()") {{progress.isEndGame() ? '&#8635;' : '&rarr;'}}
+  .result(*ngFor="let result of progress.results; let i = index")
+    .completed.stage(*ngFor="let points of result.points") {{ points }}
+  .current
+    .stage.on-hover(*ngFor="let stage of lesson.stages; let i = index", (click)="onStage(i)",
+        [ngClass]="{completed: lesson.pointsFor(i), weenie: isStageWeenie(i)}")
+      | {{ lesson.pointsFor(i) }}
+  .next.weenie(*ngIf="lesson.isCompleted", (click)="onNext()") {{progress.isEndGame() ? '&#8635;' : '&rarr;'}}
 .surface-container(*ngIf="lesson.stage !== undefined", [@fadeInOut]="")
   bouncing-ball([showBall$]="showBall$")
   .surface(*ngFor="let surface of lesson.surfaces", [@zoomInOut]="")

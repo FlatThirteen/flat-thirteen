@@ -19,9 +19,8 @@ primary-red = #FF6e56;
   right: 0;
   bottom: 0;
   overflow-y: scroll;
-
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   transform: scale(1) translateY(0)
@@ -32,15 +31,21 @@ primary-red = #FF6e56;
 
   .stage
     background-color: primary-blue;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     height: 8vw;
     width: 20vw;
     margin: 5px;
+    vertical-align: top;
 
     &.completed
       background-color: primary-green;
-      cursor: not-allowed;
+      color: primary-blue;
+      cursor: default;
+      font-size: 5vw;
+      font-weight: 800;
 
   .next
     position: absolute;

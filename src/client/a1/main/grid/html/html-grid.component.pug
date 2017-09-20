@@ -28,6 +28,8 @@
           .controls
             .note([ngClass]="controlNoteClass(key, pulseIndex, pulses)",
                 (click)="onNote(key, pulseIndex)")
-  .counter-container.overlay(*ngIf="stage.isCount || stage.isVictory")
+  .glass.overlay(*ngIf="stage.isCount || stage.isVictory")
+    .points(*ngIf="stage.isVictory", [@bounceIn]="")
+      .char(*ngFor="let char of pointChars()") {{char}}
     .counter([class.active]="transport.active()", *ngIf="stage.isCount || transport.starting")
       | {{transport.count()}}

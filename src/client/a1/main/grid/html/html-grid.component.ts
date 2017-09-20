@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-
+import { trigger, style, animate, transition, keyframes, stagger, query } from '@angular/animations';
 import { Subscription, Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
@@ -17,6 +17,31 @@ import { pulseFrom } from '../../../../common/core/beat-tick.model';
   selector: 'html-grid',
   templateUrl: 'html-grid.component.pug',
   styleUrls: ['html-grid.component.styl'],
+  animations: [
+    trigger('bounceIn', [
+      transition(':enter', [
+        query('.char', style({opacity: 0}), { optional: true }),
+        query('.char', stagger('100ms', [
+          animate('700ms ease-in-out', keyframes([
+            style({ opacity: 0, transform: 'translateY(1vh) scale(0.8, 1.2)', offset: 0 }),
+            style({ opacity: 0.5, transform: 'translateY(-4vh) scale(1.1, 0.9)', offset: 0.3 }),
+            style({ opacity: 1, transform: 'translateY(1vh) scale(0.9, 1.1)', offset: 0.6 }),
+            style({ transform: 'translateY(-0.5vh)', offset: 0.8 }),
+            style({ transform: 'translateY(0) scale(1, 1)', offset: 1 })
+          ]))
+        ]), { optional: true })
+      ]),
+      transition(':leave', [
+        query('.char', stagger('80ms', [
+          animate('300ms ease-in-out', keyframes([
+            style({ opacity: 1, transform: 'translateY(0) scale(1, 1)', offset: 0 }),
+            style({ opacity: 0.8, transform: 'translateY(-3vh) scale(1.1, 0.9)', offset: 0.3 }),
+            style({ opacity: 0, transform: 'translateY(4vh) scale(0.7, 1.3)', offset: 1 })
+          ]))
+        ]), { optional: true })
+      ])
+    ])
+  ]
 })
 export class HtmlGridComponent implements OnInit, OnDestroy {
   @Input() private grid: Grid;
@@ -90,6 +115,10 @@ export class HtmlGridComponent implements OnInit, OnDestroy {
         this.activeNote = pulseIndex;
       }
     }
+  }
+
+  pointChars() {
+    return _.toArray(_.toString(this.stage.basePoints));
   }
 
   ngOnDestroy() {
