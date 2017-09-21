@@ -34,7 +34,7 @@ export class PlayerEffects {
       }
       if (this.transport.canLivePlay(beat, cursor, pulses)) {
         this.stage.play(new Note(sound), beat, tick);
-      } else if (!this.stage.isGoal) {
+      } else if (this.stage.isStandby) {
         this.sound.play(sound);
       }
     }).ignoreElements();
