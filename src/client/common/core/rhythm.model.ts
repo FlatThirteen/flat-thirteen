@@ -27,6 +27,10 @@ export class Rhythm {
     this.length = _.flatten(timings).length;
   }
 
+  isSimple() {
+    return this.supportedPulses.length === 1 && this.supportedPulses[0] === 1;
+  }
+
   static fromParam(param: string): Rhythm {
     let pulses = _.map(param, _.parseInt).map(_.partial(_.clamp, _, 1, 4));
     return Rhythm.fromPulses(pulses);

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { Surface } from '../../../common/surface/surface.model';
-import { SoundName, Note } from '../../../common/sound/sound';
+import { SoundName, Note } from '../../../common/core/note.model';
 import { ticksPerBeat } from '../../../common/core/beat-tick.model';
 
 let nextId = 0;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
 import { PhraseBuilder } from '../phrase/phrase.model';
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 
 @Injectable()
 export class StageActions {

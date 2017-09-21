@@ -1,4 +1,4 @@
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 
 export interface Surface {
   readonly id: string;

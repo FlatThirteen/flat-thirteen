@@ -1,18 +1,17 @@
 import * as _ from 'lodash';
+import { Observable } from 'rxjs';
+import { createSelector } from 'reselect';
 
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-
-import { createSelector } from 'reselect';
 
 import { AppState } from '../app.reducer';
 import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
 import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
 import { LessonService } from '../lesson/lesson.service';
-import { Observable } from 'rxjs';
+import { Note } from '../core/note.model';
 import { PlayerActions } from './player.actions';
 import { Surface } from '../surface/surface.model';
-import { Note } from '../sound/sound';
 
 @Injectable()
 export class PlayerService {

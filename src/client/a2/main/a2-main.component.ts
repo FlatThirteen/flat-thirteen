@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
@@ -21,11 +22,25 @@ let requestAnimationFrameId: number;
   moduleId: module.id,
   selector: 'a2-main',
   templateUrl: 'a2-main.component.pug',
-  styleUrls: ['a2-main.component.styl']
+  styleUrls: ['a2-main.component.styl'],
+  animations: [
+    trigger('weenie', [
+      state('active', style({
+        transform: 'scale(1.4)'
+      })),
+      state('inactive', style({
+        transform: 'scale(1)'
+      })),
+      transition('inactive => active', animate('300ms ease-in-out')),
+      transition('active => inactive', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class A2MainComponent implements OnInit, OnDestroy {
   public listenClass$: Observable<string>;
+  public showBall$: Observable<boolean>;
   public showStart: boolean = false;
+  public weenieStart: string = 'inactive';
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
@@ -34,6 +49,9 @@ export class A2MainComponent implements OnInit, OnDestroy {
         ([scene, active, touched]) =>
           scene === 'goal' && active && !this.transport.lastBeat() ? 'waiting' :
           scene === 'goal' && !active || scene === 'demo' && touched ? 'enable' : '');
+    this.showBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
+      ([paused, lastBeat]) => !paused && stage.showBall(lastBeat)
+    )
   }
 
   /**
@@ -45,7 +63,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
     this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
     let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.init([grid], {stages: 5});
+    this.lesson.init({ surfaces: [grid], stages: 5 });
     this.player.init();
     this.transport.reset([this.lesson.beatsPerMeasure]);
 
@@ -112,19 +130,22 @@ export class A2MainComponent implements OnInit, OnDestroy {
   }
 
   onListen() {
+    this.stage.listen();
     if (this.transport.paused) {
+      this.weenieStart = 'active';
       this.transport.start();
     }
-    this.stage.listen();
   }
 
   onStart() {
+    this.weenieStart = 'inactive';
     this.lesson.reset();
     this.player.init();
     this.transport.start();
   }
 
   onStop() {
+    this.weenieStart = 'inactive';
     this.transport.stop();
     this.lesson.reset();
   }

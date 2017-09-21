@@ -1,11 +1,9 @@
 import * as _ from 'lodash';
 
-import { Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Component, Input, OnDestroy } from '@angular/core';
+import { Subscription, Observable } from 'rxjs';
 
 import { TransportService } from '../../common/core/transport.service';
-import { StageService } from '../../common/stage/stage.service';
 
 const inactiveLeft = '25%';
 const duration = 500;
@@ -19,41 +17,28 @@ const duration = 500;
   styleUrls: ['bouncing-ball.component.styl'],
 })
 export class BouncingBallComponent implements OnDestroy  {
+  @Input() public showBall$: Observable<boolean>;
   private subscriptions: Subscription[];
 
-  public active: boolean = false;
   public left: string = inactiveLeft;
   public animationDuration: string;
   public animationDelay: string;
   public transitionDuration: string;
   public transitionDelay: string;
 
-  constructor(public transport: TransportService, private stage: StageService) {
+  constructor(public transport: TransportService) {
     this.animationDuration = duration + 'ms';
     this.animationDelay = '0';
     this.transitionDuration = .9 * duration + 'ms';
     this.transitionDelay = .1 * duration + 'ms';
     this.subscriptions = [
       transport.paused$.subscribe(paused => {
-        if (paused) {
-          this.left = inactiveLeft;
-          this.active = false;
-        } else {
-          this.left = (50 / transport.numBeats) + '%';
-          setTimeout(() => { // Check for stage update after reducer has run
-            if (stage.isLoop) {
-              this.active = true;
-            }
-          }, 0);
-        }
+        this.left = paused ? inactiveLeft : (50 / transport.numBeats) + '%';
       }),
       transport.pulse$.subscribe(pulse => {
         let index = 2 * pulse.nextBeat + 1;
         this.left = (50 / transport.numBeats * index) + '%';
       }),
-      combineLatest(transport.lastBeat$, stage.active$).subscribe(([lastBeat]) => {
-        this.active = stage.showBall(lastBeat);
-      })
     ];
   }
 

@@ -1,0 +1,88 @@
+.container
+  background-color: #EEE;
+  height: 100%;
+  padding: 2vh 10vw;
+  display: flex;
+  font-size: 8vh;
+  line-height: 7vh;
+  justify-content: space-between;
+  text-align: center;
+
+  .notes, .round, .tempo
+    flex: 1;
+
+  .note, .metronome
+    vertical-align: bottom;
+
+  .info
+    display: inline;
+
+  .note
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+    height: 8vh;
+    margin-right: 1vh;
+    width: 8vh;
+
+  .note-count
+    display: inline-block;
+
+    &.over
+      color: red;
+      animation: pulse 1s linear infinite;
+
+  .metronome
+    border-bottom: 8vh solid black;
+    border-left: 2vh solid transparent;
+    border-right: 2vh solid transparent;
+    display: inline-block;
+    height: 0;
+    position: relative;
+    width: 4vh;
+
+    .arm
+      position: absolute;
+      top: 3px;
+      left: 50%;
+      height: 6vh;
+      width: 2px;
+      margin-left: -1px;
+      background-color: #EEE;
+
+      &:after
+        content: '';
+        position: absolute;
+        top: 5vh;
+        left: 50%;
+        height: 2vh;
+        width: 2vh;
+        margin-left: -1vh;
+        background-color: #EEE;
+        border-radius: 50%;
+
+
+      &.active
+        animation: tick 1s linear infinite;
+
+@keyframes pulse
+  0%, 100%
+    transform: scale(1);
+  20%, 25%
+    transform: scale(1.2);
+  75%
+    transform: scale(0.8);
+
+@keyframes tick
+  0%, 100%
+    transform: rotate(0);
+  10%, 40%
+    transform: rotate(20deg);
+  20%, 30%
+    transform: rotate(30deg);
+  50%
+    transform: rotate(0);
+  60%, 90%
+    transform: rotate(-20deg);
+  70%, 80%
+    transform: rotate(-30deg);

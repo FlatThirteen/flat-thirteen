@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import { Sound, ClickSound, KickSound, SnareSound, CowbellSound, SoundName, Params } from "./sound";
+import { SoundName} from '../core/note.model';
+import { Sound, ClickSound, KickSound, SnareSound, CowbellSound, Params } from './sound';
 
 @Injectable()
 export class SoundService {

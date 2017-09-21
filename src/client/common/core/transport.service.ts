@@ -52,12 +52,14 @@ export class TransportService {
     Tone.Transport.loop = true;
     Tone.Transport.setLoopPoints(0, beatsPerMeasure.length + 'm');
 
+    this.disposeLoops();
+
     this.quarterLoop = new Tone.Loop((time: number) => {
       if (this.paused) {
         return;
       }
       this.beatIndex++;
-      this.sound.play('click', time, {variation: this.beat ? 'normal' : 'heavy'});
+      this.sound.play('click', time, { variation: this.beat ? 'normal' : 'heavy' });
 
       this.pulse$.next({
         time: time,
@@ -132,9 +134,11 @@ export class TransportService {
   get starting() {
     return !this.paused && !this.started;
   }
+
   start() {
     this.paused = false;
     this.paused$.next(false);
+    this.lastBeat$.next(false);
     Tone.Transport.start('+4n');
   }
 
@@ -145,15 +149,22 @@ export class TransportService {
     this.beat = 0;
     Tone.Transport.stop();
     if (shouldDestroy) {
-      this.quarterLoop.dispose();
-      if (this.pulsesPart) {
-        this.pulsesPart.dispose();
-      }
+      this.disposeLoops();
+      this.onPulse = undefined;
       if (this.onTopId !== undefined) {
         Tone.Transport.clear(this.onTopId);
       }
-      this.onPulse = undefined;
     }
+  }
+
+  disposeLoops() {
+    if (this.quarterLoop) {
+      this.quarterLoop.dispose();
+    }
+    if (this.pulsesPart) {
+      this.pulsesPart.dispose();
+    }
+
   }
 
   count() {
@@ -193,7 +204,8 @@ export class TransportService {
     } else if (pulses !== 1) {
       let playedTick = ticks(pulse, pulses);
       let currentTick = this.quarterLoop.progress * ticksPerBeat;
-      return playedTick < currentTick && currentTick - playedTick < livePlayWithin * ticksPerBeat / pulses;
+      return playedTick < currentTick &&
+          currentTick - playedTick < livePlayWithin * ticksPerBeat / pulses;
     } else {
       return this.quarterLoop.progress < livePlayWithin;
     }
@@ -201,7 +213,8 @@ export class TransportService {
 
   liveTick(beatIndex?: number): number | null {
     if (_.isNumber(beatIndex) && this.supportedTicks.length === 0) {
-      return beatIndex === this.beatIndex && this.quarterLoop.progress < livePlayWithin ? 0 : null;
+      return beatIndex === this.beatIndex &&
+          this.quarterLoop.progress < livePlayWithin ? 0 : null;
     }
     let tick = this.quarterLoop.progress * ticksPerBeat;
     let tickIndex = _.sortedIndex(this.supportedTicks, tick);

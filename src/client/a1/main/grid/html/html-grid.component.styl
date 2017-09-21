@@ -2,6 +2,9 @@ fx-blue = #00AFFF;
 active-blue = #009FFF;
 main-blue = #008FFF;
 back-blue = #007FFF;
+active-green = #50FFA0;
+main-green = #50EFA0;
+back-green = #50DFA0;
 active-grey = #999;
 main-grey = #888;
 back-grey = #777;
@@ -26,10 +29,20 @@ faces-height = 5vh;
   top: 0;
   margin-bottom: 15px;
 
-.counter-container
+.glass
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .points
+    color: active-blue;
+    font-size: 15vw;
+    font-weight: 600;
+    text-shadow: 0 3px 6px rgba(255, 255, 255, 0.6)
+    white-space: nowrap;
+
+    .char
+      display: inline-block;
 
   .counter
     background-color: #FFF;
@@ -83,15 +96,15 @@ faces-height = 5vh;
 .strip-container, .faces
   background-color: back-blue;
 
-  .goal &, .count &
-    background-color: back-grey;
+  .victory &
+    background-color: back-green;
 
 .beat, .face
   transition: background-color 150ms ease-in-out;
 
-.goal, .count
+.victory
   .strip-container .beat, .face
-    background-color: main-grey;
+    background-color: main-green;
 
 .strip-container .beat:not(:last-child):after
   background-color: #FFF;
@@ -110,20 +123,13 @@ faces-height = 5vh;
   margin-top: 5px;
   position: relative;
 
-  counter-ball
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
 particle-fx
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  margin: - faces-height 0;
+  margin: - faces-height 0 0;
 
 .face
   flex: 1 1 0;
@@ -275,15 +281,15 @@ clip-path(param)
     background-color: active-blue;
 
   .strip-container .beat &, &.face
-    .goal &, .count &
-      background-color: active-grey;
+    .victory &
+      background-color: active-green;
 
 .pulse
   .strip-container &:not(:last-child)
     border-right: dotted 3px back-blue;
 
-    .goal &, .count &
-      border-right-color: back-grey;
+    .victory &
+      border-right-color: back-green;
 
   display: inline-flex;
   flex: 1;
@@ -375,27 +381,6 @@ note-size(percent, line-adjust = 0)
         text-align: center;
         width: 50%;
 
-  .quarter.on
-    &:after
-      bottom: 19%;
-      height: 10px;
-
-    &:hover:after
-      content: 'space';
-      color: #000;
-
-  .eighth.on:after
-    bottom: 18%;
-    height: 5px;
-
-  .triplet.on:after
-    bottom: 13%;
-    height: 4px;
-
-  .sixteenth.on:after
-    bottom: 13%;
-    height: 3px;
-
 alpha-blue-dark = alpha(lightness(active-blue, 20%), 0.5);
 alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
 
@@ -405,7 +390,7 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
     content: '';
     position: absolute;
 
-.demo, .loop .active, .play .active, .victory .active
+.standby .active, .playback .active, .victory .active
   .actual.note
     animation: active;
     animation-duration: 250ms;

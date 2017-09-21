@@ -1,12 +1,14 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { Observable } from 'rxjs';
+import { trigger, style, animate, transition } from '@angular/animations';
+import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Grid } from './grid/grid.model';
-import { LessonService } from '../../common/lesson/lesson.service';
-import { PlayerService } from '../../common/player/player.service';
-import { StageService } from '../../common/stage/stage.service';
+import { LessonService } from '../model/lesson/lesson.service';
+import { PlayerService } from '../model/player/player.service';
+import { ProgressService } from '../model/progress/progress.service';
+import { StageService } from '../model/stage/stage.service';
 import { Surface } from '../../common/surface/surface.model';
 import { TransportService } from '../../common/core/transport.service';
 import { ActivatedRoute } from '@angular/router';
@@ -21,19 +23,56 @@ let requestAnimationFrameId: number;
   moduleId: module.id,
   selector: 'a1-main',
   templateUrl: 'a1-main.component.pug',
-  styleUrls: ['a1-main.component.styl']
+  styleUrls: ['a1-main.component.styl'],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate(200, style({ opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate(500, style({ opacity:0, transform: 'scale(2)' }))
+      ])
+    ]),
+    trigger('slideTop', [
+      transition(':enter', [
+        style({ transform: 'translateY(-30vh)' }),
+        animate(500, style({ transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate(500, style({ transform: 'translateY(-30vh)' }))
+      ])
+    ]),
+    trigger('slideBottom', [
+      transition(':enter', [
+        style({ transform: 'translateY(30vh)' }),
+        animate(500, style({ transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate(500, style({ transform: 'translateY(30vh)' }))
+      ])
+    ]),
+    trigger('zoomInOut', [
+      transition(':enter', [
+        style({ transform: 'scale(.5) translateY(30vh)' }),
+        animate(500, style({ transform: 'scale(1) translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate(500, style({ transform: 'scale(.5) translateY(30vh)' }))
+      ])
+    ])
+  ]
 })
 export class A1MainComponent implements OnInit, OnDestroy {
-  public listenClass$: Observable<string>;
-  public showStart: boolean = false;
+  public showBall$: Observable<boolean>;
+  public shouldStopAtTop: boolean = false;
+  private _isGoalWeenie: boolean = false;
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
-              public lesson: LessonService) {
-    this.listenClass$ = combineLatest(stage.scene$, stage.active$, player.touched$).map(
-        ([scene, active, touched]) =>
-          scene === 'goal' && active && !this.transport.lastBeat() ? 'waiting' :
-          scene === 'goal' && !active || scene === 'demo' && touched ? 'enable' : '');
+              public lesson: LessonService, public progress: ProgressService) {
+    this.showBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
+      ([paused, lastBeat]) => !paused && stage.isGoal && !lastBeat)
   }
 
   /**
@@ -41,13 +80,11 @@ export class A1MainComponent implements OnInit, OnDestroy {
    * UI as often as it can for a smooth refresh rate.
    */
   ngOnInit() {
-    this.lesson.rhythm = Rhythm.fromParam(this.route.snapshot.queryParams['p'] || '1111');
-    this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
-    this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
-    let grid = new Grid({a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.init([grid], {stages: 5});
-    this.player.init();
-    this.transport.reset([this.lesson.beatsPerMeasure]);
+    this.progress.init({
+      rhythm: Rhythm.fromParam(this.route.snapshot.queryParams['p'] || '1111'),
+      minNotes: _.parseInt(this.route.snapshot.queryParams['min']) || 3,
+      maxNotes: _.parseInt(this.route.snapshot.queryParams['max']) || 16
+    });
 
     this.transport.setOnTop((time) => this.onTop());
     this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
@@ -64,33 +101,31 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onTop() {
-    this.showStart = true;
-    if (this.stage.goalPlayed) {
-      if (this.stage.isVictory) {
-        this.lesson.advance(this.stage.round);
-        if (this.lesson.phraseBuilder) {
-          this.player.init();
-        } else {
-          this.transport.stop();
-          this.lesson.reset();
-        }
-      } else {
-        this.stage.victory();
-      }
-    } else if (!this.stage.isLoop) {
-      this.stage.next(this.stage.isCount && this.lesson.phraseBuilder);
+    if (this.stage.isVictory) {
+      this.transport.stop();
+      this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
+      this.onStage();
+    } else if (this.stage.isPlayback && this.stage.goalPlayed) {
+      this.shouldStopAtTop = false;
+      this.stage.victory();
+    }
+    if (!this.shouldStopAtTop) {
+      this.shouldStopAtTop = true;
+    } else {
+      this.stage.standby();
+      this.transport.stop();
     }
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') { // Enter: Start/stop
-      this.lesson.reset();
-      if (this.transport.paused) {
-        this.player.init();
-        this.transport.start();
-      } else {
-        this.transport.stop();
+    if (event.key === 'Enter') { // Enter: Weenie if possible
+      if (this.isGoalWeenie()) {
+        this.onGoal();
+      } else if (this.isPlaybackWeenie()) {
+        this.onPlayback();
+      } else if (this.lesson.isCompleted) {
+        this.onNext();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();
@@ -111,22 +146,51 @@ export class A1MainComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  onListen() {
-    if (this.transport.paused) {
-      this.transport.start();
+  onStage(stage?: number) {
+    if (stage !== undefined && this.lesson.pointsFor(stage)) {
+      return;
     }
-    this.stage.listen();
+    this._isGoalWeenie = true;
+    this.lesson.stage = stage;
+    let goal = stage !== undefined && this.lesson.stages[stage];
+    if (goal) {
+      this.stage.standby(goal);
+    }
+    this.player.init();
   }
 
-  onStart() {
-    this.lesson.reset();
-    this.player.init();
+  isStageWeenie(i: number) {
+    return this.lesson.stage === undefined && this.lesson.weenieStage === i;
+  }
+
+  isGoalWeenie() {
+    return this._isGoalWeenie && this.transport.paused;
+  }
+
+  isPlaybackWeenie() {
+    return this.player.noteCount === this.stage.goalNotes && this.transport.paused;
+  }
+
+  isGridWeenie() {
+    return !this._isGoalWeenie && !this.player.noteCount && this.transport.paused;
+  }
+
+  onGoal() {
+    this.shouldStopAtTop = false;
+    this._isGoalWeenie = false;
+    this.stage.goal();
     this.transport.start();
   }
 
-  onStop() {
-    this.transport.stop();
-    this.lesson.reset();
+  onPlayback() {
+    this.shouldStopAtTop = false;
+    this.stage.playback();
+    this.transport.start();
+  }
+
+  onNext() {
+    this.progress.result(this.lesson.result);
+    this.progress.next();
   }
 
   isGrid(surface: Surface) {

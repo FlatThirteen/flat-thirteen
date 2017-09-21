@@ -1,5 +1,5 @@
 import { PhraseBuilder, Phrase } from './phrase.model';
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 import { ticks } from '../core/beat-tick.model';
 
 const hiNote = new Note('cowbell', {pitch: 'A5'});
@@ -10,7 +10,6 @@ const tick2 = ticks(2, 4);
 const tick3 = ticks(3, 4);
 
 export class VictoryPhraseBuilder implements PhraseBuilder {
-
 
   constructor(private notes: number) {}
 

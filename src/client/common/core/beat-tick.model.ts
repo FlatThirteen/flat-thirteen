@@ -12,3 +12,7 @@ export function beatTickFrom(beat: number, tick: number = 0): BeatTick {
 export function ticks(pulse: number, pulses: number) {
   return pulse * ticksPerBeat / pulses;
 }
+
+export function pulseFrom(tick, pulses: number) {
+  return tick * pulses / ticksPerBeat;
+}

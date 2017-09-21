@@ -1,11 +1,58 @@
 bottom-size = 20vh;
-button-height = 40px;
+button-height = 60px;
 button-padding = 10px;
 button-shadow-size = 4px;
 button-shadow = 0 button-shadow-size 0 #000;
+weenie-shadow = 0 button-shadow-size 3px #555;
 primary-blue = #008FFF;
 primary-green = #50FFA0;
 primary-red = #FF6e56;
+
+.fade
+  filter: blur(5px);
+  opacity: 0.2;
+
+.lesson-container
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  transform: scale(1) translateY(0)
+  transition-duration: 150ms;
+
+  &.fade
+    transform: scale(.5) translateY(30vh)
+
+  .stage
+    background-color: primary-blue;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 8vw;
+    width: 20vw;
+    margin: 5px;
+    vertical-align: top;
+
+    &.completed
+      background-color: primary-green;
+      color: primary-blue;
+      cursor: default;
+      font-size: 5vw;
+      font-weight: 800;
+
+  .next
+    position: absolute;
+    background-color: primary-blue;
+    cursor: pointer;
+    font-size: 15vh;
+    padding: 30px;
 
 .surface-container
   position: fixed;
@@ -25,16 +72,44 @@ bouncing-ball
   width: 80vw;
   max-width: 80vh;
 
-.controls
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 15px 10vw;
-
 .surface
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  overflow-y: scroll;
   margin: 2px 0;
+  padding-top: 5px;
   position: relative;
+
+.controls
+  width: button-height;
+  margin: 10px;
+
+  .goal.button
+    background-color: primary-blue;
+    border-radius: 50%;
+    display: flex;
+
+    img
+      height: (2 / 3) * button-height;
+      margin: auto;
+
+  .play
+    width: 0;
+    height: 0;
+    border-top: (button-height / 2) solid transparent;
+    border-left: button-height solid primary-green;
+    border-bottom: (button-height / 2) solid transparent;
+
+    &.disabled
+      opacity: 0.2;
+
+  .button
+    display: block;
+
+  .spacer
+    height: 5vh;
 
 stage-panel
   position: fixed;
@@ -52,85 +127,36 @@ stage-panel
   margin-bottom: 0;
   user-select: none;
   vertical-align: top;
+  width: button-height;
 
-  &:hover:not(:active)
+  &.disabled
+    cursor: default;
+
+  &:hover:not(:active):not(.disabled)
     margin-top: - button-shadow-size;
     margin-bottom: button-shadow-size;
     filter: drop-shadow(button-shadow);
 
-.start
-  position: relative;
-  background-color: primary-green;
-  border-right: none;
-  font-size: 4vw;
-  @media (min-width: 1000px)
-    font-size 40px;
-  line-height: 40px;
-  padding: button-padding 2vw;
+.back
+  background-color: #DDD;
+  cursor: pointer;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  font-size: 48px;
+  padding: 10px;
+  text-align: center;
 
-  &:after
-    height = (button-height / 2 + button-padding);
-    content: '';
-    display: block;
-    position: absolute;
-    height: 0;
-    width: 0;
-    top: 0;
-    left: 100%;
-    border-left: height solid primary-green;
-    border-top: height solid transparent;
-    border-bottom: height solid transparent;
+.weenie:not(:hover), .weenie.on-hover
+  animation: weenie 1s infinite;
 
-.stop
-  root2 = math(2, 'sqrt');
-  side = ceil((button-height + 2 * button-padding) / (root2 + 1));
-  offset = ceil(side / root2);
-  background-color: primary-red;
-  position: relative;
-  float: right;
-  font-size: (button-height / 2);
-  top: offset;
-  height: side;
-  width: side + 2 * offset;
-
-  &:before, &:after
-    content: '';
-    position: absolute;
-    left: 0;
-    height: 0;
-    width: side;
-    border-left: offset solid transparent;
-    border-right: offset solid transparent;
-
-  &:before
-    top: - offset;
-    border-bottom: offset solid primary-red;
-
-  &:after
-    bottom: - offset;
-    border-top: offset solid primary-red;
-
-.listen
-  background-color: primary-blue;
-  position: absolute;
-  height: 1.5 * button-height;
-  left: 50%;
-  margin-left: -(button-height);
-  border-radius: 50%;
-  transform: translateY(-100%) scale(0, 0);
-  transition: transform 150ms ease-in-out;
-  width: 1.5 * button-height;
-  padding: button-padding
-
-  &.waiting
-    transform: translateY(0) scale(0.5, 0.5);
-    opacity: 0.5;
-
-  &.enable
-    cursor: pointer;
-    transform: translateY(0) scale(1, 1);
-    transition-delay: 500ms;
-
-  img
-    height: 100%;
-    width: 100%;
+@keyframes weenie
+  0%, 100%
+    transform: translateY(0)
+    filter: drop-shadow(0);
+    opacity: 1;
+  50%
+    transform: translateY(- button-shadow-size)
+    filter: drop-shadow(weenie-shadow);
+    opacity: 0.9;

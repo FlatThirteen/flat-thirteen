@@ -1,16 +1,29 @@
 import * as _ from 'lodash';
 
-import { SoundName, Note } from '../sound/sound';
 import { BeatTick, beatTickFrom } from '../core/beat-tick.model';
+import { SoundName, Note } from '../core/note.model';
 import { Rhythm } from '../core/rhythm.model';
 
 export class Phrase {
   private notes: _.Dictionary<Note[]>;
   private noteCount: number;
 
-  constructor() {
+  constructor(noteString?: String) {
     this.notes = {};
     this.noteCount = 0;
+    if (noteString) {
+      _.forEach(noteString.split(';'), (trackString: String) => {
+        let [soundString, beatTickString] = trackString.split('@', 2);
+        let note = Note.from(soundString);
+        if (note) {
+          _.forEach(beatTickString.split(','), (beatTick: BeatTick) => {
+            this.add(note, beatTick);
+          });
+        } else {
+          console.error('Invalid sound: ' + soundString);
+        }
+      });
+    }
   }
 
   add(note: Note, beatTick: BeatTick | number, tick?: number) {
@@ -38,6 +51,10 @@ export class Phrase {
     }
   }
 
+  builder(): PhraseBuilder {
+    return new ConstantPhraseBuilder(this);
+  }
+
   toString(): string {
     return _.toString(_.toPairs(this.notes));
   }
@@ -45,6 +62,14 @@ export class Phrase {
 
 export interface PhraseBuilder {
   build(): Phrase;
+}
+
+export class ConstantPhraseBuilder implements PhraseBuilder {
+  constructor(private phrase: Phrase) {}
+
+  build(): Phrase {
+    return this.phrase;
+  }
 }
 
 /**

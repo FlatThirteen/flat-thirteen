@@ -3,7 +3,7 @@ import { Actions, Effect } from '@ngrx/effects';
 
 import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
 import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
-import { Note } from '../sound/sound';
+import { Note } from '../core/note.model';
 import { PlayerActions } from './player.actions';
 import { SoundService } from '../sound/sound.service';
 import { StageService } from '../stage/stage.service';
@@ -35,7 +35,7 @@ export class PlayerEffects {
       }
       if (this.stage.isDemo) {
         this.sound.play(sound);
-      } else if (this.transport.canLivePlay(beat, cursor, pulses)) {
+      } else if (this.stage.isPlay && this.transport.canLivePlay(beat, cursor, pulses)) {
         this.stage.play(new Note(sound), beat, tick);
       }
     }).ignoreElements();
