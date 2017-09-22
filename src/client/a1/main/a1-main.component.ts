@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { trigger, style, animate, transition } from '@angular/animations';
+import { trigger, style, animate, state, transition, keyframes } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
@@ -25,10 +25,81 @@ let requestAnimationFrameId: number;
   templateUrl: 'a1-main.component.pug',
   styleUrls: ['a1-main.component.styl'],
   animations: [
+    trigger('goal', [
+      state('goal', style({ transform: 'translateY(-50vh) scale(0.1, 0.5)' })),
+      state('playback', style({ transform: 'scale(0)' })),
+      state('victory', style({ opacity: 0 })),
+      transition('* => goal', [
+        animate(250, keyframes([
+          style({ transform: 'translateY(2vh) scale(1.2, 0.6)', offset: 0.2 }),
+          style({ transform: 'translateY(0vh) scale(0.5, 1.2)', offset: 0.4 }),
+          style({ transform: 'translateY(-50vh) scale(0.5, 1)', offset: 1 })
+        ]))
+      ]),
+      transition('goal => standby', [
+        animate(250, keyframes([
+          style({ transform: 'translateY(-50vh) scale(0.5, 1)', offset: 0}),
+          style({ transform: 'translateY(0vh) scale(0.5, 1.2)', offset: .6 }),
+          style({ transform: 'translateY(2vh) scale(1.2, 0.6)', offset: .8 }),
+          style({ transform: 'translateY(0) scale(1)', offset: 1 })
+        ]))
+      ]),
+      transition('* => playback', [
+        animate(250, keyframes([
+          style({ transform: 'rotate(0) scale(1.2)', offset: 0.2 }),
+          style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.5 }),
+          style({ transform: 'rotate(45deg) scale(0)', offset: 1 })
+        ]))
+      ]),
+      transition('playback => standby', [
+        animate(250, keyframes([
+          style({ transform: 'rotate(45deg) scale(1.2)', offset: 0.5 }),
+          style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.8 }),
+          style({ transform: 'rotate(0) scale(1)', offset: 1 })
+        ]))
+      ])
+    ]),
+    trigger('play', [
+      state('goal', style({ transform: 'scale(0)' })),
+      state('playback', style({ opacity: 0, transform: 'translateX(5vw) scale(0, 2)' })),
+      state('victory', style({ opacity: 0 })),
+      transition('* => goal', [
+        animate(250, keyframes([
+          style({ transform: 'rotate(0) scale(1.2)', offset: 0.2 }),
+          style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.5 }),
+          style({ transform: 'rotate(45deg) scale(0)', offset: 1 })
+        ]))
+      ]),
+      transition('goal => standby', [
+        animate(250, keyframes([
+          style({ transform: 'rotate(45deg) scale(1.2)', offset: 0.5 }),
+          style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.8 }),
+          style({ transform: 'rotate(0) scale(1)', offset: 1 })
+        ]))
+      ]),
+      transition('* => playback', [
+        animate(250, keyframes([
+          style({ opacity: 1, transform: 'translateX(0) scale(1)', offset: 0 }),
+          style({ opacity: 1, transform: 'translateX(-1vw) scale(0.8, 1.1)', offset: 0.2 }),
+          style({ opacity: 1, transform: 'translateX(-1vw) scale(0.6, 1.2)', offset: 0.5 }),
+          style({ opacity: 0.5, transform: 'translateX(3vw) scale(1.5, 0.1)', offset: 0.9 }),
+          style({ opacity: 0, transform: 'translateX(3vw) scale(0, 0)', offset: 1 })
+        ]))
+      ]),
+      transition('playback => standby', [
+        animate(250, keyframes([
+          style({ opacity: 0, transform: 'translateX(3vw) scale(0, 0)', offset: 0 }),
+          style({ opacity: 0.5, transform: 'translateX(3vw) scale(1.5, 0.1)', offset: 0.1 }),
+          style({ opacity: 1, transform: 'translateX(-1vw) scale(0.6, 1.2)', offset: 0.6 }),
+          style({ opacity: 1, transform: 'translateX(-1vw) scale(0.8, 1.1)', offset: 0.8 }),
+          style({ opacity: 1, transform: 'translateX(0) scale(1)', offset: 1 })
+        ]))
+      ])
+    ]),
     trigger('fadeInOut', [
       transition(':enter', [
         style({ opacity: 0 }),
-        animate(200, style({ opacity: 1 }))
+        animate(250, style({ opacity: 1 }))
       ]),
       transition(':leave', [
         animate(500, style({ opacity:0, transform: 'scale(2)' }))
@@ -108,6 +179,8 @@ export class A1MainComponent implements OnInit, OnDestroy {
     } else if (this.stage.isPlayback && this.stage.goalPlayed) {
       this.shouldStopAtTop = false;
       this.stage.victory();
+    } else if (this.stage.isGoal) {
+      this._isGoalWeenie = false;
     }
     if (!this.shouldStopAtTop) {
       this.shouldStopAtTop = true;
