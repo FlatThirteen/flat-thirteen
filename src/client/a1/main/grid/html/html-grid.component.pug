@@ -19,7 +19,7 @@
       .eyes([ngClass]="{left: player.beat + 1 === beat, right: player.beat - 1 === beat, " +
           "wrong: stage.beatWrong === beat, very: stage.goalCount > 2}")
     //counter-ball {{transport.count()}}
-  .overlay {{ stage.goalCount }}
+  .overlay
     .strip(*ngFor="let key of grid.keys")
       .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
         .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
