@@ -148,7 +148,7 @@ export class StageService {
   }
 
   get beatWrong() {
-    return this._beatWrong;
+    return this._playbackCount > 0 && this._beatWrong;
   }
 
   get goalPlayed() {

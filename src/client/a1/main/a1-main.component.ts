@@ -96,6 +96,16 @@ let requestAnimationFrameId: number;
         ]))
       ])
     ]),
+    trigger('notes', [
+      transition('* => *', [
+        animate(250, keyframes([
+          style({ transform: 'scale(1)', offset: 0 }),
+          style({ transform: 'scale(0.8, 1.1)', offset: 0.2 }),
+          style({ transform: 'scale(1.2, 0.8)', offset: 0.6 }),
+          style({ transform: 'scale(1)', offset: 1 }),
+        ]))
+      ])
+    ]),
     trigger('fadeInOut', [
       transition(':enter', [
         style({ opacity: 0 }),

@@ -13,8 +13,11 @@
       .goal.button((click)="onGoal()", [class.weenie]="isGoalWeenie()", [@goal]="stage.scene")
         img(src="/assets/listen-music-128.png", alt="Listen!")
       .spacer
-      .play.button((click)="isGoalWeenie() || onPlayback()", [@play]="stage.scene",
-          [ngClass]="{disabled: isGoalWeenie() || !this.transport.paused, weenie:isPlaybackWeenie()}")
+      play-icon.play.button((click)="isGoalWeenie() || onPlayback()",
+          [@play]="stage.scene", [@notes]="player.noteCount",
+          [playNotes]="player.noteCount", [goalNotes]="stage.goalNotes",
+          [ngClass]="{disabled: isGoalWeenie() || !this.transport.paused, " +
+              "weenie:isPlaybackWeenie() && !isGoalWeenie()}")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
     .controls
       .spacer
