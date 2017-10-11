@@ -11,6 +11,7 @@ import { rootReducer } from '../common/app.reducer';
 import { GridModule } from './main/grid/grid.module';
 import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
 //import { CounterBallModule } from '../component/counter-ball/counter-ball.module';
+import { PlayIconModule } from '../component/play-icon/play-icon.module';
 import { StagePanelModule } from './main/stage-panel/stage-panel.module';
 
 import { A1MainComponent } from './main/a1-main.component';
@@ -35,6 +36,7 @@ export const APP_IMPORTS = [
   GridModule,
   BouncingBallModule,
   //CounterBallModule,
+  PlayIconModule,
   StagePanelModule,
   EffectsModule.run(PlayerEffects),
 ];
