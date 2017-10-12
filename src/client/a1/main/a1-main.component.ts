@@ -153,7 +153,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
               public player: PlayerService, public stage: StageService,
               public lesson: LessonService, public progress: ProgressService) {
     this.showBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
-      ([paused, lastBeat]) => !paused && stage.isGoal && !lastBeat)
+      ([paused, lastBeat]) => !paused && stage.isGoal && !lastBeat);
   }
 
   /**
