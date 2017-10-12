@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../../../common/app.reducer';
@@ -44,6 +45,9 @@ export class StageService {
   private _beatWrong: number;
   private _goalNotes: number;
 
+  public goalMinusFx$: Subject<number> = new Subject();
+  public playMinusFx$: Subject<number> = new Subject();
+
   constructor(private store: Store<AppState>, private stage: StageActions,
               private player: PlayerService, private sound: SoundService) {
     this.scene$ = this.store.select(StageService.getScene);
@@ -55,8 +59,19 @@ export class StageService {
     this.goalPlayed$ = this.store.select(StageService.getGoalPlayed);
 
     this.scene$.subscribe(scene => { this._scene = scene; });
-    this.goalCount$.subscribe(goalCount => { this._goalCount = goalCount; });
-    this.playbackCount$.subscribe(playbackCount => { this._playbackCount = playbackCount; });
+    this.goalCount$.subscribe(goalCount => {
+      if (this._goalCount && this._goalCount < 6) {
+        this.goalMinusFx$.next(-10);
+      }
+      this._goalCount = goalCount;
+
+    });
+    this.playbackCount$.subscribe(playbackCount => {
+      if (this._playbackCount && this._playbackCount < 5) {
+        this.playMinusFx$.next(-10);
+      }
+      this._playbackCount = playbackCount;
+    });
     this.goalPhrase$.subscribe(goalPhrase => {
       this.goalPhrase = goalPhrase;
       this._goalNotes = goalPhrase && goalPhrase.numNotes();
@@ -164,6 +179,6 @@ export class StageService {
   }
 
   get basePoints() {
-    return Math.max(120 - (10 * this._goalCount), 50) - Math.min(10 * this._playbackCount, 40);
+    return 120 - Math.min(10 * this._goalCount, 60) - Math.min(10 * this._playbackCount, 50);
   }
 }
