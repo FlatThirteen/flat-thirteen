@@ -12,22 +12,29 @@ primary-red = #FF6e56;
   filter: blur(5px);
   opacity: 0.2;
 
-.lesson-container
+.main
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: bottom-size;
   overflow-y: scroll;
+
+.lesson-container
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   transform: scale(1) translateY(0)
   transition-duration: 150ms;
+  padding: 20px 0;
 
   &.fade
     transform: scale(.5) translateY(30vh)
+
+  .current
+    position: relative;
+    text-align: center;
 
   .stage
     background-color: primary-blue;
@@ -35,36 +42,55 @@ primary-red = #FF6e56;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    font-size: 5vw;
     height: 8vw;
     width: 20vw;
-    margin: 5px;
+    margin: .5vw;
     vertical-align: top;
 
     &.completed
       background-color: primary-green;
       color: primary-blue;
       cursor: default;
-      font-size: 5vw;
       font-weight: 800;
 
-  .next
-    position: absolute;
-    background-color: primary-blue;
-    cursor: pointer;
-    font-size: 15vh;
-    padding: 30px;
+    &.next
+      width: 83vw;
 
-.surface-container
+.points
   position: fixed;
   top: 0;
-  left: 0;
   right: 0;
-  bottom: bottom-size;
+  padding: 10px;
+  margin: 10px;
+  font-size: 5vw;
+  font-weight: 800;
 
+.power-panel
+  text-align: center;
+  user-select: none;
+
+  .power
+    background-color: #FFF;
+    border: outset 5px #aaa;
+    border-radius: 10%;
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px;
+    margin: 30px;
+
+    &:active
+      border-style: inset;
+
+      *
+        position: relative;
+        top: 2px;
+        left: 2px;
+
+.surface-container
   display: flex;
   flex-direction: column;
   justify-content: center;
-  overflow-y: scroll;
 
 bouncing-ball
   height: 20vh;
@@ -94,21 +120,35 @@ bouncing-ball
       height: (2 / 3) * button-height;
       margin: auto;
 
-  .play.disabled
-    opacity: 0.2;
+  .play
+    display: block;
+    position: relative;
+    user-select: none;
+
+    &.active
+      animation: count-active;
+      animation-duration: 250ms;
+
+    .button.disabled
+      opacity: 0.2;
+
+    .counter
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      padding: 2px 5px;
+      right: 0;
+      font-size: 40px;
+      line-height: 60px;
+      font-weight: 800;
 
   .button
     display: block;
 
   .spacer
     height: 5vh;
-
-stage-panel
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: bottom-size;
 
 .button
   cursor: pointer;
@@ -129,9 +169,8 @@ stage-panel
     margin-bottom: button-shadow-size;
     filter: drop-shadow(button-shadow);
 
-.back
+.top-bar
   background-color: #DDD;
-  cursor: pointer;
   left: 0;
   position: fixed;
   right: 0;
@@ -140,8 +179,32 @@ stage-panel
   padding: 10px;
   text-align: center;
 
+.bottom-bar
+  background-color: #DDD;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: bottom-size;
+
+.back
+  cursor: pointer;
+
 .weenie:not(:hover), .weenie.on-hover
-  animation: weenie 1s infinite;
+  animation: weenie 1s infinite 500ms;
+
+@keyframes count-active
+  0%
+    transform: translateX(0);
+
+  10%
+    transform: translateX(10px);
+
+  70%
+    transform: translateX(-5px);
+
+  100%
+    transform: translateX(0);
 
 @keyframes weenie
   0%, 100%

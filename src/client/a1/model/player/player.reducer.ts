@@ -28,8 +28,8 @@ export class PlayerState {
       case PlayerActions.SELECT: {
         let [surface, key, cursor] = action.payload;
         if (surface instanceof Grid) {
-          let beat = surface.beatPulseFor(cursor)[0];
           cursor = surface.wrapCursor(cursor);
+          let beat = surface.beatPulseFor(cursor)[0];
           return <PlayerState>_.defaults({
             selected: key,
             beat: beat,

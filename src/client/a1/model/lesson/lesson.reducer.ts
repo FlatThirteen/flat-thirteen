@@ -2,9 +2,10 @@ import * as _ from 'lodash';
 
 import { Action } from '@ngrx/store';
 
-import { LessonActions } from './lesson.actions';
 import { Phrase } from '../../../common/phrase/phrase.model';
 import { Surface } from '../../../common/surface/surface.model';
+
+import { LessonActions } from './lesson.actions';
 
 export interface Plan {
   surfaces: Surface[];

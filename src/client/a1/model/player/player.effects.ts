@@ -32,7 +32,7 @@ export class PlayerEffects {
         pulses = pulses[beat];
         tick = ticks(pulse, pulses);
       }
-      if (this.transport.canLivePlay(beat, cursor, pulses)) {
+      if (this.stage.isPlayback && this.transport.canLivePlay(beat, cursor, pulses)) {
         this.stage.play(new Note(sound), beat, tick);
       } else if (this.stage.isStandby) {
         this.sound.play(sound);

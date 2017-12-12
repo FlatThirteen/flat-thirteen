@@ -17,6 +17,13 @@ export class StageActions {
     };
   }
 
+  static COUNT = '[A1 STAGE] Count';
+  count(): Action {
+    return {
+      type: StageActions.COUNT
+    };
+  }
+
   static GOAL = '[A1 STAGE] Goal';
   goal(): Action {
     return {

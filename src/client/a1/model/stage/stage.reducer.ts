@@ -5,7 +5,7 @@ import { Phrase } from '../../../common/phrase/phrase.model';
 import { StageActions } from './stage.actions';
 import { VictoryPhraseBuilder } from '../../../common/phrase/victory.phrase';
 
-export type StageScene = 'standby' | 'goal' | 'playback' | 'victory';
+export type StageScene = 'standby' | 'count' | 'goal' | 'playback' | 'victory';
 
 export class StageState {
   readonly goalCount: number = 0;
@@ -27,6 +27,10 @@ export class StageState {
             scene: 'standby'
           }, state)
         }
+      case StageActions.COUNT:
+        return _.defaults({
+          scene: 'count'
+        }, state);
       case StageActions.GOAL:
         return _.defaults({
           scene: 'goal',

@@ -78,7 +78,7 @@ export class LessonService {
   }
 
   get stages() {
-    return this._plan && this._plan.stages;
+    return this._plan && !this.isCompleted ? this._plan.stages : [];
   }
 
   get numberOfStages() {
@@ -107,6 +107,10 @@ export class LessonService {
 
   get initialData() {
     return this._initialData;
+  }
+
+  get inStage() {
+    return this._stage !== undefined;
   }
 
   get isCompleted() {

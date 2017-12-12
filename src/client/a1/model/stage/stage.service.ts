@@ -85,6 +85,10 @@ export class StageService {
     this.store.dispatch(this.stage.standby(phrase));
   }
 
+  count() {
+    this.store.dispatch(this.stage.count());
+  }
+
   goal() {
     this.store.dispatch(this.stage.goal());
   }
@@ -145,6 +149,10 @@ export class StageService {
 
   get isStandby() {
     return this._scene === 'standby';
+  }
+
+  get isCount() {
+    return this._scene === 'count';
   }
 
   get isGoal() {
