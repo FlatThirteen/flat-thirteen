@@ -18,9 +18,6 @@ faces-height = 5vh;
   width: 80vw;
   max-width: 80vh;
 
-.blur
-  filter: blur(3px);
-
 .overlay
   position: absolute;
   bottom: faces-height;
@@ -43,31 +40,6 @@ faces-height = 5vh;
 
     .char
       display: inline-block;
-
-  .counter
-    background-color: #FFF;
-    border-radius: 50%;
-    font-size: 30vh;
-    font-weight: 400;
-    height: 30vh;
-    line-height: 30vh;
-    padding: 2vh;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    text-align: center;
-    width: 30vh;
-
-    &.active
-      animation: active;
-      animation-duration: 250ms;
-
-    .starting &
-      animation: grow;
-      animation-duration: 450ms;
 
 .position
   background-color: rgba(80,255,160,0.5);
@@ -417,12 +389,6 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
       top: @left;
       bottom: @left;
       right: @left;
-
-@keyframes grow
-  0%
-    transform: scale(0);
-  100%
-    transform: scale(1);
 
 @keyframes active
   0%

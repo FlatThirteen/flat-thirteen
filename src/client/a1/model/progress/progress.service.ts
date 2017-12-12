@@ -1,18 +1,22 @@
 import * as _ from 'lodash';
+
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../../../common/app.reducer';
-import { Grid } from '../../main/grid/grid.model';
-import { LessonService } from '../lesson/lesson.service';
 import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
+import { PowersService } from '../../../common/core/powers.service';
 import { TransportService } from '../../../common/core/transport.service';
+
+import { Grid } from '../../main/grid/grid.model';
+
+import { LessonService } from '../lesson/lesson.service';
+import { Result } from '../lesson/lesson.reducer';
 
 import { ProgressActions } from './progress.actions';
 import { Settings } from './progress.reducer';
-import { Result } from '../lesson/lesson.reducer';
 
 const numberOfStages = 4;
 
@@ -22,25 +26,31 @@ export class ProgressService {
   static getSettings = createSelector(ProgressService.getProgress, progress => progress && progress.settings);
   static getLessonNumber = createSelector(ProgressService.getProgress, progress => progress && progress.lessonNumber);
   static getResults = createSelector(ProgressService.getProgress, progress => progress && progress.results);
+  static getPoints = createSelector(ProgressService.getProgress, progress => progress && progress.points);
 
   private settings$: Observable<Settings>;
   private lessonNumber$: Observable<number>;
   private results$: Observable<Result[]>;
+  private points$: Observable<number>;
 
   private _settings: Settings;
   private _lessonNumber: number;
   private _results: Result[];
+  private _points: number;
 
   constructor(private store: Store<AppState>, private progress: ProgressActions,
-              private lesson: LessonService, private transport: TransportService) {
+              private lesson: LessonService, private powers: PowersService,
+              private transport: TransportService) {
     this.settings$ = this.store.select(ProgressService.getSettings);
     this.lessonNumber$ = this.store.select(ProgressService.getLessonNumber);
     this.results$ = this.store.select(ProgressService.getResults);
+    this.points$ = this.store.select(ProgressService.getPoints);
 
     this.settings$.subscribe(settings => {
       this._settings = settings;
       if (this._settings) {
         transport.reset([this._settings.rhythm.pulsesByBeat.length]);
+        this.powers.update(this._settings.powers);
       }
     });
 
@@ -68,11 +78,13 @@ export class ProgressService {
         this.lesson.init({
           surfaces: [grid],
           stages: _.times(numberOfStages, () => phraseBuilder.build()),
-          numberOfStages: numberOfStages });
+          numberOfStages: numberOfStages
+        });
       }
     });
 
     this.results$.subscribe(results => { this._results = results; });
+    this.points$.subscribe(points => { this._points = points; });
   }
 
   init(settings: Settings) {
@@ -87,11 +99,15 @@ export class ProgressService {
     this.store.dispatch(this.progress.next());
   }
 
-  isEndGame() {
-    return this._settings && !this._settings.rhythm.isSimple() || this._lessonNumber;
-  }
-
   get results() {
     return this._results || [];
+  }
+
+  get points() {
+    return this._points;
+  }
+
+  get allowedPowers() {
+    return this._settings && this._settings.powers;
   }
 }

@@ -4,14 +4,17 @@ import { createSelector } from 'reselect';
 
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs/Subject';
 
 import { AppState } from '../../../common/app.reducer';
-import { Grid as A1Grid } from '../../main/grid/grid.model';
-import { Grid as A2Grid } from '../../../a2/main/grid/grid.model';
-import { LessonService } from '../lesson/lesson.service';
 import { Note } from '../../../common/core/note.model';
-import { PlayerActions } from './player.actions';
 import { Surface } from '../../../common/surface/surface.model';
+
+import { Grid as A1Grid } from '../../main/grid/grid.model';
+
+import { LessonService } from '../lesson/lesson.service';
+
+import { PlayerActions } from './player.actions';
 
 @Injectable()
 export class PlayerService {
@@ -34,6 +37,8 @@ export class PlayerService {
   private _beat: number;
   private _cursor: number;
 
+  public noteCount$: Subject<number> = new Subject();
+
   constructor(private store: Store<AppState>, private player: PlayerActions,
               private lesson: LessonService) {
     this.data$ = this.store.select(PlayerService.getData);
@@ -47,6 +52,7 @@ export class PlayerService {
       this._noteCount = _.reduce(_.values(data), (sum, surfaceData: Surface.Data[]) =>
           sum + _.reduce(surfaceData, (beatSum, beatData: Surface.Data) =>
           beatSum + beatData.noteCount(), 0), 0);
+      this.noteCount$.next(this._noteCount);
     });
     this.selected$.subscribe(selected => { this._selected = selected; });
     this.beat$.subscribe(beat => { this._beat = beat; });
@@ -86,7 +92,7 @@ export class PlayerService {
   set(key: string, cursor: number) {
     let surface = this.lesson.surfaceFor(key);
     let pulses: number | number[] = 1;
-    if (surface instanceof A1Grid || surface instanceof A2Grid) {
+    if (surface instanceof A1Grid) {
       // Send pulsesByBeat so player effect knows cursor is calculated from
       pulses = surface.pulsesByBeat;
     }
@@ -106,7 +112,7 @@ export class PlayerService {
 
   value(key: string, cursor: number = 0): boolean {
     let surface = this.lesson.surfaceFor(key);
-    if (surface instanceof A1Grid || surface instanceof A2Grid) {
+    if (surface instanceof A1Grid) {
       let [beat, pulse] = surface.beatPulseFor(cursor);
       let data = surface.dataFor(beat, this._data);
       return data.notes[pulse] === surface.soundByKey[key];

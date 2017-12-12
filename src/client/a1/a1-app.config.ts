@@ -21,6 +21,7 @@ import { LessonService } from './model/lesson/lesson.service';
 import { PlayerActions } from './model/player/player.actions';
 import { PlayerEffects } from './model/player/player.effects';
 import { PlayerService } from './model/player/player.service';
+import { PowersService} from '../common/core/powers.service';
 import { ProgressActions } from './model/progress/progress.actions';
 import { ProgressService } from './model/progress/progress.service';
 import { TransportService } from '../common/core/transport.service';
@@ -55,6 +56,7 @@ export const APP_PROVIDERS = [
   PlayerActions,
   PlayerEffects,
   PlayerService,
+  PowersService,
   ProgressActions,
   ProgressService,
   TransportService,
