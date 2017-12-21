@@ -32,13 +32,20 @@ let requestAnimationFrameId: number;
   animations: [
     trigger('goal', [
       state('goal', style({ transform: 'translateY(-50vh) scale(0.1, 0.5)' })),
-      state('playback', style({ transform: 'scale(0)' })),
+      state('countPlay', style({ transform: 'scale(0)'})),
+      state('playback', style({ transform: 'rotate(45deg) scale(0)' })),
       state('victory', style({ opacity: 0 })),
-      transition('* => goal', [
+      transition('standby => goal', [
         animate(250, keyframes([
           style({ transform: 'translateY(2vh) scale(1.2, 0.6)', offset: 0.2 }),
           style({ transform: 'translateY(0vh) scale(0.5, 1.2)', offset: 0.4 }),
           style({ transform: 'translateY(-50vh) scale(0.5, 1)', offset: 1 })
+        ]))
+      ]),
+      transition('countGoal => goal', [
+        animate(250, keyframes([
+          style({ transform: 'translateX(-1vw) rotate(-15deg)', offset: 0.2 }),
+          style({ transform: 'translateX(3vw) rotate(180deg)', offset: 1 })
         ]))
       ]),
       transition('goal => standby', [
@@ -49,7 +56,7 @@ let requestAnimationFrameId: number;
           style({ transform: 'translateY(0) scale(1)', offset: 1 })
         ]))
       ]),
-      transition('* => playback', [
+      transition('standby => playback, standby => countPlay', [
         animate(250, keyframes([
           style({ transform: 'rotate(0) scale(1.2)', offset: 0.2 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.5 }),
@@ -58,7 +65,7 @@ let requestAnimationFrameId: number;
       ]),
       transition('playback => standby', [
         animate(250, keyframes([
-          style({ transform: 'rotate(45deg) scale(1.2)', offset: 0.5 }),
+          style({ transform: 'rotate(90deg) scale(0.8)', offset: 0.5 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.8 }),
           style({ transform: 'rotate(0) scale(1)', offset: 1 })
         ]))
@@ -70,14 +77,14 @@ let requestAnimationFrameId: number;
       state('victory', style({ opacity: 0 })),
       transition('* => goal', [
         animate(250, keyframes([
-          style({ transform: 'rotate(0) scale(1.2)', offset: 0.2 }),
+          style({ transform: 'rotate(0) scale(1.2)', offset: 0.1 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.5 }),
-          style({ transform: 'rotate(45deg) scale(0)', offset: 1 })
+          style({ transform: 'rotate(90deg) scale(0)', offset: 1 })
         ]))
       ]),
       transition('goal => standby', [
         animate(250, keyframes([
-          style({ transform: 'rotate(45deg) scale(1.2)', offset: 0.5 }),
+          style({ transform: 'rotate(45deg) scale(0.3)', offset: 0.5 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.8 }),
           style({ transform: 'rotate(0) scale(1)', offset: 1 })
         ]))
@@ -160,8 +167,8 @@ let requestAnimationFrameId: number;
   ]
 })
 export class A1MainComponent implements OnInit, OnDestroy {
-  public showBall$: Observable<boolean>;
-  public shouldStopAtTop: boolean = false;
+  public showBouncingBall$: Observable<boolean>;
+  public counter$: Observable<number>;
   public changed: boolean = false;
   private _isGoalWeenie: boolean = false;
 
@@ -171,8 +178,10 @@ export class A1MainComponent implements OnInit, OnDestroy {
               public player: PlayerService, public stage: StageService,
               public lesson: LessonService, public powers: PowersService,
               public progress: ProgressService) {
-    this.showBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
-      ([paused, lastBeat]) => !paused && stage.isGoal && !lastBeat);
+    this.showBouncingBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
+      ([paused, lastBeat]) => !paused && (lastBeat ? stage.isCountGoal : stage.isGoal));
+    this.counter$ = combineLatest(transport.paused$, transport.pulse$).map(
+      ([paused, pulse]) => transport.started && stage.isCountGoal && pulse.beat + 1);
   }
 
   /**
@@ -184,13 +193,11 @@ export class A1MainComponent implements OnInit, OnDestroy {
       this.player.noteCount$.subscribe((noteCount) => {
         if (this.powers.enabled.autoPlay &&  noteCount && !this._isGoalWeenie &&
             this.stage.isStandby && noteCount === this.stage.goalNotes) {
-          this.shouldStopAtTop = false;
           setTimeout(() => { // Start after note has a chance to play sound.
-            this.stage.count();
+            this.stage.count('playback');
             this.transport.start();
           }, 250);
-
-        } else if (this.stage.isCount && noteCount !== this.stage.goalNotes) {
+        } else if (this.stage.isCountPlay && noteCount !== this.stage.goalNotes) {
           this.onStandby();
         }
         this.changed = true;
@@ -204,7 +211,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
       powers: this.powers.current()
     });
 
-    this.transport.setOnTop((time) => this.onTop());
+    this.transport.setOnTop((first) => this.onTop(first));
     this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
 
     function draw() {
@@ -219,30 +226,25 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.transport.stop(true);
   }
 
-  onTop() {
-    if (this.stage.isVictory) {
-      this.transport.stop();
-      this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
-      this.onStage();
-      if (this.lesson.isCompleted) {
-        this.progress.result(this.lesson.result);
+  onTop(first) {
+    if (!first) {
+      if (this.stage.isVictory) {
+        this.transport.stop();
+        this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
+        this.onStage();
+        if (this.lesson.isCompleted) {
+          this.progress.result(this.lesson.result);
+        }
+      } else if (this.stage.isPlayback && this.stage.goalPlayed) {
+        this.stage.victory();
+      } else if (this.stage.isCountGoal) {
+        this._isGoalWeenie = false;
+        this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby');
+      } else if (this.stage.isPlaybackNext && this.player.noteCount === this.stage.goalNotes) {
+        this.stage.playback('standby');
+      } else {
+        this.onStandby();
       }
-    } else if (this.stage.isPlayback && this.stage.goalPlayed) {
-      this.shouldStopAtTop = false;
-      this.stage.victory();
-    } else if (this.stage.isGoal) {
-      this._isGoalWeenie = false;
-    }
-    if (this.powers.enabled.autoPlay && this.shouldStopAtTop &&
-        (this.stage.isGoal ? this.changed : this.stage.isCount) &&
-        this.player.noteCount === this.stage.goalNotes) {
-      this.shouldStopAtTop = false;
-      this.stage.playback();
-    }
-    if (!this.shouldStopAtTop) {
-      this.shouldStopAtTop = true;
-    } else {
-      this.onStandby();
     }
     this.changed = false;
   }
@@ -258,6 +260,8 @@ export class A1MainComponent implements OnInit, OnDestroy {
         this.onGoal();
       } else if (this.isPlaybackWeenie()) {
         this.onPlayback();
+      } else if (this.stage.isCount) {
+        this.onStandby();
       }
     } else if (event.key === 'Escape') { // Esc: Unselect
       this.player.unselect();
@@ -287,6 +291,14 @@ export class A1MainComponent implements OnInit, OnDestroy {
     let goal = this.lesson.inStage && this.lesson.stages[stage];
     if (goal) {
       this.stage.standby(goal);
+      if (this.powers.enabled.autoGoal) {
+        this.stage.count('goal');
+        setTimeout(() => {
+          this.transport.start();
+        }, 250);
+      }
+    } else {
+      this.transport.stop();
     }
     this.player.init();
   }
@@ -313,17 +325,28 @@ export class A1MainComponent implements OnInit, OnDestroy {
     return this.lesson.isCompleted && !this.powers.anyNew;
   }
 
+  get goalMode() {
+    return this.powers.enabled.autoGoal && (this.stage.isCountGoal || this.stage.isGoal &&
+        !this.transport.starting) ? 'auto' : 'listen'
+  }
+
   onGoal() {
-    this.shouldStopAtTop = false;
-    this._isGoalWeenie = false;
-    this.stage.goal();
-    this.transport.start();
+    if (this.stage.isStandby) {
+      this._isGoalWeenie = false;
+      this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby');
+      this.transport.start();
+    } else if (this.stage.isCountGoal) {
+      this.onStandby();
+    }
   }
 
   onPlayback() {
-    this.shouldStopAtTop = false;
-    this.stage.playback();
-    this.transport.start();
+    if (this.stage.isStandby) {
+      this.stage.playback('standby');
+      this.transport.start();
+    } else if (this.stage.isCountPlay) {
+      this.onStandby();
+    }
   }
 
   onNext() {

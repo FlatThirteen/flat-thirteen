@@ -6,27 +6,31 @@
         [ngClass]="{completed: lesson.pointsFor(i), weenie: isStageWeenie(i)}")
       | {{ lesson.pointsFor(i) }}
     .next.stage.on-hover(*ngIf="lesson.isCompleted", (click)="onNext()",
-        [ngClass]="{weenie: isNextWeenie()}", [@next]="") &rarr;
-.power-panel.bottom-bar(*ngIf="!lesson.inStage && progress.allowedPowers.any",
+        [class.weenie]="isNextWeenie()", [@next]="") &rarr;
+.options-panel.bottom-bar(*ngIf="!lesson.inStage && progress.allowedPowers.any",
     [@slideBottom]="")
+  .power(*ngIf="progress.allowedPowers.autoGoal", (click)="powers.toggle('autoGoal')",
+      [ngClass]="{weenie: !powers.toggled.autoGoal}")
+    goal-icon([mode]="powers.enabled.autoGoal ? 'auto' : 'listen'")
   .power(*ngIf="progress.allowedPowers.autoPlay", (click)="powers.toggle('autoPlay')",
-      [ngClass]="{ weenie: !powers.toggled.autoPlay }")
+      [ngClass]="{weenie: !powers.toggled.autoPlay}")
     play-icon([autoPlay]="powers.enabled.autoPlay")
 .main.surface-container(*ngIf="lesson.inStage", [@fadeInOut]="")
-  bouncing-ball([showBall$]="showBall$")
+  bouncing-ball([showBouncingBall$]="showBouncingBall$", [counter]="counter$ | async")
   .surface(*ngFor="let surface of lesson.surfaces", [@zoomInOut]="")
     .controls
-      .goal.button((click)="onGoal()", [class.weenie]="isGoalWeenie()", [@goal]="stage.scene")
-        img(src="/assets/listen-music-128.png", alt="Listen!")
+      goal-icon.goal.button((click)="onGoal()", [@goal]="stage.scene", [mode]="goalMode",
+          [ngClass]="{weenie: isGoalWeenie(), active: stage.isCountGoal && transport.active() }")
       minus-fx([show$]="stage.goalMinusFx$")
       .spacer
-      .play([class.active]="stage.isCount && transport.active()",
-          [@play]="stage.scene", [@notes]="!stage.isGoal && player.noteCount")
+      .play([class.active]="stage.isCountPlay && transport.active()",
+          [@play]="stage.scene", [@notes]="player.noteCount")
         play-icon.button((click)="isGoalWeenie() || onPlayback()",
             [playNotes]="player.noteCount", [goalNotes]="stage.goalNotes",
             [autoPlay]="powers.enabled.autoPlay",
-            [ngClass]="{disabled: isGoalWeenie(), weenie: isPlaybackWeenie()}")
-        .counter(*ngIf="stage.isCount", (click)="onStandby()") {{ transport.count() || 1}}
+            [ngClass]="{weenie: isPlaybackWeenie()," +
+                "disabled: isGoalWeenie() || stage.isCountGoal || stage.isGoal}")
+        .counter(*ngIf="stage.isCountPlay", (click)="onStandby()") {{ transport.count() }}
       minus-fx([show$]="stage.playMinusFx$")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
     .controls

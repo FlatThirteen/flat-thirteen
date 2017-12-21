@@ -10,7 +10,7 @@ import { routes } from './a1-app.routing';
 import { rootReducer } from '../common/app.reducer';
 import { GridModule } from './main/grid/grid.module';
 import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
-//import { CounterBallModule } from '../component/counter-ball/counter-ball.module';
+import { GoalIconModule } from '../component/goal-icon/goal-icon.module';
 import { MinusFxModule } from '../component/minus-fx/minus-fx.module';
 import { PlayIconModule } from '../component/play-icon/play-icon.module';
 import { StagePanelModule } from './main/stage-panel/stage-panel.module';
@@ -37,7 +37,7 @@ export const APP_IMPORTS = [
   StoreModule.provideStore(rootReducer),
   GridModule,
   BouncingBallModule,
-  //CounterBallModule,
+  GoalIconModule,
   MinusFxModule,
   PlayIconModule,
   StagePanelModule,

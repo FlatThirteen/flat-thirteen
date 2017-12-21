@@ -15,10 +15,7 @@ import { Component, Input } from '@angular/core';
                 [attr.stroke]="color" stroke-width="6px"/>
       <svg:path *ngIf="autoPlay" class="autoplay" [attr.d]="autoplayPath"
                 fill="white" stroke="white" stroke-width="1px"/>
-    </svg>`,
-  styles: [
-    ':host { position: relative; }'
-  ]
+    </svg>`
 })
 export class PlayIcon {
   @Input() public playNotes: number;

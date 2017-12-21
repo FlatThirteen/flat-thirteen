@@ -4,6 +4,8 @@ import { Action } from '@ngrx/store';
 import { Phrase } from '../../../common/phrase/phrase.model';
 import { Note } from '../../../common/core/note.model';
 
+import { StageScene } from './stage.reducer';
+
 @Injectable()
 export class StageActions {
 
@@ -18,23 +20,26 @@ export class StageActions {
   }
 
   static COUNT = '[A1 STAGE] Count';
-  count(): Action {
+  count(nextScene: StageScene): Action {
     return {
-      type: StageActions.COUNT
+      type: StageActions.COUNT,
+      payload: nextScene
     };
   }
 
   static GOAL = '[A1 STAGE] Goal';
-  goal(): Action {
+  goal(nextScene: StageScene = null): Action {
     return {
-      type: StageActions.GOAL
+      type: StageActions.GOAL,
+      payload: nextScene
     };
   }
 
   static PLAYBACK = '[A1 STAGE] Playback';
-  playback(): Action {
+  playback(nextScene: StageScene = null): Action {
     return {
-      type: StageActions.PLAYBACK
+      type: StageActions.PLAYBACK,
+      payload: nextScene
     };
   }
 

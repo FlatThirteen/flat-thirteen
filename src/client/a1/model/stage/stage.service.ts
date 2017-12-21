@@ -19,6 +19,7 @@ import { StageActions } from './stage.actions';
 export class StageService {
   static getStage = (state: AppState) => state.a1.stage;
   static getScene = createSelector(StageService.getStage, stage => stage && stage.scene);
+  static getNextScene = createSelector(StageService.getStage, stage => stage && stage.nextScene);
   static getGoalCount = createSelector(StageService.getStage, stage => stage && stage.goalCount);
   static getPlaybackCount = createSelector(StageService.getStage, stage => stage && stage.playbackCount);
   static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
@@ -27,6 +28,7 @@ export class StageService {
   static getGoalPlayed = createSelector(StageService.getStage, stage => stage && stage.goalPlayed);
 
   readonly scene$: Observable<StageScene>;
+  readonly nextScene$: Observable<StageScene>;
   readonly goalCount$: Observable<number>;
   readonly playbackCount$: Observable<number>;
   readonly goalPhrase$: Observable<Phrase>;
@@ -35,6 +37,7 @@ export class StageService {
   readonly goalPlayed$: Observable<boolean>;
 
   private _scene: StageScene;
+  private _nextScene: StageScene;
   private _goalCount: number;
   private _playbackCount: number;
   private goalPhrase: Phrase;
@@ -51,6 +54,7 @@ export class StageService {
   constructor(private store: Store<AppState>, private stage: StageActions,
               private player: PlayerService, private sound: SoundService) {
     this.scene$ = this.store.select(StageService.getScene);
+    this.nextScene$ = this.store.select(StageService.getNextScene);
     this.goalCount$ = this.store.select(StageService.getGoalCount);
     this.playbackCount$ = this.store.select(StageService.getPlaybackCount);
     this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
@@ -59,6 +63,7 @@ export class StageService {
     this.goalPlayed$ = this.store.select(StageService.getGoalPlayed);
 
     this.scene$.subscribe(scene => { this._scene = scene; });
+    this.nextScene$.subscribe(nextScene => { this._nextScene = nextScene; });
     this.goalCount$.subscribe(goalCount => {
       if (this._goalCount && this._goalCount < 6) {
         this.goalMinusFx$.next(-10);
@@ -85,16 +90,16 @@ export class StageService {
     this.store.dispatch(this.stage.standby(phrase));
   }
 
-  count() {
-    this.store.dispatch(this.stage.count());
+  count(nextScene: StageScene) {
+    this.store.dispatch(this.stage.count(nextScene));
   }
 
-  goal() {
-    this.store.dispatch(this.stage.goal());
+  goal(nextScene: StageScene) {
+    this.store.dispatch(this.stage.goal(nextScene));
   }
 
-  playback() {
-    this.store.dispatch(this.stage.playback());
+  playback(nextScene: StageScene) {
+    this.store.dispatch(this.stage.playback(nextScene));
   }
 
   victory() {
@@ -144,7 +149,8 @@ export class StageService {
   }
 
   get scene() {
-    return this._scene;
+    return this._scene !== 'count' ? this._scene : this._nextScene === 'goal' ?
+        'countGoal' : 'countPlay';
   }
 
   get isStandby() {
@@ -155,6 +161,14 @@ export class StageService {
     return this._scene === 'count';
   }
 
+  get isCountGoal() {
+    return this._scene === 'count' && this._nextScene === 'goal';
+  }
+
+  get isCountPlay() {
+    return this._scene === 'count' && this._nextScene === 'playback';
+  }
+
   get isGoal() {
     return this._scene === 'goal';
   }
@@ -162,12 +176,13 @@ export class StageService {
   get isPlayback() {
     return this._scene === 'playback';
   }
-  get isVictory() {
-    return this._scene === 'victory';
+
+  get isPlaybackNext() {
+    return this._nextScene === 'playback';
   }
 
-  get showPosition() {
-    return this._scene === 'goal' || this._scene === 'playback';
+  get isVictory() {
+    return this._scene === 'victory';
   }
 
   get beatWrong() {

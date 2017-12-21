@@ -66,18 +66,22 @@ primary-red = #FF6e56;
   font-size: 5vw;
   font-weight: 800;
 
-.power-panel
+.options-panel
   text-align: center;
   user-select: none;
 
   .power
     background-color: #FFF;
-    border: outset 5px #aaa;
+    border: outset 5px #AAA;
     border-radius: 10%;
     cursor: pointer;
     display: inline-block;
     padding: 10px;
     margin: 30px;
+    transition: border-color 100ms;
+
+    &:hover
+      border-color: #CCC;
 
     &:active
       border-style: inset;
@@ -109,16 +113,12 @@ bouncing-ball
 
 .controls
   width: button-height;
-  margin: 10px;
+  margin: 10px 15px;
 
   .goal.button
-    background-color: primary-blue;
-    border-radius: 50%;
-    display: flex;
-
-    img
-      height: (2 / 3) * button-height;
-      margin: auto;
+    &.active
+      animation: count-goal-active;
+      animation-duration: 250ms;
 
   .play
     display: block;
@@ -126,23 +126,23 @@ bouncing-ball
     user-select: none;
 
     &.active
-      animation: count-active;
+      animation: count-play-active;
       animation-duration: 250ms;
 
     .button.disabled
       opacity: 0.2;
 
-    .counter
-      cursor: pointer;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      padding: 2px 5px;
-      right: 0;
-      font-size: 40px;
-      line-height: 60px;
-      font-weight: 800;
+  .counter
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 2px 5px;
+    right: 0;
+    font-size: 40px;
+    line-height: 60px;
+    font-weight: 800;
 
   .button
     display: block;
@@ -193,18 +193,21 @@ bouncing-ball
 .weenie:not(:hover), .weenie.on-hover
   animation: weenie 1s infinite 500ms;
 
-@keyframes count-active
-  0%
-    transform: translateX(0);
+@keyframes count-goal-active
+  0%, 100%
+    transform: scale(1);
+  20%
+    transform: scale(1.1);
+  80%
+    transform: scale(0.9);
 
+@keyframes count-play-active
+  0%, 100%
+    transform: translateX(0);
   10%
     transform: translateX(10px);
-
   70%
     transform: translateX(-5px);
-
-  100%
-    transform: translateX(0);
 
 @keyframes weenie
   0%, 100%
