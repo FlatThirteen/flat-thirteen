@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CounterBallComponent } from './counter-ball.component';
+import { GoalIcon } from './goal-icon.component';
 
 
 @NgModule({
@@ -9,11 +9,11 @@ import { CounterBallComponent } from './counter-ball.component';
     CommonModule
   ],
   declarations: [
-    CounterBallComponent
+    GoalIcon
   ],
   exports: [
-    CounterBallComponent
+    GoalIcon
   ]
 })
-export class CounterBallModule {}
+export class GoalIconModule {}
 

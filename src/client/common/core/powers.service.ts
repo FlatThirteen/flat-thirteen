@@ -4,25 +4,29 @@ import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 
 export interface PowerProperties {
-  autoPlay?: boolean
+  autoPlay?: boolean,
+  autoGoal?: boolean
 }
 
 export class Powers implements PowerProperties {
   public readonly autoPlay: boolean;
+  public readonly autoGoal: boolean;
   public readonly any: boolean;
 
   constructor(properties: PowerProperties = {}) {
     this.autoPlay = properties.autoPlay;
-    this.any = properties.autoPlay;
+    this.autoGoal = properties.autoGoal;
+    this.any = properties.autoPlay || properties.autoGoal;
   }
 
   anyNew(toggled: PowerProperties): boolean {
-    return this.autoPlay && !toggled.autoPlay;
+    return this.autoPlay && !toggled.autoPlay || this.autoGoal && !toggled.autoGoal;
   }
 
   static update(powers: Powers, lesson: number, points: number): Powers {
     return new Powers({
-      autoPlay: powers.autoPlay || lesson > 1 || points >= 400
+      autoPlay: powers.autoPlay || lesson > 1 || points >= 400,
+      autoGoal: powers.autoGoal || lesson > 2 || points >= 800
     });
   }
 }
@@ -38,7 +42,8 @@ export class PowersService {
 
   init(params: Params) {
     this.enabled = {
-      autoPlay: !!params['auto']
+      autoPlay: params['play'] === 'auto' || !!params['auto'],
+      autoGoal: params['goal'] === 'auto' || !!params['auto']
     };
     this.toggled = _.clone(this.enabled);
     this._anyNew = false;

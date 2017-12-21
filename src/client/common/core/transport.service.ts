@@ -104,14 +104,15 @@ export class TransportService {
     this.pulsesPart.start(0);
   }
 
-  setOnTop(callback: (time: number) => any) {
+  setOnTop(callback: (first: boolean, time: number) => any) {
     if (this.onTopId !== undefined) {
       Tone.Transport.clear(this.onTopId);
     }
     this.onTopId = Tone.Transport.schedule((time) => {
+      let first = this.measure == 0;
       this.measure = 0;
       this.beatIndex = -1;
-      return callback(time);
+      return callback(first, time);
     }, 0);
   }
 
@@ -139,7 +140,9 @@ export class TransportService {
     this.paused = false;
     this.paused$.next(false);
     this.lastBeat$.next(false);
-    Tone.Transport.start('+4n');
+    if (!this.started) {
+      Tone.Transport.start('+4n');
+    }
   }
 
   stop(shouldDestroy: boolean = false) {
