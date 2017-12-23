@@ -16,7 +16,7 @@
       [ngClass]="{weenie: !powers.toggled.autoPlay}")
     play-icon([autoPlay]="powers.enabled.autoPlay")
 .main.surface-container(*ngIf="lesson.inStage", [@fadeInOut]="")
-  bouncing-ball([showBouncingBall$]="showBouncingBall$", [counter]="counter$ | async")
+  bouncing-ball([showBall$]="showBouncingBall$", [counter]="counter$ | async")
   .surface(*ngFor="let surface of lesson.surfaces", [@zoomInOut]="")
     .controls
       goal-icon.goal.button((click)="onGoal()", [@goal]="stage.scene", [mode]="goalMode",
