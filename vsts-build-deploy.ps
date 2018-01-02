@@ -1,0 +1,23 @@
+$webConfigPath = Get-Location
+cd dist
+cd client
+$sourcePath = Get-Location
+cd ..
+cd ..
+mkdir deploy
+cd deploy
+$deployPath = Get-Location
+git init
+git config user.email "devops@flatthirteen.com"
+git config user.name "DevOps"
+git config core.safecrlf false
+git remote add azure $(azure.remote)
+git pull azure master --quiet
+git rm -rf .
+git clean -fxd
+git reset
+Copy-Item $webConfigPath\web.config $deployPath\web.config
+Copy-Item $sourcePath\* $deployPath -Recurse
+git add -A
+git commit -m "Deploy"
+git push azure master --porcelain 2>&1 | Write-Host
