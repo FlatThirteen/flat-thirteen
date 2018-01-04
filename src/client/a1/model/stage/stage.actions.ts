@@ -28,10 +28,10 @@ export class StageActions {
   }
 
   static GOAL = '[A1 STAGE] Goal';
-  goal(nextScene: StageScene = null): Action {
+  goal(nextScene: StageScene = null, penalty: number = 0): Action {
     return {
       type: StageActions.GOAL,
-      payload: nextScene
+      payload: [nextScene, penalty]
     };
   }
 
@@ -56,6 +56,14 @@ export class StageActions {
     return {
       type: StageActions.PLAY,
       payload: [note, beat, tick]
+    };
+  }
+
+  static WRONG = '[A1 STAGE] Wrong';
+  wrong(penalty: number): Action {
+    return {
+      type: StageActions.WRONG,
+      payload: penalty
     };
   }
 }
