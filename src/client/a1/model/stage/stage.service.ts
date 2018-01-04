@@ -65,8 +65,8 @@ export class StageService {
     this.scene$.subscribe(scene => { this._scene = scene; });
     this.nextScene$.subscribe(nextScene => { this._nextScene = nextScene; });
     this.goalCount$.subscribe(goalCount => {
-      if (this._scene === 'goal' && this._goalCount && this._goalCount < 6) {
-        this.goalMinusFx$.next(-10);
+      if (this._scene === 'goal' && this._goalCount && this._goalCount < 11) {
+        this.goalMinusFx$.next(-5);
       }
       this._goalCount = goalCount;
 
@@ -202,6 +202,6 @@ export class StageService {
   }
 
   get basePoints() {
-    return 120 - Math.min(10 * this._goalCount, 60) - Math.min(10 * this._playbackCount, 50);
+    return 115 - Math.min(5 * this._goalCount, 55) - Math.min(10 * this._playbackCount, 50);
   }
 }
