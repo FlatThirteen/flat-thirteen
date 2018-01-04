@@ -56,7 +56,7 @@ export class StageState {
         return _.defaults({
           scene: 'victory',
           nextScene: 'standby',
-          victoryPhrase: new VictoryPhraseBuilder(basePoints / 10).build()
+          victoryPhrase: new VictoryPhraseBuilder(_.floor(basePoints / 10)).build()
         }, state);
       case StageActions.PLAY: {
         let [note, beat, tick] = action.payload;
