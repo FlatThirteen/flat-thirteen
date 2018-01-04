@@ -76,6 +76,7 @@ export class ConstantPhraseBuilder implements PhraseBuilder {
  * Builds a phrase that never allows more than one note per pulse.
  * For now, the timing parameter only guarantees a note if the value is 1.
  * Other values are ignored.
+ * Always makes sure all possible sounds are chosen before any duplicates.
  */
 export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
   constructor(private soundNames: SoundName[],
@@ -91,11 +92,16 @@ export class MonophonicMonotonePhraseBuilder implements PhraseBuilder {
 
   build(): Phrase {
     let phrase = new Phrase();
+    let neededSounds = _.clone(this.soundNames);
+    let randomNeededSound = () => {
+      return neededSounds.splice(_.random(neededSounds.length - 1), 1)[0];
+    };
+    let randomSound = () => this.soundNames[_.random(this.soundNames.length - 1)];
     let generate = (generationStrategy: (beatTick: BeatTick, priority: number) => number) => {
       for (let [beatTick, probability] of this.rhythm.pulseProbabilities) {
         if (generationStrategy(beatTick, probability)) {
-          let soundIndex = _.random(this.soundNames.length - 1);
-          phrase.add(new Note(this.soundNames[soundIndex]), beatTick);
+          let sound = neededSounds.length ? randomNeededSound() : randomSound();
+          phrase.add(new Note(sound), beatTick);
         }
         if (phrase.numNotes() === this.maxNotes) {
           break;
