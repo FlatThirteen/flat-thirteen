@@ -36,6 +36,9 @@ export class LessonState {
       }
       case LessonActions.STAGE: {
         let stage = action.payload;
+        if (stage >= state.plan.stages.length) {
+          stage = undefined;
+        }
         return {
           plan: state.plan,
           stage: stage, // Easiest way to set undefined

@@ -65,14 +65,14 @@ export class StageService {
     this.scene$.subscribe(scene => { this._scene = scene; });
     this.nextScene$.subscribe(nextScene => { this._nextScene = nextScene; });
     this.goalCount$.subscribe(goalCount => {
-      if (this._goalCount && this._goalCount < 6) {
+      if (this._scene === 'goal' && this._goalCount && this._goalCount < 6) {
         this.goalMinusFx$.next(-10);
       }
       this._goalCount = goalCount;
 
     });
     this.playbackCount$.subscribe(playbackCount => {
-      if (this._playbackCount && this._playbackCount < 5) {
+      if (this._scene === 'playback' && this._playbackCount && this._playbackCount < 5) {
         this.playMinusFx$.next(-10);
       }
       this._playbackCount = playbackCount;

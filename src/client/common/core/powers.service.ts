@@ -5,28 +5,33 @@ import { Params } from '@angular/router';
 
 export interface PowerProperties {
   autoPlay?: boolean,
-  autoGoal?: boolean
+  autoGoal?: boolean,
+  autoNext?: boolean
 }
 
 export class Powers implements PowerProperties {
   public readonly autoPlay: boolean;
   public readonly autoGoal: boolean;
+  public readonly autoNext: boolean;
   public readonly any: boolean;
 
   constructor(properties: PowerProperties = {}) {
     this.autoPlay = properties.autoPlay;
     this.autoGoal = properties.autoGoal;
-    this.any = properties.autoPlay || properties.autoGoal;
+    this.autoNext = properties.autoNext;
+    this.any = properties.autoPlay || properties.autoGoal || properties.autoNext;
   }
 
   anyNew(toggled: PowerProperties): boolean {
-    return this.autoPlay && !toggled.autoPlay || this.autoGoal && !toggled.autoGoal;
+    return this.autoPlay && !toggled.autoPlay || this.autoGoal && !toggled.autoGoal ||
+        this.autoNext && !toggled.autoNext;
   }
 
   static update(powers: Powers, lesson: number, points: number): Powers {
     return new Powers({
       autoPlay: powers.autoPlay || lesson > 1 || points >= 400,
-      autoGoal: powers.autoGoal || lesson > 2 || points >= 800
+      autoGoal: powers.autoGoal || lesson > 2 || points >= 800,
+      autoNext: powers.autoNext || lesson > 3 || points >= 1200,
     });
   }
 }
@@ -43,7 +48,8 @@ export class PowersService {
   init(params: Params) {
     this.enabled = {
       autoPlay: params['play'] === 'auto' || !!params['auto'],
-      autoGoal: params['goal'] === 'auto' || !!params['auto']
+      autoGoal: params['goal'] === 'auto' || !!params['auto'],
+      autoNext: params['next'] === 'auto' || !!params['auto']
     };
     this.toggled = _.clone(this.enabled);
     this._anyNew = false;
