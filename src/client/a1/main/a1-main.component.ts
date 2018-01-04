@@ -134,7 +134,7 @@ let requestAnimationFrameId: number;
         animate(250, style({ opacity: 1 }))
       ]),
       transition(':leave', [
-        animate(500, style({ opacity:0, transform: 'scale(2)' }))
+        animate(500, style({ opacity: 0, transform: 'scale(2)' }))
       ])
     ]),
     trigger('slideTop', [
@@ -155,13 +155,14 @@ let requestAnimationFrameId: number;
         animate(500, style({ transform: 'translateY(30vh)' }))
       ])
     ]),
-    trigger('zoomInOut', [
-      transition(':enter', [
-        style({ transform: 'scale(.5) translateY(30vh)' }),
-        animate(500, style({ transform: 'scale(1) translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate(500, style({ transform: 'scale(.5) translateY(30vh)' }))
+    trigger('surface', [
+      transition('* => *', [
+        animate(125, keyframes([
+          style({ transform: 'translateX(0)', opacity: 1, offset: 0 }),
+          style({ transform: 'translateX(-30vw)', opacity: 0, offset: 0.29 }),
+          style({ transform: 'translateX(30vw)', opacity: 0, offset: 0.3 }),
+          style({ transform: 'translateX(0)', opacity: 1, offset: 1 })
+        ]))
       ])
     ])
   ]
@@ -229,9 +230,11 @@ export class A1MainComponent implements OnInit, OnDestroy {
   onTop(first) {
     if (!first) {
       if (this.stage.isVictory) {
-        this.transport.stop();
+        if (!this.powers.enabled.autoNext) {
+          this.transport.stop();
+        }
         this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
-        this.onStage();
+        this.onStage(this.powers.enabled.autoNext ? this.lesson.weenieStage : undefined);
         if (this.lesson.isCompleted) {
           this.progress.result(this.lesson.result);
         }
@@ -293,9 +296,11 @@ export class A1MainComponent implements OnInit, OnDestroy {
       this.stage.standby(goal);
       if (this.powers.enabled.autoGoal) {
         this.stage.count('goal');
-        setTimeout(() => {
-          this.transport.start();
-        }, 250);
+        if (this.transport.paused) {
+          setTimeout(() => {
+            this.transport.start();
+          }, 250);
+        }
       }
     } else {
       this.transport.stop();

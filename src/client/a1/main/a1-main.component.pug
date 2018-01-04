@@ -15,9 +15,12 @@
   .power(*ngIf="progress.allowedPowers.autoPlay", (click)="powers.toggle('autoPlay')",
       [ngClass]="{weenie: !powers.toggled.autoPlay}")
     play-icon([autoPlay]="powers.enabled.autoPlay")
+  .power(*ngIf="progress.allowedPowers.autoNext", (click)="powers.toggle('autoNext')",
+      [ngClass]="{weenie: !powers.toggled.autoNext}")
+    .next-icon([class.auto]="powers.enabled.autoNext")
 .main.surface-container(*ngIf="lesson.inStage", [@fadeInOut]="")
   bouncing-ball([showBall$]="showBouncingBall$", [counter]="counter$ | async")
-  .surface(*ngFor="let surface of lesson.surfaces", [@zoomInOut]="")
+  .surface(*ngFor="let surface of lesson.surfaces", [@surface]="lesson.stage")
     .controls
       goal-icon.goal.button((click)="onGoal()", [@goal]="stage.scene", [mode]="goalMode",
           [ngClass]="{weenie: isGoalWeenie(), active: stage.isCountGoal && transport.active() }")

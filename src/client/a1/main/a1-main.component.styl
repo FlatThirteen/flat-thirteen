@@ -91,6 +91,30 @@ primary-red = #FF6e56;
         top: 2px;
         left: 2px;
 
+  .next-icon
+    display: inline-block;
+    position: relative;
+    height: 60px;
+    width: 60px;
+
+    &:before, &:after
+      content: '';
+      background-color: primary-blue;
+      border: solid 1px primary-blue;
+      position: absolute;
+      top: 20px;
+      height: 20px;
+      width: 27px;
+
+    &:before
+      left: 0;
+
+    &:after
+      right: 0;
+
+    &.auto:before, &.auto:after
+      background-color: white;
+
 .surface-container
   display: flex;
   flex-direction: column;
