@@ -230,7 +230,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   onTop(first) {
     if (!first) {
       if (this.stage.isVictory) {
-        if (!this.powers.enabled.autoNext) {
+        if (!this.powers.enabled.autoNext || !this.powers.enabled.autoGoal) {
           this.transport.stop();
         }
         this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
@@ -242,10 +242,13 @@ export class A1MainComponent implements OnInit, OnDestroy {
         this.stage.victory();
       } else if (this.stage.isCountGoal) {
         this._isGoalWeenie = false;
-        this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby');
+        this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby', 0);
       } else if (this.stage.isPlaybackNext && this.player.noteCount === this.stage.goalNotes) {
         this.stage.playback('standby');
       } else {
+        if (this.stage.isPlayback) {
+          this.stage.wrong(10);
+        }
         this.onStandby();
       }
     }
@@ -337,8 +340,9 @@ export class A1MainComponent implements OnInit, OnDestroy {
 
   onGoal() {
     if (this.stage.isStandby) {
+      this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby',
+          this._isGoalWeenie ? 0 : 5);
       this._isGoalWeenie = false;
-      this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby');
       this.transport.start();
     } else if (this.stage.isCountGoal) {
       this.onStandby();

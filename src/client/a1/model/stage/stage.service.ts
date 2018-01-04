@@ -7,11 +7,13 @@ import { Subject } from 'rxjs/Subject';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../../../common/app.reducer';
-
 import { Note } from '../../../common/core/note.model';
 import { Phrase } from '../../../common/phrase/phrase.model';
-import { PlayerService } from '../player/player.service';
 import { SoundService } from '../../../common/sound/sound.service';
+
+import { PlayerService } from '../player/player.service';
+
+import { Penalty } from './penalty.model';
 import { StageScene } from './stage.reducer';
 import { StageActions } from './stage.actions';
 
@@ -22,6 +24,8 @@ export class StageService {
   static getNextScene = createSelector(StageService.getStage, stage => stage && stage.nextScene);
   static getGoalCount = createSelector(StageService.getStage, stage => stage && stage.goalCount);
   static getPlaybackCount = createSelector(StageService.getStage, stage => stage && stage.playbackCount);
+  static getGoalPenalty = createSelector(StageService.getStage, stage => stage && stage.goalPenalty);
+  static getWrongPenalty = createSelector(StageService.getStage, stage => stage && stage.wrongPenalty);
   static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
   static getPlayedPhrase = createSelector(StageService.getStage, stage => stage && stage.playedPhrase);
   static getVictoryPhrase = createSelector(StageService.getStage, stage => stage && stage.victoryPhrase);
@@ -31,6 +35,8 @@ export class StageService {
   readonly nextScene$: Observable<StageScene>;
   readonly goalCount$: Observable<number>;
   readonly playbackCount$: Observable<number>;
+  readonly goalPenalty$: Observable<Penalty>;
+  readonly wrongPenalty$: Observable<Penalty>;
   readonly goalPhrase$: Observable<Phrase>;
   readonly playedPhrase$: Observable<Phrase>;
   readonly victoryPhrase$: Observable<Phrase>;
@@ -40,6 +46,8 @@ export class StageService {
   private _nextScene: StageScene;
   private _goalCount: number;
   private _playbackCount: number;
+  private goalPenalty: number;
+  private wrongPenalty: number;
   private goalPhrase: Phrase;
   private playedPhrase: Phrase;
   private victoryPhrase: Phrase;
@@ -57,6 +65,8 @@ export class StageService {
     this.nextScene$ = this.store.select(StageService.getNextScene);
     this.goalCount$ = this.store.select(StageService.getGoalCount);
     this.playbackCount$ = this.store.select(StageService.getPlaybackCount);
+    this.goalPenalty$ = this.store.select(StageService.getGoalPenalty);
+    this.wrongPenalty$ = this.store.select(StageService.getWrongPenalty);
     this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
     this.playedPhrase$ = this.store.select(StageService.getPlayedPhrase);
     this.victoryPhrase$ = this.store.select(StageService.getVictoryPhrase);
@@ -64,19 +74,24 @@ export class StageService {
 
     this.scene$.subscribe(scene => { this._scene = scene; });
     this.nextScene$.subscribe(nextScene => { this._nextScene = nextScene; });
-    this.goalCount$.subscribe(goalCount => {
-      if (this._scene === 'goal' && this._goalCount && this._goalCount < 11) {
-        this.goalMinusFx$.next(-5);
+    this.goalPenalty$.subscribe(goalPenalty => {
+      if (goalPenalty) {
+        if (goalPenalty.difference) {
+          this.goalMinusFx$.next(-goalPenalty.difference);
+        }
+        this.goalPenalty = goalPenalty.current;
       }
-      this._goalCount = goalCount;
-
     });
-    this.playbackCount$.subscribe(playbackCount => {
-      if (this._scene === 'playback' && this._playbackCount && this._playbackCount < 5) {
-        this.playMinusFx$.next(-10);
+    this.wrongPenalty$.subscribe(wrongPenalty => {
+      if (wrongPenalty) {
+        if (wrongPenalty.difference) {
+          this.playMinusFx$.next(-wrongPenalty.difference);
+        }
+        this.wrongPenalty = wrongPenalty.current;
       }
-      this._playbackCount = playbackCount;
     });
+    this.goalCount$.subscribe(goalCount => { this._goalCount = goalCount; });
+    this.playbackCount$.subscribe(playbackCount => { this._playbackCount = playbackCount; });
     this.goalPhrase$.subscribe(goalPhrase => {
       this.goalPhrase = goalPhrase;
       this._goalNotes = goalPhrase && goalPhrase.numNotes();
@@ -94,8 +109,8 @@ export class StageService {
     this.store.dispatch(this.stage.count(nextScene));
   }
 
-  goal(nextScene: StageScene) {
-    this.store.dispatch(this.stage.goal(nextScene));
+  goal(nextScene: StageScene, penalty: number) {
+    this.store.dispatch(this.stage.goal(nextScene, penalty));
   }
 
   playback(nextScene: StageScene) {
@@ -109,6 +124,10 @@ export class StageService {
   play(note: Note, beat: number, tick: number, time?: number) {
     this.sound.play(note.soundName, time);
     this.store.dispatch(this.stage.play(note, beat, tick));
+  }
+
+  wrong(penalty: number) {
+    this.store.dispatch(this.stage.wrong(penalty));
   }
 
   pulse(time: number, beat: number, tick: number) {
@@ -202,6 +221,6 @@ export class StageService {
   }
 
   get basePoints() {
-    return 115 - Math.min(5 * this._goalCount, 55) - Math.min(10 * this._playbackCount, 50);
+    return 100 - this.goalPenalty - this.wrongPenalty;
   }
 }
