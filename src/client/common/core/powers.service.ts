@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 
+import { SoundService } from '../sound/sound.service';
+
 export interface PowerProperties {
   autoPlay?: boolean,
   autoGoal?: boolean,
@@ -48,7 +50,7 @@ export class PowersService {
   public toggled: PowerProperties;
   private _anyNew: boolean;
 
-  constructor() {}
+  constructor(private sound: SoundService) {}
 
   init(params: Params) {
     this.enabled = {
@@ -70,6 +72,8 @@ export class PowersService {
     this.enabled[property] = !this.enabled[property];
     this.toggled[property] = true;
     this._anyNew = this.allowed.anyNew(this.toggled);
+    this.sound.playSequence('cowbell',
+        ['E7', this.enabled[property] ? 'A7' : 'A6'], '16n');
   }
 
   current(): Powers {
