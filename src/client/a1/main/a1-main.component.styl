@@ -115,6 +115,31 @@ primary-red = #FF6e56;
     &.auto:before, &.auto:after
       background-color: white;
 
+  .loop-icon
+    display: inline-block;
+    position: relative;
+    height: 60px;
+    width: 60px;
+
+    &:before, &:after
+      content: '';
+      background-color: primary-blue;
+      border-radius: 50%;
+      opacity: .2;
+      position: absolute;
+      left: 20px;
+      height: 20px;
+      width: 20px;
+
+    &:before
+      top: 10px;
+
+    &:after
+      bottom: 5px;
+
+    &.auto:before, &.auto:after
+      opacity: 1;
+
 .surface-container
   display: flex;
   flex-direction: column;
@@ -142,7 +167,7 @@ bouncing-ball
   .goal.button
     &.active
       animation: count-goal-active;
-      animation-duration: 250ms;
+      animation-duration: 150ms;
 
   .play
     display: block;
@@ -167,6 +192,24 @@ bouncing-ball
     font-size: 40px;
     line-height: 60px;
     font-weight: 800;
+
+  .repeat
+    display: inline-block;
+    width: 60px;
+
+    &:before, &:after
+      content: '';
+      border-radius: 50%;
+      background-color: white;
+      border: solid 6px primary-blue;
+      display: block;
+      margin: 8px;
+      height: 30px;
+      width: 30px;
+
+    &.active:before, &.active:after
+      animation: count-goal-active;
+      animation-duration: 150ms;
 
   .button
     display: block;
@@ -221,9 +264,9 @@ bouncing-ball
   0%, 100%
     transform: scale(1);
   20%
-    transform: scale(1.1);
+    transform: scale(1.05);
   80%
-    transform: scale(0.9);
+    transform: scale(0.95);
 
 @keyframes count-play-active
   0%, 100%

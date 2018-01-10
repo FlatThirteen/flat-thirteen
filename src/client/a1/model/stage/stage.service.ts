@@ -121,6 +121,10 @@ export class StageService {
     this.store.dispatch(this.stage.victory(this.basePoints));
   }
 
+  next(nextScene: StageScene) {
+    this.store.dispatch(this.stage.next(nextScene));
+  }
+
   play(note: Note, beat: number, tick: number, time?: number) {
     this.sound.play(note.soundName, time);
     this.store.dispatch(this.stage.play(note, beat, tick));
@@ -167,9 +171,8 @@ export class StageService {
     return this._playbackCount;
   }
 
-  get scene() {
-    return this._scene !== 'count' ? this._scene : this._nextScene === 'goal' ?
-        'countGoal' : 'countPlay';
+  get sceneState() {
+    return this._scene + (this._nextScene === 'standby' ? '' : '-' + this._nextScene);
   }
 
   get isStandby() {
@@ -196,8 +199,8 @@ export class StageService {
     return this._scene === 'playback';
   }
 
-  get isPlaybackNext() {
-    return this._nextScene === 'playback';
+  get nextScene() {
+    return this._nextScene;
   }
 
   get isVictory() {

@@ -51,6 +51,14 @@ export class StageActions {
     };
   }
 
+  static NEXT = '[A1 STAGE] Next';
+  next(nextScene: StageScene): Action {
+    return {
+      type: StageActions.NEXT,
+      payload: nextScene
+    }
+  }
+
   static PLAY = '[A1 STAGE] Play';
   play(note: Note, beat: number, tick: number): Action {
     return {

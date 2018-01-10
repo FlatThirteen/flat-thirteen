@@ -18,25 +18,30 @@
   .power(*ngIf="progress.allowedPowers.autoNext", (click)="powers.toggle('autoNext')",
       [ngClass]="{weenie: !powers.toggled.autoNext}")
     .next-icon([class.auto]="powers.enabled.autoNext")
+  .power(*ngIf="progress.allowedPowers.autoLoop", (click)="powers.toggle('autoLoop')",
+      [ngClass]="{weenie: !powers.toggled.autoLoop}")
+    .loop-icon([class.auto]="powers.enabled.autoLoop")
 .main.surface-container(*ngIf="lesson.inStage", [@fadeInOut]="")
   bouncing-ball([showBall$]="showBouncingBall$", [counter]="counter$ | async")
   .surface(*ngFor="let surface of lesson.surfaces", [@surface]="lesson.stage")
     .controls
-      goal-icon.goal.button((click)="onGoal()", [@goal]="stage.scene", [mode]="goalMode",
-          [ngClass]="{weenie: isGoalWeenie(), active: stage.isCountGoal && transport.active() }")
+      goal-icon.goal.button((click)="onGoal()", [@goal]="stage.sceneState", [mode]="goalMode",
+          [ngClass]="{weenie: isGoalWeenie(), active: goalBeat() }")
       minus-fx([show$]="stage.goalMinusFx$")
       .spacer
       .play([class.active]="stage.isCountPlay && transport.active()",
-          [@play]="stage.scene", [@notes]="player.noteCount")
+          [@play]="stage.sceneState", [@notes]="player.noteCount")
         play-icon.button((click)="isGoalWeenie() || onPlayback()",
             [playNotes]="player.noteCount", [goalNotes]="stage.goalNotes",
             [autoPlay]="powers.enabled.autoPlay",
-            [ngClass]="{weenie: isPlaybackWeenie()," +
-                "disabled: isGoalWeenie() || stage.isCountGoal || stage.isGoal}")
-        .counter(*ngIf="stage.isCountPlay", (click)="onStandby()") {{ transport.count() }}
+            [ngClass]="{weenie: isPlaybackWeenie(), disabled: playDisabled()}")
+        .counter(*ngIf="stage.nextScene === 'playback'", (click)="onStandby()") {{ transport.count() }}
       minus-fx([show$]="stage.playMinusFx$")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
     .controls
+      .repeat.button(*ngIf="powers.enabled.autoLoop && !stage.isPlayback",
+          [ngClass]="{active: repeatBeat()}",
+          (click)="onStopRepeat()", [@repeat]="stage.nextScene")
       .spacer
   .top-bar.back((click)="onStage()", *ngIf="lesson.inStage", [@slideTop]="") &larr;
 .points(*ngIf="lesson.isCompleted && progress.points", [@slideTop]="") {{progress.points}}

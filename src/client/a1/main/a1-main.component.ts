@@ -31,24 +31,32 @@ let requestAnimationFrameId: number;
   styleUrls: ['a1-main.component.styl'],
   animations: [
     trigger('goal', [
-      state('goal', style({ transform: 'translateY(-50vh) scale(0.1, 0.5)' })),
-      state('countPlay', style({ transform: 'scale(0)'})),
-      state('playback', style({ transform: 'rotate(45deg) scale(0)' })),
+      state('goal, goal-count', style({ transform: 'translateY(-50vh) scale(0.1, 0.5)' })),
+      state('count-playback, goal-playback', style({ transform: 'scale(0)'})),
+      state('playback, playback-count', style({ transform: 'rotate(45deg) scale(0)' })),
       state('victory', style({ opacity: 0 })),
-      transition('standby => goal', [
+      transition('standby => goal, standby => goal-count', [
         animate(250, keyframes([
           style({ transform: 'translateY(2vh) scale(1.2, 0.6)', offset: 0.2 }),
           style({ transform: 'translateY(0vh) scale(0.5, 1.2)', offset: 0.4 }),
           style({ transform: 'translateY(-50vh) scale(0.5, 1)', offset: 1 })
         ]))
       ]),
-      transition('countGoal => goal', [
+      transition('count-goal => goal, count-goal => goal-count', [
         animate(250, keyframes([
           style({ transform: 'translateX(-1vw) rotate(-15deg)', offset: 0.2 }),
           style({ transform: 'translateX(3vw) rotate(180deg)', offset: 1 })
         ]))
       ]),
-      transition('goal => standby', [
+      transition('goal-count => count-goal', [
+        style({ transform: 'translateX(3vw) rotate(180deg)'}),
+        animate(250, keyframes([
+          style({ transform: 'translateX(3vw) rotate(180deg)', offset: 0 }),
+          style({ transform: 'translateX(-1vw) rotate(-15deg)', offset: 0.8 }),
+          style({ transform: 'translateX(0) rotate(0)', offset: 1 })
+        ]))
+      ]),
+      transition('goal => standby, goal-count => standby', [
         animate(250, keyframes([
           style({ transform: 'translateY(-50vh) scale(0.5, 1)', offset: 0}),
           style({ transform: 'translateY(0vh) scale(0.5, 1.2)', offset: .6 }),
@@ -56,14 +64,14 @@ let requestAnimationFrameId: number;
           style({ transform: 'translateY(0) scale(1)', offset: 1 })
         ]))
       ]),
-      transition('standby => playback, standby => countPlay', [
+      transition('standby => playback, standby => playback-count, standby => count-playback', [
         animate(250, keyframes([
           style({ transform: 'rotate(0) scale(1.2)', offset: 0.2 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.5 }),
           style({ transform: 'rotate(45deg) scale(0)', offset: 1 })
         ]))
       ]),
-      transition('playback => standby', [
+      transition('playback => standby, playback-count => standby', [
         animate(250, keyframes([
           style({ transform: 'rotate(90deg) scale(0.8)', offset: 0.5 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.8 }),
@@ -72,8 +80,8 @@ let requestAnimationFrameId: number;
       ])
     ]),
     trigger('play', [
-      state('goal', style({ transform: 'scale(0)' })),
-      state('playback', style({ opacity: 0, transform: 'translateX(5vw) scale(0, 2)' })),
+      state('goal, goal-count', style({ transform: 'scale(0)' })),
+      state('playback, playback-count', style({ opacity: 0, transform: 'translateX(5vw) scale(0, 2)' })),
       state('victory', style({ opacity: 0 })),
       transition('* => goal', [
         animate(250, keyframes([
@@ -82,14 +90,14 @@ let requestAnimationFrameId: number;
           style({ transform: 'rotate(90deg) scale(0)', offset: 1 })
         ]))
       ]),
-      transition('goal => standby', [
+      transition('goal => standby, goal-count => standby', [
         animate(250, keyframes([
           style({ transform: 'rotate(45deg) scale(0.3)', offset: 0.5 }),
           style({ transform: 'rotate(-10deg) scale(1.2)', offset: 0.8 }),
           style({ transform: 'rotate(0) scale(1)', offset: 1 })
         ]))
       ]),
-      transition('* => playback', [
+      transition('* => playback, * => playback-count', [
         animate(250, keyframes([
           style({ opacity: 1, transform: 'translateX(0) scale(1)', offset: 0 }),
           style({ opacity: 1, transform: 'translateX(-1vw) scale(0.8, 1.1)', offset: 0.2 }),
@@ -98,13 +106,46 @@ let requestAnimationFrameId: number;
           style({ opacity: 0, transform: 'translateX(3vw) scale(0, 0)', offset: 1 })
         ]))
       ]),
-      transition('playback => standby', [
+      transition('playback => standby, playback-count => standby', [
         animate(250, keyframes([
           style({ opacity: 0, transform: 'translateX(3vw) scale(0, 0)', offset: 0 }),
           style({ opacity: 0.5, transform: 'translateX(3vw) scale(1.5, 0.1)', offset: 0.1 }),
           style({ opacity: 1, transform: 'translateX(-1vw) scale(0.6, 1.2)', offset: 0.6 }),
           style({ opacity: 1, transform: 'translateX(-1vw) scale(0.8, 1.1)', offset: 0.8 }),
           style({ opacity: 1, transform: 'translateX(0) scale(1)', offset: 1 })
+        ]))
+      ])
+    ]),
+    trigger('repeat', [
+      state('standby, playback, victory', style({ transform: 'scale(0)' })),
+      state('goal, count', style({ transform: 'scale(1)'})),
+      transition('goal => standby, count => standby', [
+        animate(250, keyframes([
+          style({ transform: 'scale(1)', offset: 0 }),
+          style({ transform: 'scale(1.1)', offset: 0.2 }),
+          style({ transform: 'scale(0)', offset: 1 }),
+        ]))
+      ]),
+      transition('standby => count', [
+        animate(250, keyframes([
+          style({ transform: 'scale(0)', offset: 0 }),
+          style({ transform: 'scale(1.1)', offset: 0.8 }),
+          style({ transform: 'scale(1)', offset: 1 }),
+        ]))
+      ]),
+      transition('count => goal', [
+        animate(125, keyframes([
+          style({ transform: 'translateX(0)', offset: 0 }),
+          style({ transform: 'translateX(0.5vw)', offset: 0.3 }),
+          style({ transform: 'translateX(-1vw)', offset: 0.6 }),
+          style({ transform: 'translateX(0)', offset: 1 })
+        ]))
+      ]),
+      transition('goal => playback, count => playback', [
+        animate(250, keyframes([
+          style({ opacity: 1, transform: 'translateX(0)', offset: 0 }),
+          style({ opacity: 1, transform: 'translateX(1vw)', offset: 0.2 }),
+          style({ opacity: 0, transform: 'translateX(-3vw)', offset: 1 })
         ]))
       ])
     ]),
@@ -192,14 +233,22 @@ export class A1MainComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions = [
       this.player.noteCount$.subscribe((noteCount) => {
-        if (this.powers.enabled.autoPlay &&  noteCount && !this._isGoalWeenie &&
-            this.stage.isStandby && noteCount === this.stage.goalNotes) {
-          setTimeout(() => { // Start after note has a chance to play sound.
-            this.stage.count('playback');
-            this.transport.start();
-          }, 250);
-        } else if (this.stage.isCountPlay && noteCount !== this.stage.goalNotes) {
-          this.onStandby();
+        if (noteCount && noteCount === this.stage.goalNotes && !this._isGoalWeenie) {
+          if ((this.stage.isCountGoal || this.stage.isGoal) &&
+            (this.powers.enabled.autoPlay || this.powers.enabled.autoLoop)) {
+            this.stage.next('playback');
+          } else if (this.stage.isStandby && this.powers.enabled.autoPlay) {
+            setTimeout(() => { // Start after note has a chance to play sound.
+              this.stage.count('playback');
+              this.transport.start();
+            }, 50);
+          }
+        } else if (this.stage.isCountPlay) {
+          if (this.powers.enabled.autoLoop) {
+            this.stage.next('goal');
+          } else {
+            this.onStandby();
+          }
         }
         this.changed = true;
       })
@@ -240,16 +289,22 @@ export class A1MainComponent implements OnInit, OnDestroy {
         }
       } else if (this.stage.isPlayback && this.stage.goalPlayed) {
         this.stage.victory();
-      } else if (this.stage.isCountGoal) {
+      } else if (this.stage.nextScene === 'goal') {
+        this.stage.goal(!this.powers.enabled.autoPlay ? 'standby' :
+            this._isGoalWeenie && this.player.noteCount === this.stage.goalNotes ? 'playback' :
+            this.powers.enabled.autoLoop ? 'count' : 'standby', this._isGoalWeenie ? 0 : 2);
         this._isGoalWeenie = false;
-        this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby', 0);
-      } else if (this.stage.isPlaybackNext && this.player.noteCount === this.stage.goalNotes) {
-        this.stage.playback('standby');
+      } else if (this.stage.nextScene === 'playback') {
+        this.stage.playback(this.powers.enabled.autoLoop ? 'count' : 'standby');
       } else {
         if (this.stage.isPlayback) {
           this.stage.wrong(10);
         }
-        this.onStandby();
+        if (this.stage.nextScene === 'count') {
+          this.stage.count('goal');
+        } else {
+          this.onStandby();
+        }
       }
     }
     this.changed = false;
@@ -280,7 +335,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
       this.player.select(this.player.selected, this.player.cursor - 1);
     } else if (event.key === 'ArrowRight') { // Right: Select next
       this.player.select(this.player.selected, this.player.cursor + 1);
-    } else if (!this.transport.starting) { // Key: Set, disallow while starting
+    } else if (this.lesson.inStage && !this.transport.starting) { // Key: Set, disallow while starting
       if (this.player.set(event.key, this.player.cursor)) {
         this.player.select(this.player.selected, this.player.cursor + 1);
       }
@@ -302,7 +357,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
         if (this.transport.paused) {
           setTimeout(() => {
             this.transport.start();
-          }, 250);
+          }, 0);
         }
       }
     } else {
@@ -340,7 +395,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
 
   onGoal() {
     if (this.stage.isStandby) {
-      this.stage.goal(this.powers.enabled.autoPlay ? 'playback' : 'standby',
+      this.stage.goal(this.powers.enabled.autoLoop ? 'count' : 'standby',
           this._isGoalWeenie ? 0 : 5);
       this._isGoalWeenie = false;
       this.transport.start();
@@ -358,6 +413,14 @@ export class A1MainComponent implements OnInit, OnDestroy {
     }
   }
 
+  onStopRepeat() {
+    if (this.stage.isCount) {
+      this.onStandby();
+    } else {
+      this.stage.next('standby');
+    }
+  }
+
   onNext() {
     this.progress.next();
   }
@@ -365,6 +428,19 @@ export class A1MainComponent implements OnInit, OnDestroy {
   onStandby() {
     this.stage.standby();
     this.transport.stop();
+  }
+
+  goalBeat() {
+    return this.stage.isCountGoal && this.transport.beatIndex && this.transport.active();
+  }
+
+  playDisabled() {
+    return this._isGoalWeenie || this.stage.isCountGoal || this.stage.isGoal &&
+        this.stage.nextScene !== 'playback'
+  }
+
+  repeatBeat() {
+    return this.transport.active() && (this.transport.beatIndex || this.stage.isGoal);
   }
 
   isGrid(surface: Surface) {
