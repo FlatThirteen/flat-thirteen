@@ -1,9 +1,11 @@
+import * as _ from 'lodash';
+import * as Tone from 'tone';
+
 import { Injectable } from '@angular/core';
 
-import * as _ from 'lodash';
-
 import { SoundName} from '../core/note.model';
-import { Sound, ClickSound, KickSound, SnareSound, CowbellSound, Params } from './sound';
+
+import { Sound, ClickSound, KickSound, SnareSound, CowbellSound, Params, Variation } from './sound';
 
 @Injectable()
 export class SoundService {
@@ -15,12 +17,25 @@ export class SoundService {
   };
 
   play(soundName: SoundName, time?: number, params?: Params) {
+    this.loadSound(soundName).play(time, params);
+  }
+
+  playSequence(soundName: SoundName, pitches: string[], duration: string,
+               variation?: Variation) {
+    let sound = this.loadSound(soundName);
+    _.forEach(pitches, (pitch, index) => {
+      let t = Tone.Time(duration);
+      t.mult(index + 1);
+      sound.play('+' + t.toNotation(), {pitch: pitch, variation: variation});
+    });
+  }
+
+  private loadSound(soundName) {
     let sound = this.sounds[soundName];
     if (sound) {
-      sound.play(time, params);
+      return sound;
     } else {
       throw new Error('Invalid sound: ' + soundName);
     }
-
   }
 }
