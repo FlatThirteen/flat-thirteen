@@ -21,7 +21,7 @@ export class SoundService {
   }
 
   playSequence(soundName: SoundName, pitches: string[], duration: string,
-               variation?: Variation, time: number = 0) {
+               variation?: Variation) {
     let sound = this.loadSound(soundName);
     _.forEach(pitches, (pitch, index) => {
       let t = Tone.Time(duration);
