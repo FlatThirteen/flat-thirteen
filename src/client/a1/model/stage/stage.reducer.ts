@@ -10,6 +10,8 @@ import { StageActions } from './stage.actions';
 export type StageScene = 'standby' | 'count' | 'goal' | 'playback' | 'victory';
 
 export class StageState {
+  readonly scene: StageScene = 'standby';
+  readonly nextScene: StageScene = 'standby';
   readonly goalCount: number = 0;
   readonly playbackCount: number = 0;
   readonly goalPenalty: Penalty;
@@ -17,9 +19,8 @@ export class StageState {
   readonly playedPhrase: Phrase = null;
   readonly victoryPhrase: Phrase = null;
   readonly goalPlayed: boolean = false;
-  readonly nextScene: StageScene = null;
 
-  constructor(readonly scene: StageScene, readonly goalPhrase: Phrase) {
+  constructor(readonly goalPhrase: Phrase) {
     this.goalPenalty = new Penalty(45);
     this.wrongPenalty = new Penalty(50);
   }
@@ -30,11 +31,11 @@ export class StageState {
       case StageActions.STANDBY:
         let phrase = action.payload;
         if (phrase) {
-          return new StageState('standby', phrase);
+          return new StageState(phrase);
         } else {
           return _.defaults({
             scene: 'standby',
-            nextScene: null
+            nextScene: 'standby'
           }, state)
         }
       case StageActions.COUNT:
@@ -65,6 +66,11 @@ export class StageState {
           scene: 'victory',
           nextScene: 'standby',
           victoryPhrase: new VictoryPhraseBuilder(_.floor(basePoints / 10)).build()
+        }, state);
+      case StageActions.NEXT:
+        nextScene = action.payload;
+        return _.defaults({
+          nextScene: nextScene
         }, state);
       case StageActions.PLAY:
         let [note, beat, tick] = action.payload;

@@ -6,25 +6,29 @@ import { Params } from '@angular/router';
 export interface PowerProperties {
   autoPlay?: boolean,
   autoGoal?: boolean,
-  autoNext?: boolean
+  autoNext?: boolean,
+  autoLoop?: boolean
 }
 
 export class Powers implements PowerProperties {
   public readonly autoPlay: boolean;
   public readonly autoGoal: boolean;
   public readonly autoNext: boolean;
+  public readonly autoLoop: boolean;
   public readonly any: boolean;
 
   constructor(properties: PowerProperties = {}) {
     this.autoPlay = properties.autoPlay;
     this.autoGoal = properties.autoGoal;
     this.autoNext = properties.autoNext;
-    this.any = properties.autoPlay || properties.autoGoal || properties.autoNext;
+    this.autoLoop = properties.autoLoop;
+    this.any = properties.autoPlay || properties.autoGoal ||
+        properties.autoNext || properties.autoLoop;
   }
 
   anyNew(toggled: PowerProperties): boolean {
     return this.autoPlay && !toggled.autoPlay || this.autoGoal && !toggled.autoGoal ||
-        this.autoNext && !toggled.autoNext;
+        this.autoNext && !toggled.autoNext || this.autoLoop && !toggled.autoLoop;
   }
 
   static update(powers: Powers, lesson: number, points: number): Powers {
@@ -32,6 +36,7 @@ export class Powers implements PowerProperties {
       autoPlay: powers.autoPlay || lesson > 1 || points >= 400,
       autoGoal: powers.autoGoal || lesson > 2 || points >= 800,
       autoNext: powers.autoNext || lesson > 3 || points >= 1200,
+      autoLoop: powers.autoLoop || lesson > 4 || points >= 1600,
     });
   }
 }
@@ -49,7 +54,8 @@ export class PowersService {
     this.enabled = {
       autoPlay: params['play'] === 'auto' || !!params['auto'],
       autoGoal: params['goal'] === 'auto' || !!params['auto'],
-      autoNext: params['next'] === 'auto' || !!params['auto']
+      autoNext: params['next'] === 'auto' || !!params['auto'],
+      autoLoop: params['loop'] === 'auto' || !!params['auto']
     };
     this.toggled = _.clone(this.enabled);
     this._anyNew = false;
@@ -57,7 +63,7 @@ export class PowersService {
 
   update(powers: Powers) {
     this.allowed = powers;
-    this._anyNew = powers.anyNew(this.toggled);
+    this._anyNew = this.toggled ? powers.anyNew(this.toggled) : false;
   }
 
   toggle(property: keyof PowerProperties) {
