@@ -9,6 +9,7 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { PowersService } from '../../common/core/powers.service';
 import { Rhythm } from '../../common/core/rhythm.model';
+import { SoundService } from '../../common/sound/sound.service';
 import { Surface } from '../../common/surface/surface.model';
 import { TransportService } from '../../common/core/transport.service';
 
@@ -219,7 +220,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
               public lesson: LessonService, public powers: PowersService,
-              public progress: ProgressService) {
+              public progress: ProgressService, public sound: SoundService) {
     this.showBouncingBall$ = combineLatest(transport.paused$, transport.lastBeat$).map(
       ([paused, lastBeat]) => !paused && (lastBeat ? stage.isCountGoal : stage.isGoal));
     this.counter$ = combineLatest(transport.paused$, transport.pulse$).map(
@@ -249,6 +250,9 @@ export class A1MainComponent implements OnInit, OnDestroy {
           } else {
             this.onStandby();
           }
+        }
+        if (noteCount > this.stage.goalNotes) {
+          this.sound.playSequence('cowbell', ['E5', 'F4'], '32n');
         }
         this.changed = true;
       })
@@ -299,6 +303,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
       } else {
         if (this.stage.isPlayback) {
           this.stage.wrong(10);
+          this.playMinusSequence();
         }
         if (this.stage.nextScene === 'count') {
           this.stage.count('goal');
@@ -441,6 +446,10 @@ export class A1MainComponent implements OnInit, OnDestroy {
 
   repeatBeat() {
     return this.transport.active() && (this.transport.beatIndex || this.stage.isGoal);
+  }
+
+  playMinusSequence() {
+    this.sound.playSequence('cowbell', ['F4', 'D4'], '32n');
   }
 
   isGrid(surface: Surface) {
