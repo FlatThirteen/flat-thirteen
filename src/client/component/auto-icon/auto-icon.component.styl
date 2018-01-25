@@ -1,0 +1,42 @@
+primary-blue = #008FFF;
+primary-green = #50FFA0;
+primary-red = #FF6e56;
+
+.container
+  position: relative;
+
+.play
+  fill: primary-green;
+  stroke: primary-green;
+  stroke-width: 6px;
+
+
+.goal
+  fill: primary-blue;
+  stroke: primary-blue;
+  stroke-width: 1px;
+
+.next
+  fill: primary-blue;
+  stroke: white;
+  stroke-width: 2px;
+
+.auto
+  fill: white;
+  stroke: white;
+  stroke-width: 1px;
+
+  &.nudge
+    transform: translateX(-5px);
+
+  &.dim
+    stroke: #AAA;
+
+.cross
+  stroke: primary-red;
+  stroke-width: 6px;
+
+.loop
+  fill: white;
+  stroke: primary-blue;
+  stroke-width: 4px;

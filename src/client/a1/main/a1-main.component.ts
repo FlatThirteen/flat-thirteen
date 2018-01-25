@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { PowersService } from '../../common/core/powers.service';
+import { PowersService, PowerType } from '../../common/core/powers.service';
 import { Rhythm } from '../../common/core/rhythm.model';
 import { SoundService } from '../../common/sound/sound.service';
 import { Surface } from '../../common/surface/surface.model';
@@ -82,7 +82,10 @@ let requestAnimationFrameId: number;
     ]),
     trigger('play', [
       state('goal, goal-count', style({ transform: 'scale(0)' })),
-      state('playback, playback-count', style({ opacity: 0, transform: 'translateX(5vw) scale(0, 2)' })),
+      state('playback, playback-count', style({
+        opacity: 0,
+        transform: 'translateX(5vw) scale(0, 2)'
+      })),
       state('victory', style({ opacity: 0 })),
       transition('* => goal', [
         animate(250, keyframes([
@@ -162,8 +165,8 @@ let requestAnimationFrameId: number;
     ]),
     trigger('next', [
       transition(':enter', [
-        style({ height: 0, opacity: 0 }),
-        animate('250ms 500ms', style({ height: '*', opacity: 1 }))
+        style({ height: 0, margin: 0, opacity: 0 }),
+        animate('250ms 500ms', style({ height: '*', margin: '*', opacity: 1 }))
       ]),
       transition(':leave', [
         style({ position: 'absolute', left: 0 }),
@@ -206,12 +209,45 @@ let requestAnimationFrameId: number;
           style({ transform: 'translateX(0)', opacity: 1, offset: 1 })
         ]))
       ])
+    ]),
+    trigger('powerUp', [
+      transition(':enter', [
+        animate(500, keyframes([
+          style({ transform: 'scale(0)', opacity: 0, offset: 0 }),
+          style({ transform: 'scale(1.1)', opacity: 1, offset: 0.8 }),
+          style({ transform: 'scale(1)', opacity: 1, offset: 1 }),
+        ]))
+      ]),
+      transition(':leave', [
+        animate(250, keyframes([
+          style({ transform: 'translateY(0)', opacity: 1, offset: 0 }),
+          style({ transform: 'translateY(-10px)', opacity: 1, offset: 0.5 }),
+          style({ transform: 'translateY(30vh)', opacity: 0, offset: 1 })
+        ]))
+      ])
+    ]),
+    trigger('settingOption', [
+      state('hidden', style({
+        overflow: 'hidden',
+        height: 0,
+        borderTopWidth: 0,
+        borderBottomWidth: 0,
+        paddingTop: 0,
+        paddingBottom: 0
+      })),
+      transition('hidden => show', [
+        animate(250)
+      ]),
+      transition('show => hidden', [
+        animate(125)
+      ])
     ])
   ]
 })
 export class A1MainComponent implements OnInit, OnDestroy {
   public showBouncingBall$: Observable<boolean>;
   public counter$: Observable<number>;
+  public showSetting: PowerType;
   public changed: boolean = false;
   private _isGoalWeenie: boolean = false;
 
@@ -236,16 +272,16 @@ export class A1MainComponent implements OnInit, OnDestroy {
       this.player.noteCount$.subscribe((noteCount) => {
         if (noteCount && noteCount === this.stage.goalNotes && !this._isGoalWeenie) {
           if ((this.stage.isCountGoal || this.stage.isGoal) &&
-            (this.powers.enabled.autoPlay || this.powers.enabled.autoLoop)) {
+            (this.powers.autoPlay || this.powers.autoLoop)) {
             this.stage.next('playback');
-          } else if (this.stage.isStandby && this.powers.enabled.autoPlay) {
+          } else if (this.stage.isStandby && this.powers.autoPlay) {
             setTimeout(() => { // Start after note has a chance to play sound.
               this.stage.count('playback');
               this.transport.start();
             }, 50);
           }
         } else if (this.stage.isCountPlay) {
-          if (this.powers.enabled.autoLoop) {
+          if (this.powers.autoLoop) {
             this.stage.next('goal');
           } else {
             this.onStandby();
@@ -283,23 +319,23 @@ export class A1MainComponent implements OnInit, OnDestroy {
   onTop(first) {
     if (!first) {
       if (this.stage.isVictory) {
-        if (!this.powers.enabled.autoNext || !this.powers.enabled.autoGoal) {
+        if (!this.powers.autoNext || !this.powers.autoGoal) {
           this.transport.stop();
         }
         this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
-        this.onStage(this.powers.enabled.autoNext ? this.lesson.weenieStage : undefined);
+        this.onStage(this.powers.autoNext ? this.lesson.weenieStage : undefined);
         if (this.lesson.isCompleted) {
           this.progress.result(this.lesson.result);
         }
       } else if (this.stage.isPlayback && this.stage.goalPlayed) {
         this.stage.victory();
       } else if (this.stage.nextScene === 'goal') {
-        this.stage.goal(!this.powers.enabled.autoPlay ? 'standby' :
+        this.stage.goal(!this.powers.autoPlay ? 'standby' :
             this._isGoalWeenie && this.player.noteCount === this.stage.goalNotes ? 'playback' :
-            this.powers.enabled.autoLoop ? 'count' : 'standby', this._isGoalWeenie ? 0 : 2);
+            this.powers.autoLoop ? 'count' : 'standby', this._isGoalWeenie ? 0 : 2);
         this._isGoalWeenie = false;
       } else if (this.stage.nextScene === 'playback') {
-        this.stage.playback(this.powers.enabled.autoLoop ? 'count' : 'standby');
+        this.stage.playback(this.powers.autoLoop ? 'count' : 'standby');
       } else {
         if (this.stage.isPlayback) {
           this.stage.wrong(10);
@@ -319,7 +355,11 @@ export class A1MainComponent implements OnInit, OnDestroy {
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') { // Enter: Weenie if possible
       if (this.lesson.isCompleted) {
-        this.onNext();
+        if (this.progress.powerUps.length) {
+          this.onPower(this.progress.powerUps[0]);
+        } else {
+          this.onNext();
+        }
       } else if (!this.lesson.inStage) {
         this.onStage(this.lesson.weenieStage);
       } else if (this.isGoalWeenie()) {
@@ -348,6 +388,24 @@ export class A1MainComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  @HostListener('mousedown')
+  handleBackgroundMouseDown() {
+    if (this.showSetting) {
+      this.sound.playSequence('cowbell', ['E7'], '16n');
+    }
+    this.showSetting = null;
+  }
+
+  onSetting(powerType: PowerType, level: number) {
+    if (this.showSetting === powerType) {
+      this.powers.set(powerType, level);
+      this.showSetting = null;
+    } else {
+      this.sound.playSequence('cowbell', ['E7'], '16n');
+      this.showSetting = powerType;
+    }
+  }
+
   onStage(stage?: number) {
     if (stage !== undefined && this.lesson.pointsFor(stage)) {
       return;
@@ -357,7 +415,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
     let goal = this.lesson.inStage && this.lesson.stages[stage];
     if (goal) {
       this.stage.standby(goal);
-      if (this.powers.enabled.autoGoal) {
+      if (this.powers.autoGoal) {
         this.stage.count('goal');
         if (this.transport.paused) {
           setTimeout(() => {
@@ -390,17 +448,17 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   isNextWeenie() {
-    return this.lesson.isCompleted && !this.powers.anyNew;
+    return this.lesson.isCompleted && !this.progress.powerUps.length;
   }
 
   get goalMode() {
-    return this.powers.enabled.autoGoal && (this.stage.isCountGoal || this.stage.isGoal &&
+    return this.powers.autoGoal && (this.stage.isCountGoal || this.stage.isGoal &&
         !this.transport.starting) ? 'auto' : 'listen'
   }
 
   onGoal() {
     if (this.stage.isStandby) {
-      this.stage.goal(this.powers.enabled.autoLoop ? 'count' : 'standby',
+      this.stage.goal(this.powers.autoLoop ? 'count' : 'standby',
           this._isGoalWeenie ? 0 : 5);
       this._isGoalWeenie = false;
       this.transport.start();
@@ -427,12 +485,27 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onNext() {
+    this.powers.unhighlight();
     this.progress.next();
   }
 
   onStandby() {
     this.stage.standby();
     this.transport.stop();
+  }
+
+  onPower(powerType: PowerType) {
+    this.sound.playSequence('cowbell', ['A6'], '16n');
+    let level = this.progress.power(powerType);
+    if (level === this.powers.setting[powerType] + 1) {
+      setTimeout(() => {
+        this.powers.set(powerType, level);
+      }, 250);
+
+    }
+    setTimeout(() => {
+      this.powers.highlight(powerType);
+    }, 500);
   }
 
   goalBeat() {

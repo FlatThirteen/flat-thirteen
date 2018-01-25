@@ -1,0 +1,67 @@
+power-color = #FF00A2;
+
+:host()
+  display: inline-block;
+  animation: floatX 3s infinite;
+
+.container
+  cursor: pointer;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: power-color;
+  border-radius: 5px;
+  height: 80px;
+  width: 80px;
+  margin: 20px;
+  animation: power 500ms infinite 250ms;
+
+  :host-context(.dim) &
+    opacity: .3;
+
+  .icon
+    position: absolute;
+
+  .strip
+    background-color: power-color;
+    border: solid 10px white;
+    height: 30px;
+    width: @height;
+
+  .pulse
+    background-color: power-color;
+    border-radius: 50%;
+    border: solid 10px white;
+    height: 30px;
+    width: @height;
+
+  &:active
+    animation: none;
+    transform: translateY(0)
+    filter: none;
+    opacity: 1;
+
+@keyframes floatX
+  0%, 100%
+    transform: translateX(0)
+  50%
+    transform: translateX(1vw);
+
+@keyframes floatY
+  0%, 100%
+    transform: translateY(0)
+  50%
+    transform: translateY(1vh);
+
+@keyframes power
+  0%, 100%
+    transform: translateY(0)
+    filter: drop-shadow(0 1px 1px #111);
+    opacity: 0.95;
+  50%
+    transform: translateY(-2px)
+    filter: drop-shadow(0 3px 2px #555);
+    opacity: 0.9;
+
