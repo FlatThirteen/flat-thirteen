@@ -7,7 +7,7 @@ import { VictoryPhraseBuilder } from '../../../common/phrase/victory.phrase';
 import { Penalty } from './penalty.model';
 import { StageActions } from './stage.actions';
 
-export type StageScene = 'standby' | 'count' | 'goal' | 'playback' | 'victory';
+export type StageScene = 'standby' | 'count' | 'goal' | 'playback' | 'victory' | '';
 
 export class StageState {
   readonly scene: StageScene = 'standby';

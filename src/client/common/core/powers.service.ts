@@ -4,83 +4,99 @@ import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 
 import { SoundService } from '../sound/sound.service';
+import { ProgressData } from '../../a1/model/progress/progress.data';
 
-export interface PowerProperties {
-  autoPlay?: boolean,
-  autoGoal?: boolean,
-  autoNext?: boolean,
-  autoLoop?: boolean
-}
+export type PowerType = 'strip' | 'pulse' | 'auto';
 
-export class Powers implements PowerProperties {
-  public readonly autoPlay: boolean;
-  public readonly autoGoal: boolean;
-  public readonly autoNext: boolean;
-  public readonly autoLoop: boolean;
+export class Powers {
+  public readonly levels: _.Dictionary<number>;
   public readonly any: boolean;
 
-  constructor(properties: PowerProperties = {}) {
-    this.autoPlay = properties.autoPlay;
-    this.autoGoal = properties.autoGoal;
-    this.autoNext = properties.autoNext;
-    this.autoLoop = properties.autoLoop;
-    this.any = properties.autoPlay || properties.autoGoal ||
-        properties.autoNext || properties.autoLoop;
+  constructor(levels: _.Dictionary<number> = {}) {
+    this.levels = _.clone(levels);
+    this.any = !!_.findKey(levels);
   }
 
-  anyNew(toggled: PowerProperties): boolean {
-    return this.autoPlay && !toggled.autoPlay || this.autoGoal && !toggled.autoGoal ||
-        this.autoNext && !toggled.autoNext || this.autoLoop && !toggled.autoLoop;
+  up(powerType: PowerType) {
+    if (this.levels[powerType]) {
+      return new Powers(_.mapValues(this.levels, (value, key) => {
+        return key === powerType ? value + 1 : value;
+      }));
+    } else {
+      return new Powers(_.defaults(_.fromPairs([[powerType, 1]]), this.levels));
+    }
   }
 
-  static update(powers: Powers, lesson: number, points: number): Powers {
-    return new Powers({
-      autoPlay: powers.autoPlay || lesson > 1 || points >= 400,
-      autoGoal: powers.autoGoal || lesson > 2 || points >= 800,
-      autoNext: powers.autoNext || lesson > 3 || points >= 1200,
-      autoLoop: powers.autoLoop || lesson > 4 || points >= 1600,
-    });
+  level(powerType: PowerType) {
+    return this.levels[powerType] || 0;
   }
 }
 
 @Injectable()
 export class PowersService {
-  private allowed: Powers;
-  public enabled: PowerProperties;
-  public toggled: PowerProperties;
-  private _anyNew: boolean;
+  public setting: _.Dictionary<number> = {};
+  public highlights: _.Dictionary<boolean> = {};
 
   constructor(private sound: SoundService) {}
 
   init(params: Params) {
-    this.enabled = {
-      autoPlay: params['play'] === 'auto' || !!params['auto'],
-      autoGoal: params['goal'] === 'auto' || !!params['auto'],
-      autoNext: params['next'] === 'auto' || !!params['auto'],
-      autoLoop: params['loop'] === 'auto' || !!params['auto']
+    this.setting = {
+      strip: _toLevel(params['strip'], ProgressData.max('strip')),
+      auto:  _toLevel(params['auto'], ProgressData.max('auto'))
     };
-    this.toggled = _.clone(this.enabled);
-    this._anyNew = false;
   }
 
-  update(powers: Powers) {
-    this.allowed = powers;
-    this._anyNew = this.toggled ? powers.anyNew(this.toggled) : false;
+  highlight(powerType: PowerType) {
+    this.highlights[powerType] = true;
   }
 
-  toggle(property: keyof PowerProperties) {
-    this.enabled[property] = !this.enabled[property];
-    this.toggled[property] = true;
-    this._anyNew = this.allowed.anyNew(this.toggled);
-    this.sound.playSequence('cowbell',
-        ['E7', this.enabled[property] ? 'A7' : 'A6'], '16n');
+  set(powerType: PowerType, level?: number) {
+    this.highlights[powerType] = false;
+    if (_.isNumber(level)) {
+      let down = level < (this.setting[powerType] || 0);
+      if (this.setting[powerType] !== level) {
+        this.setting[powerType] = level;
+        this.sound.playSequence('cowbell', ['E7', down ? 'A6' : 'A7'], '16n');
+      } else {
+        this.sound.playSequence('cowbell', ['E7'], '16n');
+      }
+    }
+  }
+
+  highlighted(powerType: PowerType) {
+    return this.highlights[powerType];
+  }
+
+  unhighlight() {
+    this.highlights = {};
   }
 
   current(): Powers {
-    return new Powers(this.enabled);
+    return new Powers(this.setting);
   }
 
-  get anyNew(): boolean {
-    return this._anyNew;
+  level(powerType: PowerType) {
+    return this.setting[powerType];
   }
+
+  get autoPlay() {
+    return this.setting['auto'] > 0;
+  }
+
+  get autoGoal() {
+    return this.setting['auto'] > 1;
+  }
+
+  get autoNext() {
+    return this.setting['auto'] > 2;
+  }
+
+  get autoLoop() {
+    return this.setting['auto'] > 3;
+  }
+}
+
+function _toLevel(param: string, max: number): number {
+  let level = _.toNumber(param);
+  return param === 'true' || level > max ? max : level || 0;
 }

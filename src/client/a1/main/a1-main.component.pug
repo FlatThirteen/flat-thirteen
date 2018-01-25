@@ -1,26 +1,33 @@
+mixin setting(type)
+  .setting(*ngIf="progress.powerLevels['" + type + "'] as options")
+    .options
+      .option(*ngFor="let level of options",
+          [@settingOption]="showSetting === '" + type + "' || powers.level('" +
+              type + "') === level ? 'show' : 'hidden'",
+          [ngClass]="{active: powers.level('" + type + "') === level, " +
+              "dim: powers.level('" + type + "') < level}",
+          (mousedown)="onSetting('" + type + "', level); $event.stopPropagation()")
+        block
+
 .main.lesson-container([class.fade]="lesson.inStage")
+  .spacer
   .result(*ngFor="let result of progress.results; let i = index")
     .completed.stage(*ngFor="let points of result.points") {{ points }}
   .current
     .stage.on-hover(*ngFor="let stage of lesson.stages; let i = index", (click)="onStage(i)",
         [ngClass]="{completed: lesson.pointsFor(i), weenie: isStageWeenie(i)}")
       | {{ lesson.pointsFor(i) }}
-    .next.stage.on-hover(*ngIf="lesson.isCompleted", (click)="onNext()",
+    .next.stage.on-hover(*ngIf="lesson.isCompleted && !progress.powerUps.length", (click)="onNext()",
         [class.weenie]="isNextWeenie()", [@next]="") &rarr;
-.options-panel.bottom-bar(*ngIf="!lesson.inStage && progress.allowedPowers.any",
+    .power-container
+      power-icon(*ngFor="let power of progress.powerUps", [type]="power",
+          (click)="onPower(power)", [@powerUp]="")
+.options-panel.bottom-bar(*ngIf="lesson.isCompleted && progress.allowedPowers.any",
     [@slideBottom]="")
-  .power(*ngIf="progress.allowedPowers.autoGoal", (click)="powers.toggle('autoGoal')",
-      [ngClass]="{weenie: !powers.toggled.autoGoal}")
-    goal-icon([mode]="powers.enabled.autoGoal ? 'auto' : 'listen'")
-  .power(*ngIf="progress.allowedPowers.autoPlay", (click)="powers.toggle('autoPlay')",
-      [ngClass]="{weenie: !powers.toggled.autoPlay}")
-    play-icon([autoPlay]="powers.enabled.autoPlay")
-  .power(*ngIf="progress.allowedPowers.autoNext", (click)="powers.toggle('autoNext')",
-      [ngClass]="{weenie: !powers.toggled.autoNext}")
-    .next-icon([class.auto]="powers.enabled.autoNext")
-  .power(*ngIf="progress.allowedPowers.autoLoop", (click)="powers.toggle('autoLoop')",
-      [ngClass]="{weenie: !powers.toggled.autoLoop}")
-    .loop-icon([class.auto]="powers.enabled.autoLoop")
+  +setting('strip')
+    strip-icon([level]="level")
+  +setting('auto')
+    auto-icon([level]="level")
 .main.surface-container(*ngIf="lesson.inStage", [@fadeInOut]="")
   bouncing-ball([showBall$]="showBouncingBall$", [counter]="counter$ | async")
   .surface(*ngFor="let surface of lesson.surfaces", [@surface]="lesson.stage")
@@ -33,13 +40,13 @@
           [@play]="stage.sceneState", [@notes]="player.noteCount")
         play-icon.button((click)="isGoalWeenie() || onPlayback()",
             [playNotes]="player.noteCount", [goalNotes]="stage.goalNotes",
-            [autoPlay]="powers.enabled.autoPlay",
+            [autoPlay]="powers.autoPlay",
             [ngClass]="{weenie: isPlaybackWeenie(), disabled: playDisabled()}")
         .counter(*ngIf="stage.nextScene === 'playback'", (click)="onStandby()") {{ transport.count() }}
       minus-fx([show$]="stage.playMinusFx$")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
     .controls
-      .repeat.button(*ngIf="powers.enabled.autoLoop && !stage.isPlayback",
+      .repeat.button(*ngIf="powers.autoLoop && !stage.isPlayback",
           [ngClass]="{active: repeatBeat()}",
           (click)="onStopRepeat()", [@repeat]="stage.nextScene")
       .spacer

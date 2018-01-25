@@ -8,12 +8,16 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { routes } from './a1-app.routing';
 import { rootReducer } from '../common/app.reducer';
+
 import { GridModule } from './main/grid/grid.module';
+import { AutoIconModule } from '../component/auto-icon/auto-icon.module';
 import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
 import { GoalIconModule } from '../component/goal-icon/goal-icon.module';
 import { MinusFxModule } from '../component/minus-fx/minus-fx.module';
 import { PlayIconModule } from '../component/play-icon/play-icon.module';
+import { PowerIconModule } from '../component/power-icon/power-icon.module';
 import { StagePanelModule } from './main/stage-panel/stage-panel.module';
+import { StripIconModule } from '../component/strip-icon/strip-icon.module';
 
 import { A1MainComponent } from './main/a1-main.component';
 import { LessonActions } from './model/lesson/lesson.actions';
@@ -36,11 +40,14 @@ export const APP_IMPORTS = [
   RouterStoreModule.connectRouter(),
   StoreModule.provideStore(rootReducer),
   GridModule,
+  AutoIconModule,
   BouncingBallModule,
   GoalIconModule,
   MinusFxModule,
   PlayIconModule,
+  PowerIconModule,
   StagePanelModule,
+  StripIconModule,
   EffectsModule.run(PlayerEffects),
 ];
 

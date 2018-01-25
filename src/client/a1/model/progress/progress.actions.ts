@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { Settings } from './progress.reducer';
+import { PowerType } from '../../../common/core/powers.service';
+
 import { Result } from '../lesson/lesson.reducer';
+
+import { Settings } from './progress.reducer';
 
 @Injectable()
 export class ProgressActions {
@@ -15,6 +18,14 @@ export class ProgressActions {
       type: ProgressActions.INIT,
       payload: settings
     };
+  }
+
+  static POWER = '[A1 PROGRESS] Power';
+  power(powerType: PowerType) {
+    return {
+      type: ProgressActions.POWER,
+      payload: powerType
+    }
   }
 
   static RESULT = '[A1 PROGRESS] Result';
