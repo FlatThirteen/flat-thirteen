@@ -271,14 +271,15 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.subscriptions = [
       this.player.noteCount$.subscribe((noteCount) => {
         if (noteCount && noteCount === this.stage.goalNotes && !this._isGoalWeenie) {
-          if ((this.stage.isCountGoal || this.stage.isGoal) &&
-            (this.powers.autoPlay || this.powers.autoLoop)) {
-            this.stage.next('playback');
-          } else if (this.stage.isStandby && this.powers.autoPlay) {
-            setTimeout(() => { // Start after note has a chance to play sound.
-              this.stage.count('playback');
-              this.transport.start();
-            }, 50);
+          if (this.powers.autoPlay) {
+            if (this.stage.isStandby) {
+              setTimeout(() => { // Start after note has a chance to play sound.
+                this.stage.count('playback');
+                this.transport.start();
+              }, 50);
+            } else {
+              this.stage.next('playback');
+            }
           }
         } else if (this.stage.isCountPlay) {
           if (this.powers.autoLoop) {
@@ -407,7 +408,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onStage(stage?: number) {
-    if (stage !== undefined && this.lesson.pointsFor(stage)) {
+    if (stage !== undefined && this.lesson.weenieStage !== stage) {
       return;
     }
     this._isGoalWeenie = true;
