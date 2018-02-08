@@ -6,7 +6,7 @@ mixin setting(type)
               type + "') === level ? 'show' : 'hidden'",
           [ngClass]="{active: powers.level('" + type + "') === level, " +
               "dim: powers.level('" + type + "') < level}",
-          (mousedown)="onSetting('" + type + "', level); $event.stopPropagation()")
+          (mousedown)="!lesson.inProgress && onSetting('" + type + "', level); $event.stopPropagation()")
         block
 
 .main.lesson-container([class.fade]="lesson.inStage")
@@ -22,8 +22,8 @@ mixin setting(type)
     .power-container
       power-icon(*ngFor="let power of progress.powerUps", [type]="power",
           (click)="onPower(power)", [@powerUp]="")
-.options-panel.bottom-bar(*ngIf="lesson.isCompleted && progress.allowedPowers.any",
-    [@slideBottom]="")
+.options-panel.bottom-bar(*ngIf="progress.allowedPowers.any",
+    [class.disabled]="lesson.inProgress", [@slideBottom]="")
   +setting('strip')
     strip-icon([level]="level")
   +setting('auto')

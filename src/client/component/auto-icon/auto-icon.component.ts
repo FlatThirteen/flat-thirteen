@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
         <svg:path *ngIf="level === 1" class="play" [attr.d]="playPath" />
         <circle *ngIf="level === 2" class="goal" cx="29" cy="30" r="28"/>
         <svg:path *ngIf="level === 3" class="next" [attr.d]="nextPath" /> 
-        <svg:path class="auto" [attr.d]="autoPath"
+        <svg:path class="auto" [attr.d]="autoPath" *ngIf="level !== 4"
             [ngClass]="{nudge: level === 1, dim: level === 0 || level === 3}" />
         <svg:path *ngIf="level === 0" class="cross" [attr.d]="crossPath" />
         <circle *ngIf="level === 4" class="loop" cx="29" cy="16" r="10"/>

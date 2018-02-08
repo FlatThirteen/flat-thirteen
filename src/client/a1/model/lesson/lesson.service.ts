@@ -117,6 +117,10 @@ export class LessonService {
     return this.weenieStage === this.numberOfStages;
   }
 
+  get inProgress() {
+    return this.weenieStage && !this.isCompleted;
+  }
+
   surfaceFor(key: string): Surface {
     if (this._plan && this._plan.surfaces) {
       return key ? _.find(this._plan.surfaces, (surface: Surface) => surface.listens(key)) : null;

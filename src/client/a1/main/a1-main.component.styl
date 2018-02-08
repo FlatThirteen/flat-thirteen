@@ -44,12 +44,14 @@ primary-red = #FF6e56;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     font-size: 5vw;
     height: 8vw;
     width: 20vw;
     margin: .5vw;
     vertical-align: top;
+
+    &.weenie
+      cursor: pointer;
 
     &.completed
       background-color: primary-green;
@@ -76,7 +78,12 @@ primary-red = #FF6e56;
   text-align: center;
   user-select: none;
 
-  .setting
+  &.disabled .setting .active.option
+    border: none;
+    background-color: transparent;
+    cursor: default;
+
+.setting
     display: inline-block;
     margin: 30px;
     position: relative;
