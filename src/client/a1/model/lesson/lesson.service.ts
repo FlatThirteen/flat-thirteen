@@ -78,7 +78,7 @@ export class LessonService {
   }
 
   get stages() {
-    return this._plan && !this.isCompleted ? this._plan.stages : [];
+    return this._plan && !this.waitingForNext ? this._plan.stages : [];
   }
 
   get numberOfStages() {
@@ -113,12 +113,8 @@ export class LessonService {
     return this._stage !== undefined;
   }
 
-  get isCompleted() {
-    return this.weenieStage === this.numberOfStages;
-  }
-
-  get inProgress() {
-    return this.weenieStage && !this.isCompleted;
+  get waitingForNext() {
+    return this.weenieStage === this.numberOfStages || !this._plan;
   }
 
   surfaceFor(key: string): Surface {

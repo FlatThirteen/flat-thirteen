@@ -21,10 +21,10 @@ export class ProgressActions {
   }
 
   static POWER = '[A1 PROGRESS] Power';
-  power(powerType: PowerType) {
+  power(powerType: PowerType, beat: number) {
     return {
       type: ProgressActions.POWER,
-      payload: powerType
+      payload: [powerType, beat]
     }
   }
 

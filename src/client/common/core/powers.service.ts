@@ -6,15 +6,33 @@ import { Params } from '@angular/router';
 import { SoundService } from '../sound/sound.service';
 import { ProgressData } from '../../a1/model/progress/progress.data';
 
-export type PowerType = 'strip' | 'pulse' | 'auto';
+export type PowerType = 'strip' | 'pulse1' | 'pulse2' | 'pulse3' | 'pulse4' | 'auto';
+export type PowerUpType = 'strip' | 'pulse' | 'auto';
+
+export class PowerUp {
+  public type: PowerUpType;
+  public range: number[];
+
+  constructor(public type: PowerUpType, public range?: number[]) {}
+
+  power(beat?: number): PowerType {
+    if (this.range && _.find(this.range, beat)) {
+      return this.type + beat;
+    } else {
+      return this.type;
+    }
+  }
+}
 
 export class Powers {
   public readonly levels: _.Dictionary<number>;
   public readonly any: boolean;
+  public readonly anyPulse: boolean;
 
   constructor(levels: _.Dictionary<number> = {}) {
     this.levels = _.clone(levels);
     this.any = !!_.findKey(levels);
+    this.anyPulse = !!_.findKey(levels, (value, key) => _.startsWith(key, 'pulse') && value > 0);
   }
 
   up(powerType: PowerType) {
@@ -40,8 +58,14 @@ export class PowersService {
   constructor(private sound: SoundService) {}
 
   init(params: Params) {
+    let pulses = _.chain(params['p']).padEnd(4, '1').map(_.parseInt).map(
+        _.partial(_.clamp, _, 1, 4)).map((x) => x - 1).value();
     this.setting = {
       strip: _toLevel(params['strip'], ProgressData.max('strip')),
+      pulse1: pulses[0],
+      pulse2: pulses[1],
+      pulse3: pulses[2],
+      pulse4: pulses[3],
       auto:  _toLevel(params['auto'], ProgressData.max('auto'))
     };
   }
@@ -77,6 +101,10 @@ export class PowersService {
 
   level(powerType: PowerType) {
     return this.setting[powerType];
+  }
+
+  get pulses() {
+    return _.map(['pulse1', 'pulse2', 'pulse3', 'pulse4'], (type) => this.setting[type] + 1);
   }
 
   get autoPlay() {

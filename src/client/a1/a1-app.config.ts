@@ -16,6 +16,7 @@ import { GoalIconModule } from '../component/goal-icon/goal-icon.module';
 import { MinusFxModule } from '../component/minus-fx/minus-fx.module';
 import { PlayIconModule } from '../component/play-icon/play-icon.module';
 import { PowerIconModule } from '../component/power-icon/power-icon.module';
+import { PulseIconModule } from '../component/pulse-icon/pulse-icon.module';
 import { StagePanelModule } from './main/stage-panel/stage-panel.module';
 import { StripIconModule } from '../component/strip-icon/strip-icon.module';
 
@@ -46,6 +47,7 @@ export const APP_IMPORTS = [
   MinusFxModule,
   PlayIconModule,
   PowerIconModule,
+  PulseIconModule,
   StagePanelModule,
   StripIconModule,
   EffectsModule.run(PlayerEffects),
