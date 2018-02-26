@@ -4,6 +4,7 @@ button-padding = 10px;
 button-shadow-size = 4px;
 button-shadow = 0 button-shadow-size 0 #000;
 weenie-shadow = 0 button-shadow-size 3px #555;
+power-button-radius = 6px;
 primary-blue = #008FFF;
 primary-green = #50FFA0;
 primary-red = #FF6e56;
@@ -73,24 +74,42 @@ primary-red = #FF6e56;
 
 .power-container
   height: 8vw;
+  width: 83vw;
+
+  .beat1, .beat2, .beat3, .beat4
+    position: absolute;
+    transition: all 150ms ease-in-out;
+
+  .beat1
+    left: 6%;
+
+  .beat2
+    left: 30%;
+
+  .beat3
+    left: 56%;
+
+  .beat4
+    left: 80%;
 
 .options-panel
   text-align: center;
   user-select: none;
 
-  &.disabled .setting .active.option
-    border: none;
-    background-color: transparent;
-    cursor: default;
+  &.disabled .setting
+    .active.option, .disabled.option
+      border-width: 0;
+      cursor: default;
+      margin: 8px;
 
-.setting
+  .setting
     display: inline-block;
     margin: 30px;
     position: relative;
-    transition: border-color 100ms;
+    transition: all 100ms;
     vertical-align: top;
-    height: 80px;
-    width: 80px;
+    height: 90px;
+    width: 100px;
 
     .options
       bottom: 0;
@@ -98,10 +117,9 @@ primary-red = #FF6e56;
       position: absolute;
 
     .option
-      background-color: white;
       cursor: pointer;
-      height: 60px;
-      width: 60px;
+      height: 64px;
+      width: 64px;
       padding: 10px;
 
       & /deep/ .container
@@ -109,22 +127,25 @@ primary-red = #FF6e56;
 
       &:not(.active)
         border: outset #AAA;
-        border-width: 0 3px 0 3px;
+        border-width: 0 4px 0 4px;
         margin: 0 4px;
 
       &:first-child
-        border-top-width: 3px;
-        border-radius: 10px 10px 0 0;
+        border-top-width: 4px;
+        border-top-left-radius: power-button-radius;
+        border-top-right-radius: power-button-radius;
 
       &:last-child
-        border-bottom-width: 3px;
-        border-radius: 0 0 10px 10px;
+        border-bottom-width: 4px;
+        border-bottom-left-radius: power-button-radius;
+        border-bottom-right-radius: power-button-radius;
 
       &.active
-        background-color: white;
-        border: outset 5px #AAA;
-        border-radius: 10px;
-        padding: 10px 12px;
+        border: outset 8px #AAA;
+        border-radius: power-button-radius;
+
+        &:hover
+          border-color: lighten(#AAA, 20%);
 
         & /deep/ .container
           opacity: 1
@@ -134,6 +155,35 @@ primary-red = #FF6e56;
 
       &.dim /deep/ .container
         opacity: .3;
+
+      &.disabled
+        border: solid 8px #EEE;
+        cursor: default;
+        margin: 0;
+
+        & /deep/ .container
+          opacity: 1;
+
+    &.strip, &.pulse
+      .option
+        background-color: primary-blue;
+        border-color: spin(primary-blue, 4);
+        font-size: 50px;
+        line-height: 60px;
+
+        &.active:hover
+          border-color: lighten(spin(primary-blue, 4), 20%);
+
+    &.auto
+      .option
+        background-color: white;
+
+  .group
+    display: inline-block;
+    margin: 30px;
+
+    .setting
+      margin: 0;
 
 .surface-container
   display: flex;

@@ -1,13 +1,27 @@
+mixin option(type, options)
+  .option(*ngFor="let level of options",
+      [@settingOption]="showSetting === '" + type + "' || powers.level('" +
+          type + "') === level ? 'show' : 'hidden'",
+      [ngClass]="{active: powers.level('" + type + "') === level, " +
+          "dim: powers.level('" + type + "') < level}",
+      (mousedown)="lesson.waitingForNext && onSetting('" + type + "', level); $event.stopPropagation()")
+    block
+
 mixin setting(type)
-  .setting(*ngIf="progress.powerLevels['" + type + "'] as options")
+  .setting(*ngIf="progress.powerLevels['" + type + "'] as options", class!=type)
     .options
-      .option(*ngFor="let level of options",
-          [@settingOption]="showSetting === '" + type + "' || powers.level('" +
-              type + "') === level ? 'show' : 'hidden'",
-          [ngClass]="{active: powers.level('" + type + "') === level, " +
-              "dim: powers.level('" + type + "') < level}",
-          (mousedown)="!lesson.inProgress && onSetting('" + type + "', level); $event.stopPropagation()")
+      +option(type, options)
         block
+
+mixin pulse-setting(type)
+  .pulse.setting
+    .options(*ngIf="progress.powerLevels['" + type + "'] as options; else noOption", )
+      +option(type, options)
+        pulse-icon([level]="level")
+    ng-template(#noOption="")
+      .options
+        .disabled.option
+          pulse-icon([level]="0")
 
 .main.lesson-container([class.fade]="lesson.inStage")
   .spacer
@@ -17,15 +31,21 @@ mixin setting(type)
     .stage.on-hover(*ngFor="let stage of lesson.stages; let i = index", (click)="onStage(i)",
         [ngClass]="{completed: lesson.pointsFor(i), weenie: isStageWeenie(i)}")
       | {{ lesson.pointsFor(i) }}
-    .next.stage.on-hover(*ngIf="lesson.isCompleted && !progress.powerUps.length", (click)="onNext()",
+    .next.stage.on-hover(*ngIf="lesson.waitingForNext && !progress.powerUps.length", (click)="onNext()",
         [class.weenie]="isNextWeenie()", [@next]="") &rarr;
     .power-container
-      power-icon(*ngFor="let power of progress.powerUps", [type]="power",
-          (click)="onPower(power)", [@powerUp]="")
+      power-icon(*ngFor="let powerUp of progress.powerUps", [type]="powerUp.type",
+          [ngClass]="powerUp.range ? 'beat' + movingBeat(powerUp.range) : ''",
+          (click)="onPower(powerUp.type, movingBeat(powerUp.range))", [@powerUp]="")
 .options-panel.bottom-bar(*ngIf="progress.allowedPowers.any",
-    [class.disabled]="lesson.inProgress", [@slideBottom]="")
+    [class.disabled]="!lesson.waitingForNext", [@slideBottom]="")
   +setting('strip')
-    strip-icon([level]="level")
+    | {{ level + 1 }}
+  .group(*ngIf="progress.allowedPowers.anyPulse")
+    +pulse-setting('pulse1')
+    +pulse-setting('pulse2')
+    +pulse-setting('pulse3')
+    +pulse-setting('pulse4')
   +setting('auto')
     auto-icon([level]="level")
 .main.surface-container(*ngIf="lesson.inStage", [@fadeInOut]="")
@@ -51,6 +71,6 @@ mixin setting(type)
           (click)="onStopRepeat()", [@repeat]="stage.nextScene")
       .spacer
   .top-bar.back((click)="onStage()", *ngIf="lesson.inStage", [@slideTop]="") &larr;
-.points(*ngIf="lesson.isCompleted && progress.points", [@slideTop]="") {{progress.points}}
+.points(*ngIf="lesson.waitingForNext && progress.points", [@slideTop]="") {{progress.points}}
 stage-panel.bottom-bar(*ngIf="lesson.inStage", [@slideBottom]="")
 

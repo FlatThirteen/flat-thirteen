@@ -1,0 +1,39 @@
+.container
+  height: 64px;
+  align-items: center;
+  vertical-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+.pulse
+  background-color: black;
+  border-radius: 50%;
+
+.double-pulse
+  position: relative;
+  width: 100%;
+  height: 32px;
+
+  &:before, &:after
+    content: '';
+    background-color: black;
+    border-radius: 50%;
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    top: 1px;
+
+  &:before
+    left: 0;
+
+  &:after
+    right: 1px;
+
+.one
+  height: 50px;
+  width: 50px;
+
+.three
+  height: 30px;
+  width: 30px;

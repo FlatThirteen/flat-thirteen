@@ -7,8 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { PowersService, PowerType } from '../../common/core/powers.service';
-import { Rhythm } from '../../common/core/rhythm.model';
+import { PowersService, PowerType, PowerUpType } from '../../common/core/powers.service';
 import { SoundService } from '../../common/sound/sound.service';
 import { Surface } from '../../common/surface/surface.model';
 import { TransportService } from '../../common/core/transport.service';
@@ -296,12 +295,14 @@ export class A1MainComponent implements OnInit, OnDestroy {
     ];
     this.powers.init(this.route.snapshot.queryParams);
     this.progress.init({
-      rhythm: Rhythm.fromParam(this.route.snapshot.queryParams['p'] || '1111'),
       minNotes: _.parseInt(this.route.snapshot.queryParams['min']) || 3,
       maxNotes: _.parseInt(this.route.snapshot.queryParams['max']) || 16,
       powers: this.powers.current()
     });
-
+    if (!this.progress.allowedPowers.any) {
+      // Don't show initial next button if there are no powers.
+      this.progress.next();
+    }
     this.transport.setOnTop((first) => this.onTop(first));
     this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
 
@@ -325,7 +326,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
         }
         this.lesson.complete(this.stage.round, this.lesson.stage, this.stage.basePoints);
         this.onStage(this.powers.autoNext ? this.lesson.weenieStage : undefined);
-        if (this.lesson.isCompleted) {
+        if (this.lesson.waitingForNext) {
           this.progress.result(this.lesson.result);
         }
       } else if (this.stage.isPlayback && this.stage.goalPlayed) {
@@ -355,7 +356,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') { // Enter: Weenie if possible
-      if (this.lesson.isCompleted) {
+      if (this.lesson.waitingForNext) {
         if (this.progress.powerUps.length) {
           this.onPower(this.progress.powerUps[0]);
         } else {
@@ -449,7 +450,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   isNextWeenie() {
-    return this.lesson.isCompleted && !this.progress.powerUps.length;
+    return this.lesson.waitingForNext && !this.progress.powerUps.length;
   }
 
   get goalMode() {
@@ -495,9 +496,10 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.transport.stop();
   }
 
-  onPower(powerType: PowerType) {
+  onPower(type: PowerUpType, beat?: number) {
     this.sound.playSequence('cowbell', ['A6'], '16n');
-    let level = this.progress.power(powerType);
+    let powerType = this.progress.power(type, beat);
+    let level = this.progress.allowedPowers.level(powerType);
     if (level === this.powers.setting[powerType] + 1) {
       setTimeout(() => {
         this.powers.set(powerType, level);
@@ -520,6 +522,10 @@ export class A1MainComponent implements OnInit, OnDestroy {
 
   repeatBeat() {
     return this.transport.active() && (this.transport.beatIndex || this.stage.isGoal);
+  }
+
+  movingBeat(range: number[]) {
+    return range && range[Math.floor(Date.now() / 750) % range.length];
   }
 
   playMinusSequence() {

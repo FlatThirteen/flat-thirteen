@@ -18,6 +18,7 @@ import { Result } from '../lesson/lesson.reducer';
 
 import { ProgressActions } from './progress.actions';
 import { Settings } from './progress.reducer';
+import { Rhythm } from '../../../common/core/rhythm.model';
 
 const numberOfStages = 4;
 const soundByKey = [
@@ -63,7 +64,6 @@ export class ProgressService {
     this.settings$.subscribe(settings => {
       this._settings = settings;
       if (this._settings) {
-        transport.reset([this._settings.rhythm.pulsesByBeat.length]);
         this._powerLevels = _.mapValues(this._settings.powers.levels,
             (max) => max && _.range(max + 1));
       }
@@ -75,8 +75,10 @@ export class ProgressService {
         return;
       }
       let stripLevel = this.powers.level('strip');
-      let grid = new Grid(buildSoundByKey(stripLevel), this._settings.rhythm.pulsesByBeat);
-      if (!lessonNumber && this._settings.rhythm.isSimple() && !stripLevel) {
+      let rhythm = Rhythm.fromPulses(this.powers.pulses);
+      transport.reset([rhythm.pulsesByBeat.length]);
+      let grid = new Grid(buildSoundByKey(stripLevel), rhythm.pulsesByBeat);
+      if (!lessonNumber && rhythm.isSimple() && !stripLevel) {
         this.lesson.init({
           surfaces: [grid],
           stages: [
@@ -89,7 +91,7 @@ export class ProgressService {
         });
       } else {
         let phraseBuilder = new MonophonicMonotonePhraseBuilder(grid.soundNames,
-          this._settings.rhythm, this._settings.minNotes, this._settings.maxNotes);
+          rhythm, this._settings.minNotes, this._settings.maxNotes);
         this.lesson.init({
           surfaces: [grid],
           stages: _.times(numberOfStages, () => phraseBuilder.build()),
@@ -107,9 +109,9 @@ export class ProgressService {
     this.store.dispatch(this.progress.init(settings));
   }
 
-  power(powerType: PowerType) {
-    this.store.dispatch(this.progress.power(powerType));
-    return this._settings.powers.level(powerType);
+  power(powerUpType: PowerUpType, beat: number) {
+    this.store.dispatch(this.progress.power(powerUpType, beat));
+    return beat ? powerUpType + beat : powerUpType;
   }
 
   result(result: Result) {

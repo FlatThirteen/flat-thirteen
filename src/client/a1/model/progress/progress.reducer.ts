@@ -2,8 +2,7 @@ import * as _ from 'lodash';
 
 import { Action } from '@ngrx/store';
 
-import { Powers, PowerType } from '../../../common/core/powers.service';
-import { Rhythm } from '../../../common/core/rhythm.model';
+import { Powers, PowerUp } from '../../../common/core/powers.service';
 
 import { Result } from '../lesson/lesson.reducer';
 
@@ -11,17 +10,16 @@ import { ProgressActions } from './progress.actions';
 import { ProgressData } from './progress.data';
 
 export interface Settings {
-  rhythm: Rhythm,
   minNotes: number,
   maxNotes: number,
   powers: Powers
 }
 
 export class ProgressState {
-  readonly lessonNumber: number = 0;
+  readonly lessonNumber: number;
   readonly results: Result[] = [];
   readonly points: number = 0;
-  readonly powerUps: PowerType[] = [];
+  readonly powerUps: PowerUp[] = [];
 
   constructor(readonly settings: Settings) {}
 
@@ -31,14 +29,14 @@ export class ProgressState {
         return new ProgressState(action.payload);
       }
       case ProgressActions.POWER: {
-        let powerType = action.payload;
+        let [type, beat] = action.payload;
         let removed = false;
         return _.defaults({
           settings: _.defaults({
-            powers: state.settings.powers.up(powerType)
+            powers: state.settings.powers.up(beat ? type + beat : type)
           }, state.settings),
-          powerUps: _.filter(state.powerUps, (value) => {
-            if (!removed && value === powerType) {
+          powerUps: _.filter(state.powerUps, (powerUp) => {
+            if (!removed && powerUp.type === type) {
               removed = true;
               return false;
             }
@@ -60,7 +58,7 @@ export class ProgressState {
       }
       case ProgressActions.NEXT: {
         return _.defaults({
-          lessonNumber: state.lessonNumber + 1
+          lessonNumber: state.lessonNumber === undefined ? 0 : state.lessonNumber + 1
         }, state);
       }
       default: {
