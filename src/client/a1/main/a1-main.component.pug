@@ -52,16 +52,16 @@ mixin pulse-setting(type)
   bouncing-ball([showBall$]="showBouncingBall$", [counter]="counter$ | async")
   .surface(*ngFor="let surface of lesson.surfaces", [@surface]="lesson.stage")
     .controls
+      minus-fx([show$]="stage.goalMinusFx$")
       goal-icon.goal.button((click)="onGoal()", [@goal]="stage.sceneState", [mode]="goalMode",
           [ngClass]="{weenie: isGoalWeenie(), active: goalBeat() }")
-      minus-fx([show$]="stage.goalMinusFx$")
       .spacer
-      .play([class.active]="stage.isCountPlay && transport.active()",
-          [@play]="stage.sceneState", [@notes]="player.noteCount")
-        play-icon.button((click)="isGoalWeenie() || onPlayback()",
-            [playNotes]="player.noteCount", [goalNotes]="stage.goalNotes",
-            [autoPlay]="powers.autoPlay",
-            [ngClass]="{weenie: isPlaybackWeenie(), disabled: playDisabled()}")
+      play-icon.play.button((click)="onPlayback()",
+          [playNotes]="player.noteCount", [goalNotes]="stage.goalNotes",
+          [@play]="stage.sceneState", [@notes]="player.noteCount",
+          [ngClass]="{active: stage.isCountPlay && transport.active()," +
+              "fail: player.noteCount !== stage.goalNotes, " +
+              "weenie: isPlaybackWeenie(), disabled: playDisabled()}")
         .counter(*ngIf="stage.nextScene === 'playback'", (click)="onStandby()") {{ transport.count() }}
       minus-fx([show$]="stage.playMinusFx$")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")

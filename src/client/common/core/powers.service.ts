@@ -107,20 +107,16 @@ export class PowersService {
     return _.map(['pulse1', 'pulse2', 'pulse3', 'pulse4'], (type) => this.setting[type] + 1);
   }
 
-  get autoPlay() {
+  get autoGoal() {
     return this.setting['auto'] > 0;
   }
 
-  get autoGoal() {
+  get autoNext() {
     return this.setting['auto'] > 1;
   }
 
-  get autoNext() {
-    return this.setting['auto'] > 2;
-  }
-
   get autoLoop() {
-    return this.setting['auto'] > 3;
+    return this.setting['auto'] > 2;
   }
 }
 

@@ -2,7 +2,7 @@ import { Powers, PowerType, PowerUp } from '../../../common/core/powers.service'
 
 const max = {
   strip: 1,
-  auto: 4
+  auto: 3
 };
 
 export class ProgressData {
