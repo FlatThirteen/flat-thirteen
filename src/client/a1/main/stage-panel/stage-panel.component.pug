@@ -1,12 +1,14 @@
 .container
   .notes
     .note
-    .info
-      .note-count([ngClass]="{over: stage.goalNotes && player.noteCount > stage.goalNotes}")
-        | {{player.noteCount}}
-      span(*ngIf="stage.goalNotes") /{{stage.goalNotes}}
-      span(*ngIf="!stage.goalNotes") &nbsp;&nbsp;
-  .tempo
+    .info([class.wrong]="stage.isPlayback ? player.noteCount !== stage.goalNotes " +
+        ": player.noteCount > stage.goalNotes")
+      | {{player.noteCount}}
+    span(*ngIf="stage.goalNotes",
+        [class.wrong]="stage.isPlayback && player.noteCount !== stage.goalNotes") /
+    .info([class.wrong]="stage.isPlayback && player.noteCount !== stage.goalNotes") {{stage.goalNotes}}
+    .info(*ngIf="!stage.goalNotes") &nbsp;&nbsp;
+  .tempo(*ngIf="false")
     .metronome
       .arm([class.active]="!transport.paused")
     .info {{transport.bpm}}

@@ -1,13 +1,15 @@
+primary-blue = #008FFF;
+primary-green = #50FFA0;
+primary-red = #FF6e56;
+
 bottom-size = 20vh;
 button-height = 60px;
 button-padding = 10px;
 button-shadow-size = 4px;
 button-shadow = 0 button-shadow-size 0 #000;
+red-button-shadow = 0 button-shadow-size 0 primary-red;
 weenie-shadow = 0 button-shadow-size 3px #555;
 power-button-radius = 6px;
-primary-blue = #008FFF;
-primary-green = #50FFA0;
-primary-red = #FF6e56;
 
 .fade
   filter: blur(5px);
@@ -95,8 +97,12 @@ primary-red = #FF6e56;
 .options-panel
   text-align: center;
   user-select: none;
+  opacity: 1;
+  transition: all 500ms ease-in-out;
 
   &.disabled .setting
+    opacity: 0.5;
+
     .active.option, .disabled.option
       border-width: 0;
       cursor: default;
@@ -214,7 +220,7 @@ bouncing-ball
       animation: count-goal-active;
       animation-duration: 150ms;
 
-  .play
+  .play.button
     display: block;
     position: relative;
     user-select: none;
@@ -223,20 +229,24 @@ bouncing-ball
       animation: count-play-active;
       animation-duration: 250ms;
 
-    .button.disabled
+    &.disabled
       opacity: 0.2;
 
-  .counter
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    padding: 2px 5px;
-    right: 0;
-    font-size: 40px;
-    line-height: 60px;
-    font-weight: 800;
+    &.fail:hover:not(:active):not(.disabled)
+      filter: drop-shadow(red-button-shadow);
+
+    .counter
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      padding: 2px 5px;
+      right: 0;
+      font-size: 40px;
+      line-height: 60px;
+      font-weight: 800;
+      text-align: left;
 
   .repeat
     display: inline-block;

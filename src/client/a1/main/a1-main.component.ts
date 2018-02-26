@@ -270,15 +270,13 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.subscriptions = [
       this.player.noteCount$.subscribe((noteCount) => {
         if (noteCount && noteCount === this.stage.goalNotes && !this._isGoalWeenie) {
-          if (this.powers.autoPlay) {
-            if (this.stage.isStandby) {
-              setTimeout(() => { // Start after note has a chance to play sound.
-                this.stage.count('playback');
-                this.transport.start();
-              }, 50);
-            } else {
-              this.stage.next('playback');
-            }
+          if (this.stage.isStandby) {
+            setTimeout(() => { // Start after note has a chance to play sound.
+              this.stage.count('playback');
+              this.transport.start();
+            }, 50);
+          } else {
+            this.stage.next('playback');
           }
         } else if (this.stage.isCountPlay) {
           if (this.powers.autoLoop) {
@@ -332,8 +330,8 @@ export class A1MainComponent implements OnInit, OnDestroy {
       } else if (this.stage.isPlayback && this.stage.goalPlayed) {
         this.stage.victory();
       } else if (this.stage.nextScene === 'goal') {
-        this.stage.goal(!this.powers.autoPlay ? 'standby' :
-            this._isGoalWeenie && this.player.noteCount === this.stage.goalNotes ? 'playback' :
+        this.stage.goal(this._isGoalWeenie &&
+            this.player.noteCount === this.stage.goalNotes ? 'playback' :
             this.powers.autoLoop ? 'count' : 'standby', this._isGoalWeenie ? 0 : 2);
         this._isGoalWeenie = false;
       } else if (this.stage.nextScene === 'playback') {
@@ -470,11 +468,9 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onPlayback() {
-    if (this.stage.isStandby) {
+    if (!this.isGoalWeenie() && this.player.noteCount) {
       this.stage.playback('standby');
       this.transport.start();
-    } else if (this.stage.isCountPlay) {
-      this.onStandby();
     }
   }
 
@@ -516,8 +512,8 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   playDisabled() {
-    return this._isGoalWeenie || this.stage.isCountGoal || this.stage.isGoal &&
-        this.stage.nextScene !== 'playback'
+    return this._isGoalWeenie || this.stage.isCountGoal || !this.player.noteCount ||
+        this.stage.isGoal && this.stage.nextScene !== 'playback'
   }
 
   repeatBeat() {

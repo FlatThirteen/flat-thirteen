@@ -13,14 +13,14 @@ import { Component, Input } from '@angular/core';
       <svg:path class="play-icon" [attr.d]="playPath"
                 [attr.fill]="goalNotes ? 'url(#play)' : color"
                 [attr.stroke]="color" stroke-width="6px"/>
-      <svg:path *ngIf="autoPlay" class="autoplay" [attr.d]="autoplayPath"
+      <svg:path class="autoplay" [attr.d]="autoplayPath"
                 fill="white" stroke="white" stroke-width="1px"/>
-    </svg>`
+    </svg>
+    <ng-content></ng-content>`
 })
 export class PlayIcon {
   @Input() public playNotes: number;
   @Input() public goalNotes: number;
-  @Input() public autoPlay: boolean;
   color = "#50ffa0";
   playPath = "M5,5L50,30L5,55Z";
   autoplayPath = "M10,27L27,27L27,23L42,30L27,37L27,33L10,33Z";
