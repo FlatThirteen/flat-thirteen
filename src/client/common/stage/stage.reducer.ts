@@ -7,7 +7,7 @@ import { PlayerActions } from '../player/player.actions';
 import { StageActions } from './stage.actions';
 import { VictoryPhraseBuilder } from '../phrase/victory.phrase';
 
-export type StageScene = 'demo' | 'loop' | 'count' | 'goal' | 'play' | 'victory';
+export type StageScene = 'demo' | 'loop' | 'count' | 'goal' | 'play' | 'victory' | '';
 
 export class StageState {
   readonly round: number = 0;

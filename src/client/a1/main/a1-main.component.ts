@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { PowersService, PowerType, PowerUpType } from '../../common/core/powers.service';
+import { PowersService, PowerType, PowerUp } from '../../common/core/powers.service';
 import { SoundService } from '../../common/sound/sound.service';
 import { Surface } from '../../common/surface/surface.model';
 import { TransportService } from '../../common/core/transport.service';
@@ -492,7 +492,9 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.transport.stop();
   }
 
-  onPower(type: PowerUpType, beat?: number) {
+  onPower(powerUp: PowerUp) {
+    let type = powerUp.type;
+    let beat = this.movingBeat(powerUp.range);
     this.sound.playSequence('cowbell', ['A6'], '16n');
     let powerType = this.progress.power(type, beat);
     let level = this.progress.allowedPowers.level(powerType);

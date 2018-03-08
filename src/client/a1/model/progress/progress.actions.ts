@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { PowerType } from '../../../common/core/powers.service';
+import { PowerUpType } from '../../../common/core/powers.service';
 
 import { Result } from '../lesson/lesson.reducer';
 
@@ -21,10 +21,10 @@ export class ProgressActions {
   }
 
   static POWER = '[A1 PROGRESS] Power';
-  power(powerType: PowerType, beat: number) {
+  power(powerUpType: PowerUpType, beat: number) {
     return {
       type: ProgressActions.POWER,
-      payload: [powerType, beat]
+      payload: [powerUpType, beat]
     }
   }
 

@@ -24,7 +24,7 @@ export class SoundService {
                variation?: Variation) {
     let sound = this.loadSound(soundName);
     _.forEach(pitches, (pitch, index) => {
-      let t = Tone.Time(duration);
+      let t = new Tone.Time(duration);
       t.mult(index + 1);
       sound.play('+' + t.toNotation(), {pitch: pitch, variation: variation});
     });

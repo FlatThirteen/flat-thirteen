@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import { Powers, PowerType, PowerUp } from '../../../common/core/powers.service';
 
 const max = {
@@ -6,7 +8,7 @@ const max = {
 };
 
 export class ProgressData {
-  static max(powerUps: number) {
+  static max(powerUps: string) {
     return max[powerUps];
   }
 
@@ -20,7 +22,7 @@ export class ProgressData {
     }
     if (powers.level('strip') === max['strip'] && powers.level('auto') === max['auto']) {
       let maxPulses = _.map(['pulse1', 'pulse2', 'pulse3', 'pulse4'],
-          (type) => powers.level(type));
+          (type: PowerType) => powers.level(type));
       let min = _.min(maxPulses);
       let indexes = _.reduce(maxPulses, (result, value, index) => {
         if (value === min) {

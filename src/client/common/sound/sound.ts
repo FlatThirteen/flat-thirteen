@@ -9,7 +9,7 @@ export interface Params {
 }
 
 export interface Sound {
-  play(time?: number, params?: Params): any;
+  play(time?: any, params?: Params): any;
 }
 
 const membraneEnvelopeOptions = {
@@ -32,7 +32,7 @@ export class KickSound implements Sound {
     this.kick.chain(chorus, Tone.Master);
   }
 
-  play(time?: number) {
+  play(time?: any) {
     this.kick.triggerAttackRelease('A0', '4n', time, 1);
   }
 }
@@ -63,7 +63,7 @@ export class SnareSound implements Sound {
     this.rattle.chain(snareEffect, Tone.Master);
   }
 
-  play(time?: number) {
+  play(time?: any) {
     this.hit.triggerAttackRelease('A4', '16n', time);
     this.rattle.triggerAttackRelease('16n', time);
   }
@@ -83,7 +83,7 @@ export class ClickSound implements Sound {
     this.click.connect(Tone.Master);
   }
 
-  play(time?: number, params: Params = {variation: 'normal'}) {
+  play(time?: any, params: Params = {variation: 'normal'}) {
     switch (params.variation) {
       case 'heavy':
         this.click.triggerAttackRelease('A6', '16n', time);
@@ -129,7 +129,7 @@ export class CowbellSound implements Sound {
     this.click.chain(Tone.Master);
   }
 
-  play(time?: number, params: Params = {pitch: 'A5', variation: 'normal'}) {
+  play(time?: any, params: Params = {pitch: 'A5', variation: 'normal'}) {
     switch (params.variation) {
       case 'heavy':
         this.hit.triggerAttackRelease(0.5, time, 1.0);
