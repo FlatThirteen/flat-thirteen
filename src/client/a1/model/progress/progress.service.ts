@@ -7,7 +7,7 @@ import { createSelector } from 'reselect';
 
 import { AppState } from '../../../common/app.reducer';
 import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
-import { PowersService, PowerType } from '../../../common/core/powers.service';
+import { PowersService, PowerType, PowerUp, PowerUpType } from '../../../common/core/powers.service';
 
 import { TransportService } from '../../../common/core/transport.service';
 
@@ -43,13 +43,13 @@ export class ProgressService {
   private lessonNumber$: Observable<number>;
   private results$: Observable<Result[]>;
   private points$: Observable<number>;
-  private powerUps$: Observable<PowerType[]>;
+  private powerUps$: Observable<PowerUp[]>;
 
   private _settings: Settings;
   private _lessonNumber: number;
   private _results: Result[];
   private _points: number;
-  private _powerUps: PowerType[];
+  private _powerUps: PowerUp[];
   private _powerLevels: _.Dictionary<number[]>;
 
   constructor(private store: Store<AppState>, private progress: ProgressActions,
@@ -109,9 +109,9 @@ export class ProgressService {
     this.store.dispatch(this.progress.init(settings));
   }
 
-  power(powerUpType: PowerUpType, beat: number) {
+  power(powerUpType: PowerUpType, beat: number): PowerType {
     this.store.dispatch(this.progress.power(powerUpType, beat));
-    return beat ? powerUpType + beat : powerUpType;
+    return <PowerType>(beat ? powerUpType + beat : powerUpType);
   }
 
   result(result: Result) {
@@ -130,7 +130,7 @@ export class ProgressService {
     return this._points;
   }
 
-  get powerUps() {
+  get powerUps(): PowerUp[] {
     return this._powerUps || [];
   }
 

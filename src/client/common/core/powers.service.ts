@@ -10,16 +10,13 @@ export type PowerType = 'strip' | 'pulse1' | 'pulse2' | 'pulse3' | 'pulse4' | 'a
 export type PowerUpType = 'strip' | 'pulse' | 'auto';
 
 export class PowerUp {
-  public type: PowerUpType;
-  public range: number[];
-
   constructor(public type: PowerUpType, public range?: number[]) {}
 
   power(beat?: number): PowerType {
     if (this.range && _.find(this.range, beat)) {
-      return this.type + beat;
+      return <PowerType>(this.type + beat);
     } else {
-      return this.type;
+      return <PowerType>this.type;
     }
   }
 }

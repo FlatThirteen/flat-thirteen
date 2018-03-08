@@ -36,7 +36,7 @@ mixin pulse-setting(type)
     .power-container
       power-icon(*ngFor="let powerUp of progress.powerUps", [type]="powerUp.type",
           [ngClass]="powerUp.range ? 'beat' + movingBeat(powerUp.range) : ''",
-          (click)="onPower(powerUp.type, movingBeat(powerUp.range))", [@powerUp]="")
+          (click)="onPower(powerUp)", [@powerUp]="")
 .options-panel.bottom-bar(*ngIf="progress.allowedPowers.any",
     [class.disabled]="!lesson.waitingForNext", [@slideBottom]="")
   +setting('strip')

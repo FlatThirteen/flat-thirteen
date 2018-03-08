@@ -12,18 +12,12 @@ import { Component, Input } from '@angular/core';
       <div *ngIf="mode === 'stop'" class="stop"></div>
       <ng-content></ng-content>
     </div>`,
-  styles: [
-    '.container { position: relative; background-color: #008FFF; border-radius: 50%; height: 60px; }',
-    '.hollow.container { border: solid 6px #008FFF; background-color: #FFF; height: 54px; width: 54px; }',
-    'img, .stop { position: absolute; top: 0; left: 0; }',
-    'img { height: 40px; width: 40px; margin: 10px; }',
-    '.stop { height: 30px; width: 30px; margin: 15px; background-color: white; }'
-  ]
+  styleUrls: ['goal-icon.component.styl']
 })
 export class GoalIcon {
   @Input() public mode: 'listen' | 'auto' | 'stop' | 'hollow';
 
-  autoPath = "M15,27L32,27L32,23L47,30L32,37L32,33L15,33Z";
+  autoPath = "M15,27 H32 V23 L47,30 L32,37 V33 H15 Z";
 
   constructor() { }
 }
