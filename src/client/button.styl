@@ -1,0 +1,22 @@
+button-height = 60px;
+button-shadow-size = 4px;
+button-shadow = 0 button-shadow-size 0 #000;
+
+.button
+  cursor: pointer;
+  display: inline-block;
+  height: button-height;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
+  user-select: none;
+  vertical-align: top;
+  width: button-height;
+
+  &.disabled
+    cursor: default;
+
+  &:hover:not(:active):not(.disabled)
+    margin-top: - button-shadow-size;
+    margin-bottom: button-shadow-size;
+    filter: drop-shadow(button-shadow);

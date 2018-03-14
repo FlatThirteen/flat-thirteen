@@ -1,0 +1,10 @@
+.content
+  h3 Kick
+  .container([class.active]="active")
+    .fx.beat
+      .note([style.animationDuration]="duration")
+    .actual.beat
+      .note([style.animationDuration]="duration", (mousedown)="onNoteDown()", (mouseup)="onNoteUp()")
+
+.footer
+  input(type="text", [(ngModel)]="duration")

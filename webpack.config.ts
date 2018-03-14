@@ -32,7 +32,7 @@ const ScriptExtPlugin = require('script-ext-html-webpack-plugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const webpackMerge = require('webpack-merge');
 
-const { hasProcessFlag, includeClientPackages, root, testDll } = require('./helpers.js');
+const { hasProcessFlag, root, testDll } = require('./helpers.js');
 
 const EVENT = process.env.npm_lifecycle_event || '';
 const AOT = EVENT.includes('aot');
@@ -103,9 +103,6 @@ const COPY_FOLDERS = [
   { from: 'src/assets', to: 'assets' },
   { from: 'node_modules/hammerjs/hammer.min.js' },
   { from: 'node_modules/hammerjs/hammer.min.js.map' },
-  { from: 'src/client/a1/a1.css' },
-  { from: 'src/client/a2/a2.css' },
-  { from: 'src/client/main/main.css' },
   { from: 'src/client/styles.css' },
   ...MY_COPY_FOLDERS
 ];

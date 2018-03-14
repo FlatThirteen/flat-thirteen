@@ -1,0 +1,100 @@
+@require '../../variables';
+
+active-blue = #009FFF;
+alpha-blue-dark = alpha(lightness(active-blue, 20%), 0.5);
+alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
+
+.content, .footer
+  margin: 3vw content-side-margin;
+
+.container
+  display: inline-block;
+  background-color: main-blue;
+  position: relative;
+  height: 20vh;
+  max-height: 20vw;
+  width: @max-height;
+  max-width: @height;
+
+.beat
+  position: absolute;
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  &.fx .note
+    background-color: transparent;
+    position: relative;
+
+    &:before, &:after
+      border-radius: 50%;
+      content: '';
+      position: absolute;
+
+.note
+  background-color: black;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1em;
+  text-decoration: none;
+
+  height: 16vh;
+  width: 16vw;
+  max-height: 16vw;
+  max-width: 16vh;
+
+  &:hover
+    color: white;
+
+.active.container
+  .fx.beat .note
+    animation: burst;
+    animation-duration: 250ms;
+    opacity: 0;
+
+    &:before
+      box-shadow: 0 0 15px 3px alpha-blue-dark;
+      left: 7%;
+      top: @left;
+      bottom: @left;
+      right: @left;
+
+    &:after
+      box-shadow: 0 0 20px 4px alpha-blue-dark;
+      left: 15%;
+      top: @left;
+      bottom: @left;
+      right: @left;
+
+  .actual.beat .note
+    animation: active;
+    animation-duration: 250ms;
+
+@keyframes active
+  0%
+    transform: scale(1);
+
+  40%
+    transform: scale(1.1);
+
+  70%
+    transform: scale(0.9);
+
+  100%
+    transform: scale(1);
+
+@keyframes burst
+  0%
+    box-shadow: 0 0 5px 0 alpha-blue-light, inset 0 0 150px 0px alpha-blue-light;
+    transform: scale(1);
+    opacity: 1;
+
+  50%
+    opacity: .7;
+
+  100%
+    box-shadow: 0 0 100px 50px alpha-blue-light, inset 0 0 150px 50px alpha-blue-light;
+    transform: scale(2);
+    opacity: 0;

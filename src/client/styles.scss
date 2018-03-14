@@ -11,6 +11,30 @@ html, body {
   font-weight: 400;
 }
 
+header {
+  margin: 2vw 12vw;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-family: $primary-font;
+  font-size: 4vw;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 1.4vw;
+  margin-bottom: 1vw;
+}
+
+h3 {
+  font-family: $primary-font;
+  font-size: 2vw;
+  font-weight: 400;
+}
+
 pre {
   font-family: $primary-font;
   font-size: 14px;
