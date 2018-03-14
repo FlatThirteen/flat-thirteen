@@ -1,12 +1,10 @@
+@require '../../button';
+
 primary-blue = #008FFF;
 primary-green = #50FFA0;
 primary-red = #FF6e56;
 
 bottom-size = 20vh;
-button-height = 60px;
-button-padding = 10px;
-button-shadow-size = 4px;
-button-shadow = 0 button-shadow-size 0 #000;
 red-button-shadow = 0 button-shadow-size 0 primary-red;
 weenie-shadow = 0 button-shadow-size 3px #555;
 power-button-radius = 6px;
@@ -271,25 +269,6 @@ bouncing-ball
 
   .spacer
     height: 5vh;
-
-.button
-  cursor: pointer;
-  display: inline-block;
-  height: button-height;
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 0;
-  user-select: none;
-  vertical-align: top;
-  width: button-height;
-
-  &.disabled
-    cursor: default;
-
-  &:hover:not(:active):not(.disabled)
-    margin-top: - button-shadow-size;
-    margin-bottom: button-shadow-size;
-    filter: drop-shadow(button-shadow);
 
 .top-bar
   background-color: #DDD;
