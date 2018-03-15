@@ -1,4 +1,5 @@
-import { Params, KickSound, SnareSound, ClickSound, CowbellSound } from '../sound/sound';
+import { Params, KickSound, SnareSound, ClickSound } from '../sound/sound';
+import { CowbellSound } from '../sound/cowbell.sound';
 
 const soundMap = {
   click: ClickSound,

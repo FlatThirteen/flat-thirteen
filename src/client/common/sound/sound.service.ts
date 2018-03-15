@@ -5,7 +5,9 @@ import { Injectable } from '@angular/core';
 
 import { SoundName} from '../core/note.model';
 
-import { Sound, ClickSound, KickSound, SnareSound, CowbellSound, Params, Variation } from './sound';
+import { Sound, ClickSound, KickSound, SnareSound, Params, Variation } from './sound';
+import { CowbellSound } from './cowbell.sound';
+import { SynthSound } from './synth.sound';
 
 @Injectable()
 export class SoundService {
@@ -13,11 +15,14 @@ export class SoundService {
     click: new ClickSound(),
     kick: new KickSound(),
     snare: new SnareSound(),
-    cowbell: new CowbellSound()
+    cowbell: new CowbellSound(),
+    synth: new SynthSound()
   };
 
-  play(soundName: SoundName, time?: number, params?: Params) {
-    this.loadSound(soundName).play(time, params);
+  play(soundName: SoundName, time?: number, params?: Params): Sound {
+    let sound = this.loadSound(soundName);
+    sound.play(time, params);
+    return sound;
   }
 
   playSequence(soundName: SoundName, pitches: string[], duration: string,
