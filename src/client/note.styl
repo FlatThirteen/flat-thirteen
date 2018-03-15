@@ -1,0 +1,53 @@
+@require 'colors';
+
+star-background()
+  background-image:
+    radial-gradient(1px 1px at 2px 3px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 4px 7px, #fff, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 5px 16px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 9px 4px, #fff, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 13px 8px, #fff, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 16px 12px, #ddd, rgba(0,0,0,0));
+  background-repeat: repeat space;
+  background-size: 20px 20px;
+
+@keyframes actual
+  0%
+    transform: scale(1);
+
+  40%
+    transform: scale(1.1);
+
+  70%
+    transform: scale(0.9);
+
+  100%
+    transform: scale(1);
+
+@keyframes kick
+  0%
+    box-shadow: 0 0 5px 0 alpha-blue-light, inset 0 0 150px 0px alpha-blue-light;
+    opacity: 1;
+    transform: scale(1);
+
+  50%
+    opacity: .7;
+
+  100%
+    box-shadow: 0 0 100px 50px alpha-blue-light, inset 0 0 150px 50px alpha-blue-light;
+    opacity: 0;
+    transform: scale(2);
+
+@keyframes snare
+  0%
+    box-shadow: 0 0 5px 0 alpha-blue-light, inset 0 0 150px 0px alpha-blue-light;
+    opacity: 0;
+    transform: scale(1);
+
+  30%
+    opacity: .7;
+
+  100%
+    box-shadow: 0 0 100px 50px alpha-blue-light, inset 0 0 150px 50px alpha-blue-light;
+    opacity: 0;
+    transform: scale(2.5);

@@ -1,10 +1,19 @@
+mixin beat(type)
+  .container([class.active]="active === '" + type + "'")
+    h3= type[0].toUpperCase() + type.substr(1)
+    .beat([ngClass]="background")
+      .fx.pulse
+        .note(class=type, [style.animationDuration]="duration")
+      .actual.pulse
+        .note([style.animationDuration]="duration", (mousedown)="onNoteDown('" + type + "')", (mouseup)="onNoteUp()")
+
 .content
-  h3 Kick
   .container([class.active]="active")
-    .fx.beat
-      .note([style.animationDuration]="duration")
-    .actual.beat
-      .note([style.animationDuration]="duration", (mousedown)="onNoteDown()", (mouseup)="onNoteUp()")
+    .beat([ngClass]="background", (click)="onBackground()")
+      .fx.pulse
+        .note([ngClass]="active", [style.animationDuration]="duration")
+  +beat('kick')
+  +beat('snare')
 
 .footer
   input(type="text", [(ngModel)]="duration")

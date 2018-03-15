@@ -4,13 +4,13 @@
       .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
         .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
             [ngClass]="{active: noteActive(pulseIndex), cursor: player.cursor === pulseIndex}")
-          .actual.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
-  .top-fx.overlay
+          .fx.note([ngClass]="noteClass(pulses, key)", *ngIf="player.value(key, pulseIndex)")
+  .overlay
     .strip(*ngFor="let key of grid.keys")
       .beat(*ngFor="let pulses of grid.pulsesByBeat; let beat = index")
         .pulse(*ngFor="let pulseIndex of pulsesFor(beat); let pulse = index",
             [ngClass]="{active: noteActive(pulseIndex), cursor: player.cursor === pulseIndex}")
-          .fx.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
+          .actual.note([ngClass]="noteClass(pulses)", *ngIf="player.value(key, pulseIndex)")
   .position(*ngIf="stage.isPlayback", [style.left]="(transport.progress() * 100) + '%'")
   .faces
     particle-fx([type]="particleType", [count]="particleCount$ | async")
