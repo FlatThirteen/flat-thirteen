@@ -88,13 +88,14 @@ export class HtmlGridComponent implements OnInit, OnDestroy {
     return _.times(this.grid.pulsesByBeat[beat], (i) => offset + i);
   }
 
-  noteClass(pulses: number) {
+  noteClass(pulses: number, key?: string) {
+    let sound = key && this.grid.soundByKey[key];
     return {
       1: 'quarter',
       2: 'eighth',
       3: 'triplet',
       4: 'sixteenth'
-    }[pulses];
+    }[pulses] + (!sound ? '' : ' ' + sound);
   }
 
   noteActive(pulseIndex: number) {

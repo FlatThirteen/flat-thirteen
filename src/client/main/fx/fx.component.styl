@@ -1,22 +1,30 @@
 @require '../../variables';
-
-active-blue = #009FFF;
-alpha-blue-dark = alpha(lightness(active-blue, 20%), 0.5);
-alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
+@require '../../colors';
+@require '../../note';
 
 .content, .footer
   margin: 3vw content-side-margin;
 
 .container
   display: inline-block;
-  background-color: main-blue;
+  margin: 10px;
+
+.beat
+  display: inline-block;
   position: relative;
   height: 20vh;
   max-height: 20vw;
   width: @max-height;
   max-width: @height;
+  transition: all 250ms ease-in-out;
 
-.beat
+  &.blue
+    background-color: active-blue;;
+
+  &.green
+    background-color: back-green;
+
+.pulse
   position: absolute;
   align-items: center;
   display: inline-flex;
@@ -26,6 +34,7 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
 
   &.fx .note
     background-color: transparent;
+    opacity: 0;
     position: relative;
 
     &:before, &:after
@@ -49,13 +58,23 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
     color: white;
 
 .active.container
-  .fx.beat .note
-    animation: burst;
-    animation-duration: 250ms;
-    opacity: 0;
+  .actual.pulse .note
+    animation: actual 250ms;
+
+  .fx.pulse .note
+    &.kick
+      animation: kick;
+
+      &:before
+        box-shadow: 0 0 15px 3px alpha-blue-dark;
+
+    &.snare
+      animation: snare;
+
+      &:before, &:after
+        star-background();
 
     &:before
-      box-shadow: 0 0 15px 3px alpha-blue-dark;
       left: 7%;
       top: @left;
       bottom: @left;
@@ -68,33 +87,3 @@ alpha-blue-light = alpha(lightness(active-blue, 80%), 0.5);
       bottom: @left;
       right: @left;
 
-  .actual.beat .note
-    animation: active;
-    animation-duration: 250ms;
-
-@keyframes active
-  0%
-    transform: scale(1);
-
-  40%
-    transform: scale(1.1);
-
-  70%
-    transform: scale(0.9);
-
-  100%
-    transform: scale(1);
-
-@keyframes burst
-  0%
-    box-shadow: 0 0 5px 0 alpha-blue-light, inset 0 0 150px 0px alpha-blue-light;
-    transform: scale(1);
-    opacity: 1;
-
-  50%
-    opacity: .7;
-
-  100%
-    box-shadow: 0 0 100px 50px alpha-blue-light, inset 0 0 150px 50px alpha-blue-light;
-    transform: scale(2);
-    opacity: 0;
