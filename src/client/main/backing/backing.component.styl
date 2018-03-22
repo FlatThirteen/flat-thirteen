@@ -1,0 +1,84 @@
+@require '../../variables';
+@require '../../button';
+@require '../../colors';
+@require '../../note';
+
+.content, .footer
+  margin: 3vw 0 3vw content-side-margin;
+  position: relative;
+
+.left
+  position: absolute;
+  left: 0;
+  width: content-side-margin;
+  text-align: center;
+
+  .container
+    padding: 5vh 10px;
+
+  .play
+    position: relative;
+
+    .counter
+      position: absolute;
+      top: 0;
+      font-size: 40px;
+      padding: 10px 5px;
+
+.right
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: content-side-margin;
+
+  .mini-button
+    margin: 5px;
+
+.track
+  padding: 5px 0;
+
+  &.mute
+    opacity: 0.5;
+
+  input
+    margin: 0 2px;
+
+    &:focus
+      border: solid 2px back-grey;
+      outline: none;
+
+  input.type
+    width: 6vw;
+
+  input.notes
+    width: 40vw;
+
+  .close
+    margin-left: 5px;
+
+.mini-button
+  background-color: white;
+  border: solid 1px lightgray;
+  border-radius: 3px;
+  color: lightgray;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+  height: inherit;
+  padding: 2px 10px;
+
+  &:hover
+    color: dark-grey;
+    border-color: dark-grey;
+
+.add
+  padding: 5px 20px;
+
+.content.solo .track:not(.solo)
+  opacity: 0.6;
+
+.line
+  color: gray;
+
+  &.now
+    color: black;

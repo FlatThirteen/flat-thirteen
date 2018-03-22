@@ -55,6 +55,11 @@ export class Phrase {
     return new ConstantPhraseBuilder(this);
   }
 
+  toArray(): string[] {
+    return _.chain(this.notes).toPairs().sortBy([0]).
+        map((pair) => _.replace(_.toString(pair), ',', ': ')).value();
+  }
+
   toString(): string {
     return _.toString(_.toPairs(this.notes));
   }

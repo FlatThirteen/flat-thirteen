@@ -102,17 +102,24 @@ export class TransportService {
     this.pulsesPart.loop = true;
     this.pulsesPart.loopEnd = '4n';
     this.pulsesPart.start(0);
+
+    if (!this.onTopId) {
+      this.onTopId = Tone.Transport.schedule((time) => {
+        this.measure = 0;
+        this.beatIndex = -1;
+      }, 0);
+    }
   }
 
-  setOnTop(callback: (first: boolean, time: number) => any) {
+  setOnTop(callback: (first: boolean) => any) {
     if (this.onTopId !== undefined) {
       Tone.Transport.clear(this.onTopId);
     }
-    this.onTopId = Tone.Transport.schedule((time) => {
+    this.onTopId = Tone.Transport.schedule(() => {
       let first = this.measure == 0;
       this.measure = 0;
       this.beatIndex = -1;
-      return callback(first, time);
+      return callback(first);
     }, 0);
   }
 
@@ -136,12 +143,12 @@ export class TransportService {
     return !this.paused && !this.started;
   }
 
-  start() {
+  start(time = '+4n') {
     this.paused = false;
     this.paused$.next(false);
     this.lastBeat$.next(false);
     if (!this.started) {
-      Tone.Transport.start('+4n');
+      Tone.Transport.start(time);
     }
   }
 
@@ -156,6 +163,7 @@ export class TransportService {
       this.onPulse = undefined;
       if (this.onTopId !== undefined) {
         Tone.Transport.clear(this.onTopId);
+        this.onTopId = undefined;
       }
     }
   }
@@ -163,9 +171,11 @@ export class TransportService {
   disposeLoops() {
     if (this.quarterLoop) {
       this.quarterLoop.dispose();
+      delete this.quarterLoop;
     }
     if (this.pulsesPart) {
       this.pulsesPart.dispose();
+      delete this.pulsesPart;
     }
 
   }

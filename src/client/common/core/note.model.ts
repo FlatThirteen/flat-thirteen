@@ -1,11 +1,15 @@
+import * as Tone from 'tone';
+
 import { Params, KickSound, SnareSound, ClickSound } from '../sound/sound';
 import { CowbellSound } from '../sound/cowbell.sound';
+import { SynthSound } from '../sound/synth.sound';
 
 const soundMap = {
   click: ClickSound,
   kick: KickSound,
   snare: SnareSound,
-  cowbell: CowbellSound
+  cowbell: CowbellSound,
+  synth: SynthSound
 };
 
 export type SoundName = keyof typeof soundMap;
@@ -36,5 +40,14 @@ export class Note {
       params.pitch = pitch;
     }
     return new Note(<SoundName>soundName, params);
+  }
+
+  static pitch(input: string): Tone.Frequency {
+    try {
+      let frequency = new Tone.Frequency(input);
+      return frequency.toMidi() >= 12 ? frequency : null;
+    } catch(error) {
+      return null;
+    }
   }
 }
