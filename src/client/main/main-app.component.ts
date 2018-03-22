@@ -33,6 +33,9 @@ export class MainAppComponent {
         }, {
           name: 'FX',
           link: ['fx']
+        }, {
+          name: 'Backing',
+          link: ['backing']
         }
       ];
     }

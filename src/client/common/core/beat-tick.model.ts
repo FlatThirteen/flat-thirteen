@@ -16,3 +16,12 @@ export function ticks(pulse: number, pulses: number) {
 export function pulseFrom(tick, pulses: number) {
   return tick * pulses / ticksPerBeat;
 }
+
+export function duration(pulses: number) {
+  return {
+    1: '4n',
+    2: '8n',
+    3: '8t',
+    4: '16n'
+  }[pulses];
+}

@@ -67,7 +67,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.player.init();
     this.transport.reset([this.lesson.beatsPerMeasure]);
 
-    this.transport.setOnTop((time) => this.onTop());
+    this.transport.setOnTop((first) => this.onTop());
     this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
 
     function draw() {

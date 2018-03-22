@@ -1,14 +1,18 @@
 .content
   h3
-    .button((click)="onSound('kick')")
+    .button((mousedown)="onSound('kick')")
     | Kick
   h3
-    .button((click)="onSound('snare')")
+    .button((mousedown)="onSound('snare')")
     | Snare
   h3
-    .button((click)="onSound('click')")
+    .button((mousedown)="onSound('click')")
     | Click
   h3
-    .button((click)="onSound('cowbell')")
+    .button((mousedown)="onSound('cowbell')") {{ showKey('cowbell') }}
     | Cowbell
+  h3
+    .button((mousedown)="onSound('synth')") {{ showKey('synth') }}
+    | Synth
 
+  .active {{ active }}

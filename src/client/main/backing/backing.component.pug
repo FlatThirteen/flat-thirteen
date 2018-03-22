@@ -1,0 +1,21 @@
+.left
+  .container
+    play-icon.play.button((click)="onPlay()")
+      .counter(*ngIf="transport.started") {{ transport.count() }}
+
+.content([class.solo]="anySolo")
+  .track(*ngFor="let track of tracks; let i = index", [ngClass]="{solo: track.solo, mute: track.mute}")
+    input(type="checkbox", [(ngModel)]="track.solo", (ngModelChange)="parseNotes()")
+    input(type="checkbox", [(ngModel)]="track.mute", (ngModelChange)="parseNotes()")
+    input.type(type="text", [(ngModel)]="track.type", (ngModelChange)="parseNotes()")
+    input.notes(type="text", [(ngModel)]="track.notes", (ngModelChange)="parseNotes()")
+    .close.mini-button((click)="onRemove(i)") x
+  .add.mini-button((click)="onAdd()") +
+
+  .right
+    h3 More
+    h3 Cowbell
+    .mini-button((click)="onAdd($event, 'cowbell')") A5,,A5,A5 E5,A5,E5,E5 A5,,A5,E5
+    .mini-button((click)="onAdd($event, 'cowbell')") C1,C2,C3,C4 C2,C3,C4,C5 C3,C4,C5,C6 C4,C5,C6,C7
+.footer
+  .line(*ngFor="let beat of debugPhrase", [class.now]="isNow(beat)") {{ beat }}
