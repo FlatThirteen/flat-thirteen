@@ -1,0 +1,172 @@
+@require '../../colors';
+@require '../../note';
+
+.container
+  position: absolute;
+  top: 200px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  user-select: none;
+  perspective: 800px;
+
+.fx, .tilt, .scale
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+.tilt
+  transform-origin: bottom;
+
+.scale
+  display: flex;
+  flex-flow: column-reverse nowrap;
+  align-items: center;
+  transform-origin: top;
+
+.note
+  position: relative;
+
+  .shadow
+    position: absolute;
+    width: 100%;
+
+.fx
+  &.snare, &.kick
+    .note
+      border-radius: 50%;
+      height: 80vh;
+      width: 80vh;
+
+      &:before, &:after
+        border-radius: 50%;
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+
+      &:before
+        left: 7%;
+        top: @left;
+        bottom: @left;
+        right: @left;
+
+      &:after
+        left: 15%;
+        top: @left;
+        bottom: @left;
+        right: @left;
+
+  &.kick .note
+    background: radial-gradient(ellipse at center, alpha(primary-blue, 0.4) 0%, alpha(primary-blue, 0.1) 40%, transparent 80%);
+    box-shadow: 0 0 20px 4px alpha(gray, 0.1);
+
+    &:before
+      box-shadow: 0 0 15px 3px alpha(gray, 0.2);
+
+    &:after
+      box-shadow: 0 0 20px 4px alpha(gray, 0.3);
+
+  &.snare .note
+    background: radial-gradient(ellipse at center, alpha(gray, 0.5) 0%, alpha(gray, 0.2) 30%, transparent 70%);
+
+    &:before
+      star-background(3);
+      box-shadow: 0 0 20px 4px alpha(gray, 0.1);
+
+    &:after
+      star-background(5);
+      box-shadow: 0 0 15px 3px alpha(gray, 0.2);
+
+  &.synth .note
+    animation-name: synth;
+    animation-duration: 250ms;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    height: 10vh;
+    width: 300%;
+    background-color: primary-green;
+    background: linear-gradient(-15deg, transparent 65px, alpha(primary-green, 0.5) 75px) repeat-x;
+    background-size: 25vh 10vh;
+    transform-origin: top;
+
+    .shadow
+      background: linear-gradient(transparent, alpha(primary-green, 0.5));
+      bottom: 100%;
+
+  &.cowbell .note
+    animation-name: cowbell;
+    animation-duration: 250ms;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    height: 20vh;
+    width: 20vh;
+    background-color: primary-red;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+    transform-origin: top;
+
+.rotate1, .before1:before, .after1:after
+  transform: rotate(-30deg);
+.rotate2, .before2:before, .after2:after
+  transform: rotate(-60deg);
+.rotate3, .before3:before, .after3:after
+  transform: rotate(-90deg);
+.rotate4, .before4:before, .after4:after
+  transform: rotate(-120deg);
+.rotate5, .before5:before, .after5:after
+  transform: rotate(-150deg);
+.rotate6, .before6:before, .after6:after
+  transform: rotate(-180deg);
+.rotate7, .before7:before, .after7:after
+  transform: rotate(-210deg);
+.rotate8, .before8:before, .after8:after
+  transform: rotate(-240deg);
+.rotate9, .before9:before, .after9:after
+  transform: rotate(-270deg);
+.rotate10, .before10:before, .after10:after
+  transform: rotate(-300deg);
+.rotate11, .before11:before, .after11:after
+  transform: rotate(-330deg);
+
+.offset1, .offset2, .offset3, .offset14, .offset24
+  margin-top: 25px;
+.offset1, .offset7, .offset8, .offset10, .offset20
+  margin-left: 25px;
+.offset3, .offset4, .offset5, .offset12, .offset18
+  margin-right: 25px;
+.offset5, .offset6, .offset7, .offset16, .offset22
+  margin-bottom: 25px;
+.offset9, .offset10, .offset11, .offset12, .offset13
+  margin-top: 50px;
+.offset13, .offset14, .offset15, .offset16, .offset17
+  margin-right: 50px;
+.offset17, .offset18, .offset19, .offset20, .offset21
+  margin-bottom: 50px;
+.offset9, .offset21, .offset22, .offset23, .offset24
+  margin-left: 50px;
+
+.note.delay1
+  animation-delay: -50ms;
+.note.delay2
+  animation-delay: -100ms;
+.note.delay3
+  animation-delay: -150ms;
+.note.delay4
+  animation-delay: -200ms;
+
+@keyframes synth
+  0%
+    transform: translateX(0);
+  100%
+    transform: translateX(-25vh);
+
+@keyframes cowbell
+  0%,100%
+    transform: rotate(0);
+  33%
+    transform: rotate(10deg);
+  66%
+    transform: rotate(-10deg);

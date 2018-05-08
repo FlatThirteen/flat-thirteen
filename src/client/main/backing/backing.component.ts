@@ -1,11 +1,13 @@
 import * as _ from 'lodash';
 
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { SoundService } from '../../common/sound/sound.service';
+
+import { BackingService } from '../../common/backing/backing.service';
+import { duration, ticks } from '../../common/core/beat-tick.model';
 import { Note, SoundName } from '../../common/core/note.model';
 import { TransportService } from '../../common/core/transport.service';
 import { Phrase } from '../../common/phrase/phrase.model';
-import { beatTickFrom, duration, ticks } from '../../common/core/beat-tick.model';
+import { SoundService } from '../../common/sound/sound.service';
 
 let requestAnimationFrameId: number;
 
@@ -25,33 +27,24 @@ interface Track {
 export class BackingComponent implements OnInit, OnDestroy {
   tracks: Track[] = [
     { type: 'synth', notes: 'C2,C2 G1,G1 Bb1,Bb1 B1,B1' },
-    { type: 'synth', notes: 'G4.C5.Eb5, ,G4.C5.Eb5' },
+    { type: 'synth', notes: 'G4.C5.Eb5, ,G4.C5.Eb5  G4.C5.F5' },
     { type: 'drums', notes: 'K ,K S,K ,K' }
   ];
+  selectedBeat: string;
 
-  phrase: Phrase;
-  debugPhrase: string[];
   anySolo: boolean;
-  now: string;
 
-  constructor(private sound: SoundService, private transport: TransportService) {}
+  constructor(private backing: BackingService, private transport: TransportService) {}
 
   ngOnInit() {
     console.log('Starting draw! ' + (requestAnimationFrameId || ''));
     this.transport.reset([4]);
-    this.transport.setOnPulse((time, beat, tick) => this.pulse(time, beat, tick));
+    this.transport.setOnPulse((time, beat, tick) => this.backing.pulse(time, beat, tick));
     this.parseNotes();
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
     }
     draw();
-  }
-
-  pulse(time: number, beat: number, tick: number) {
-    _.forEach(this.phrase.getNotes(beat, tick), (note) => {
-      this.now = beatTickFrom(beat, tick);
-      this.sound.play(note.soundName, time, note.params);
-    });
   }
 
   ngOnDestroy() {
@@ -77,7 +70,7 @@ export class BackingComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAdd($event, type?: string, ) {
+  onAdd($event, type?: string) {
     if (type) {
       this.tracks.push({ type: type, notes: $event.target.innerText });
       this.parseNotes();
@@ -92,7 +85,17 @@ export class BackingComponent implements OnInit, OnDestroy {
   }
 
   isNow(beatDebug: string) {
-    return _.startsWith(beatDebug, this.now);
+    return _.startsWith(beatDebug, this.backing.now);
+  }
+
+  onBeat(beatDebug: string) {
+    if (this.selectedBeat !== beatDebug) {
+      this.selectedBeat = beatDebug;
+      this.backing.setFixed(_.split(_.split(beatDebug, ': ')[1], ','), this.transport.paused);
+    } else {
+      this.selectedBeat = null;
+      this.backing.setFixed([]);
+    }
   }
 
   parseNotes() {
@@ -122,8 +125,9 @@ export class BackingComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.phrase = phrase;
-    this.debugPhrase = phrase.toArray();
+    this.backing.setFixed([]);
+    this.backing.setPhrase(phrase);
+    this.selectedBeat = null;
     this.anySolo = solo;
   }
 }

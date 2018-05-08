@@ -6,7 +6,7 @@ export class SynthSound implements Sound {
   synth: Tone.PolySynth;
 
   constructor() {
-    this.synth = <Tone.PolySynth>new Tone.PolySynth(6, Tone.Synth, {
+    this.synth = <Tone.PolySynth>new Tone.PolySynth(9, Tone.Synth, {
       oscillator: {
         type: 'fatsawtooth',
         count: 3,

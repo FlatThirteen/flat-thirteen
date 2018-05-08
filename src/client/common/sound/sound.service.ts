@@ -19,7 +19,7 @@ export class SoundService {
     synth: new SynthSound()
   };
 
-  play(soundName: SoundName, time?: number, params?: Params): Sound {
+  play(soundName: SoundName, time?: any, params?: Params): Sound {
     let sound = this.loadSound(soundName);
     sound.play(time, params);
     return sound;

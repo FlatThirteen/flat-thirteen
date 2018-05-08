@@ -128,7 +128,7 @@ const commonConfig = function webpackConfig(): WebpackConfig {
       {
         test: /\.ts$/,
         loaders: [
-          '@angularclass/hmr-loader',
+          // '@angularclass/hmr-loader', TODO: Broken with BrowserAnimationsModule
           'awesome-typescript-loader?{configFileName: "tsconfig.webpack.json"}',
           'angular2-template-loader',
           'angular-router-loader?loader=system&genDir=compiled&aot=' + AOT

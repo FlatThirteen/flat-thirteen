@@ -37,7 +37,7 @@ export class KickSound implements Sound {
   }
 
   play(time?: any) {
-    this.kick.triggerAttackRelease('A0', '4n', time, 1);
+    this.kick.triggerAttackRelease('A0', '16n', time, 1);
   }
 }
 

@@ -3,8 +3,11 @@
 @require '../../colors';
 @require '../../note';
 
+.container
+  position: relative;
+
 .content, .footer
-  margin: 3vw 0 3vw content-side-margin;
+  margin: 3vw content-side-margin;
   position: relative;
 
 .left
@@ -13,8 +16,8 @@
   width: content-side-margin;
   text-align: center;
 
-  .container
-    padding: 5vh 10px;
+  .controls
+    padding: 10px;
 
   .play
     position: relative;
@@ -80,5 +83,12 @@
 .line
   color: gray;
 
-  &.now
-    color: black;
+  .debug
+    display: inline-block;
+
+    &.selected
+      background-color: faint-grey;
+
+    &.now
+      color: black;
+
