@@ -1,15 +1,15 @@
 @require 'colors';
 
-star-background()
+star-background(mult = 1)
   background-image:
-    radial-gradient(1px 1px at 2px 3px, #eee, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 4px 7px, #fff, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 5px 16px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 9px 4px, #fff, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 13px 8px, #fff, rgba(0,0,0,0)),
-    radial-gradient(4px 4px at 16px 12px, #ddd, rgba(0,0,0,0));
+    radial-gradient(1px 1px at mult * 2px mult * 3px, darken(#eee, mult * 2), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at mult * 4px mult * 7px, darken(#ccc, mult * 2), rgba(0,0,0,0)),
+    radial-gradient(3px 3px at mult * 5px mult * 16px, darken(#ddd, mult * 2), rgba(0,0,0,0)),
+    radial-gradient(2px 2px at mult * 9px mult * 4px, darken(#eee, mult * 2), rgba(0,0,0,0)),
+    radial-gradient(3px 3px at mult * 13px mult * 1px, darken(#ccc, mult * 2), rgba(0,0,0,0)),
+    radial-gradient(4px 4px at mult * 16px mult * 12px, darken(#ddd, mult * 2), rgba(0,0,0,0));
   background-repeat: repeat space;
-  background-size: 20px 20px;
+  background-size: mult * 20px mult * 20px;
 
 @keyframes actual
   0%

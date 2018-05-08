@@ -1,0 +1,6 @@
+.container
+  .fx(*ngFor="let note of notes", [ngClass]="note.fxClass", [@show]="")
+    .tilt([style.transform]="note.tiltTransform")
+      .scale([style.transform]="note.scaleTransform")
+        .note([ngClass]="note.noteClass")
+          .shadow([style.height]="note.shadowHeight")

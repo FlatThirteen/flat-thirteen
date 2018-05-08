@@ -19,6 +19,15 @@ export class Note {
               public readonly params: Params = {}) {
   }
 
+  get frequency(): Tone.Frequency {
+    return this.params && this.params.pitch && new Tone.Frequency(this.params.pitch);
+  }
+
+  get duration(): number {
+    let time = new Tone.Time(this.params && this.params.duration || '16n');
+    return time.toSeconds();
+  }
+
   toString(): string {
     let pitch = this.params.pitch ? '(' + this.params.pitch + ')' : '';
     let accent = this.params.variation === 'heavy' ? '>' :
@@ -27,7 +36,7 @@ export class Note {
   }
 
   static from(soundString: String): Note {
-    let matches = soundString.match(/([>\*]?)(\w+)(?:\((\d+)\))?/);
+    let matches = soundString.match(/([>\*]?)(\w+)(?:\((.+)\))?/);
     if (!matches || !soundMap.hasOwnProperty(matches[2])) {
       return null;
     }

@@ -4,13 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { routes } from './backing.routing';
 
+import { PlayIconModule } from '../../component/play-icon/play-icon.module';
+import { BackingFxModule } from '../../component/backing-fx/backing-fx.module';
+
 import { BackingComponent } from './backing.component';
+
+import { BackingService } from '../../common/backing/backing.service';
 import { SoundService } from '../../common/sound/sound.service';
 import { TransportService } from '../../common/core/transport.service';
-import { PlayIconModule } from '../../component/play-icon/play-icon.module';
 
 @NgModule({
   imports: [
+    BackingFxModule,
     CommonModule,
     FormsModule,
     PlayIconModule,
@@ -20,6 +25,7 @@ import { PlayIconModule } from '../../component/play-icon/play-icon.module';
     BackingComponent
   ],
   providers: [
+    BackingService,
     SoundService,
     TransportService
   ]
