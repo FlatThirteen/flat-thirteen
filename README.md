@@ -50,8 +50,6 @@ For e2e tests, use `yarn run e2e`. To run unit test and e2e test at the same tim
   * store (RxJS powered state management for Angular2 apps, inspired by Redux)
   * effects (Side effect model for @ngrx/store)
   * router-store (Bindings to connect angular/router to ngrx/store)
-  * store-devtools (Developer Tools for @ngrx/store)
-  * store-log-monitor (Log Monitor for @ngrx/store-devtools and Angular 2)
   * ngrx-store-logger (Advanced console logging for @ngrx/store applications, ported from redux-logger.)
   * ngrx-store-freeze in dev mode (@ngrx/store meta reducer that prevents state from being mutated.)
 * Karma/Jasmine testing

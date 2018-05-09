@@ -104,14 +104,6 @@
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-1.2.6.tgz#a2eb0ca515e9b367781f1030250dd64bb73c086b"
 
-"@ngrx/store-devtools@^3.2.4":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-3.2.4.tgz#2ce4d13bf34848a9e51ec87e3b125ed67b51e550"
-
-"@ngrx/store-log-monitor@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@ngrx/store-log-monitor/-/store-log-monitor-3.0.2.tgz#951dc2e3d8ba0113ea4ed6744d9ce7640fee3271"
-
 "@ngrx/store@^2.2.2":
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-2.2.3.tgz#e7bd1149f1c44208f1cc4744353f0f98a0f1f57b"

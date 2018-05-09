@@ -108,8 +108,6 @@
     "@ngrx/effects": "^2.0.3",
     "@ngrx/router-store": "^1.2.6",
     "@ngrx/store": "^2.2.2",
-    "@ngrx/store-devtools": "^3.2.4",
-    "@ngrx/store-log-monitor": "^3.0.2",
     "@nguniversal/express-engine": "^1.0.0-beta.1",
     "body-parser": "^1.17.1",
     "compression": "1.6.2",
