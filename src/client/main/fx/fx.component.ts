@@ -34,11 +34,13 @@ export class FxComponent {
   }
 
   onBackground() {
+    this.sound.resume();
     this.sound.playSequence('cowbell', ['E7'], '16n');
     this.background = this.background === 'blue' ? 'green' : 'blue';
   }
 
   onNoteDown(soundName: SoundName) {
+    this.sound.resume();
     if (!this.active) {
       this.sound.play(soundName);
     }

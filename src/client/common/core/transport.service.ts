@@ -38,8 +38,19 @@ export class TransportService {
   onPulse: (time: number, beat: number, pulse: number) => any;
 
   paused: boolean = true;
+  firstUserAction: boolean = false;
 
   constructor(private sound: SoundService) {}
+
+  resume() {
+    // New versions of Chrome don't allow Audio until user takes action.
+    if (!this.firstUserAction) {
+      return this.sound.resume().then(() => {
+        this.firstUserAction = true;
+        console.log('Resumed AudioContext')
+      });
+    }
+  }
 
   reset(beatsPerMeasure: number[] = [4]) {
     this.beatsPerMeasure = beatsPerMeasure;

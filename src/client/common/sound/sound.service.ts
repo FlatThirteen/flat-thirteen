@@ -11,6 +11,7 @@ import { SynthSound } from './synth.sound';
 
 @Injectable()
 export class SoundService {
+  private firstUserAction: boolean = false;
   readonly sounds: _.Dictionary<Sound> = {
     click: new ClickSound(),
     kick: new KickSound(),
@@ -18,6 +19,17 @@ export class SoundService {
     cowbell: new CowbellSound(),
     synth: new SynthSound()
   };
+
+  resume() {
+    // New versions of Chrome don't allow Audio until user takes action.
+    if (!this.firstUserAction) {
+      // @ts-ignore: TypeScript is being stupid and not recognizing context
+      return Tone.context.resume().then(() => {
+        this.firstUserAction = true;
+        console.log('Resumed AudioContext')
+      });
+    }
+  }
 
   play(soundName: SoundName, time?: any, params?: Params): Sound {
     let sound = this.loadSound(soundName);

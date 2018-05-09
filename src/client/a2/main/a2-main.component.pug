@@ -1,10 +1,10 @@
 .surface-container
   bouncing-ball([showBall$]="showBall$")
   .surface(*ngFor="let surface of lesson.surfaces; let i = index")
-    html-grid(*ngIf="isGrid(surface)", [grid]="surface")
+    html-grid(*ngIf="transport.firstUserAction && isGrid(surface)", [grid]="surface")
   .controls
     .start.button(*ngIf="transport.paused || stage.isLoop", [@weenie]="weenieStart",
-        (click)="onStart()") Enter
+        (click)="onStart()") Start
     .stop.button(*ngIf="!transport.paused", (click)="onStop()") Stop
     .listen.button([ngClass]="listenClass$ | async", (click)="onListen()")
       img(src="/assets/listen-music-128.png", alt="Listen!")

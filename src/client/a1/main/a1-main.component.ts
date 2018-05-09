@@ -407,6 +407,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onStage(stage?: number) {
+    this.transport.resume();
     if (stage !== undefined && this.lesson.weenieStage !== stage) {
       return;
     }
@@ -483,6 +484,7 @@ export class A1MainComponent implements OnInit, OnDestroy {
   }
 
   onNext() {
+    this.transport.resume();
     this.powers.unhighlight();
     this.progress.next();
   }
