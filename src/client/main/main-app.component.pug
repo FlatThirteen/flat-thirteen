@@ -5,4 +5,3 @@ header
 .menu
   a(*ngFor="let view of views", [routerLink]="view.link", routerLinkActive="active-link") {{view.name}}
 router-outlet((activate)="activateEvent($event)", (deactivate)="deactivateEvent($event)")
-my-store-devtools(*ngIf="showMonitor")

@@ -21,7 +21,7 @@ export class Rhythm {
       }
       return result;
     }, {});
-    this.pulseProbabilities = <[BeatTick, number][]>_.orderBy(_.toPairs(this.map), 1, 'desc');
+    this.pulseProbabilities = _.orderBy<[BeatTick, number]>(_.toPairs(this.map), 1, 'desc');
     this.pulsesByBeat = <number[]>_.map(timings, (timing) => _.isArray(timing) ? timing.length : 1);
     this.supportedPulses = _.sortBy(_.uniq(this.pulsesByBeat));
     this.length = _.flatten(timings).length;

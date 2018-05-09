@@ -7,16 +7,14 @@ import { MainAppComponent } from './main-app.component';
 import { HomeComponent } from './home/home.component';
 import { NotFound404Component } from './not-found404.component';
 import { routes } from './main-app.routing';
-import { StoreDevToolsModule } from '../component/store-devtools/store-devtools.module';
 
 describe('MainApp Component', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
-        RouterTestingModule.withRoutes(routes),
-        StoreDevToolsModule
-        ],
+        RouterTestingModule.withRoutes(routes)
+      ],
       providers: [],
       declarations: [MainAppComponent, HomeComponent, NotFound404Component]
     });

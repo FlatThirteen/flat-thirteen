@@ -138,6 +138,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
   }
 
   onStart() {
+    this.transport.resume();
     this.weenieStart = 'inactive';
     this.lesson.reset();
     this.player.init();

@@ -7,7 +7,6 @@ import { duration, ticks } from '../../common/core/beat-tick.model';
 import { Note, SoundName } from '../../common/core/note.model';
 import { TransportService } from '../../common/core/transport.service';
 import { Phrase } from '../../common/phrase/phrase.model';
-import { SoundService } from '../../common/sound/sound.service';
 
 let requestAnimationFrameId: number;
 
@@ -61,6 +60,7 @@ export class BackingComponent implements OnInit, OnDestroy {
   }
 
   onPlay() {
+    this.transport.resume();
     if (this.transport.started) {
       console.log('Stop');
       this.transport.stop();
@@ -89,6 +89,7 @@ export class BackingComponent implements OnInit, OnDestroy {
   }
 
   onBeat(beatDebug: string) {
+    this.transport.resume();
     if (this.selectedBeat !== beatDebug) {
       this.selectedBeat = beatDebug;
       this.backing.setFixed(_.split(_.split(beatDebug, ': ')[1], ','), this.transport.paused);

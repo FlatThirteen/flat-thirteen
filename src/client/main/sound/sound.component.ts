@@ -50,6 +50,7 @@ export class SoundComponent {
   }
 
   onSound(sound: SoundName) {
+    this.sound.resume();
     this.lastSoundName = sound;
     if (this.lastSound) {
       this.releaseAll();
