@@ -54,7 +54,7 @@ if (['logger', 'both'].indexOf(STORE_DEV_TOOLS) !== -1 ) {
     DEV_REDUCERS.push(storeLogger());
 }
 
-const developmentReducer = compose(...DEV_REDUCERS, combineReducers)(reducers);
+const developmentReducer = <(state, action) => any>compose(...DEV_REDUCERS, combineReducers)(reducers);
 const productionReducer = compose(combineReducers)(reducers);
 
 export function rootReducer(state: any, action: any) {
