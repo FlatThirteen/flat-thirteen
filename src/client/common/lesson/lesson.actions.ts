@@ -1,33 +1,25 @@
-import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
 import { Plan } from './lesson.reducer';
 
-@Injectable()
-export class LessonActions {
+export namespace Lesson {
 
-  constructor() {}
-
-  static INIT = '[LESSON] Init';
-  init(plan: Plan): Action {
-    return {
-      type: LessonActions.INIT,
-      payload: plan
-    };
+  export const INIT = '[LESSON] Init';
+  export class InitAction implements Action {
+    readonly type = Lesson.INIT;
+    constructor(public payload: { plan: Plan }) {}
   }
 
-  static RESET = '[LESSON] Reset';
-  reset(): Action {
-    return {
-      type: LessonActions.RESET
-    };
+  export const RESET = '[LESSON] Reset';
+  export class ResetAction implements Action {
+    readonly type = Lesson.RESET;
   }
 
-  static ADVANCE = '[LESSON] Advance';
-  advance(rounds: number): Action {
-    return {
-      type: LessonActions.ADVANCE,
-      payload: rounds
-    };
+  export const ADVANCE = '[LESSON] Advance';
+  export class AdvanceAction implements Action {
+    readonly type = Lesson.ADVANCE;
+    constructor(public payload: { rounds: number }) {}
   }
+
+  export type Actions = InitAction | ResetAction | AdvanceAction;
 }

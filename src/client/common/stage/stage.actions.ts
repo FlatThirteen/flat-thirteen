@@ -1,42 +1,32 @@
-import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { PhraseBuilder } from '../phrase/phrase.model';
 import { Note } from '../core/note.model';
+import { PhraseBuilder } from '../phrase/phrase.model';
 
-@Injectable()
-export class StageActions {
+export namespace Stage {
 
-  constructor() {}
-
-  static LISTEN = '[STAGE] Listen';
-  listen(): Action {
-    return {
-      type: StageActions.LISTEN
-    };
+  export const LISTEN = '[STAGE] Listen';
+  export class ListenAction implements Action {
+    readonly type = Stage.LISTEN;
   }
 
-  static NEXT = '[STAGE] Next';
-  next(phraseBuilder: PhraseBuilder): Action {
-    return {
-      type: StageActions.NEXT,
-      payload: phraseBuilder
-    };
+  export const NEXT = '[STAGE] Next';
+  export class NextAction implements Action {
+    readonly type = Stage.NEXT;
+    constructor(public payload: { phraseBuilder: PhraseBuilder }) {}
   }
 
-  static VICTORY = '[STAGE] Victory';
-  victory(basePoints: number): Action {
-    return {
-      type: StageActions.VICTORY,
-      payload: basePoints
-    };
+  export const VICTORY = '[STAGE] Victory';
+  export class VictoryAction implements Action {
+    readonly type = Stage.VICTORY;
+    constructor(public payload: { basePoints: number }) {}
   }
 
-  static PLAY = '[STAGE] Play';
-  play(note: Note, beat: number, tick: number): Action {
-    return {
-      type: StageActions.PLAY,
-      payload: [note, beat, tick]
-    };
+  export const PLAY = '[STAGE] Play';
+  export class PlayAction implements Action {
+    readonly type = Stage.PLAY;
+    constructor(public payload: { note: Note, beat: number, tick: number }) {}
   }
+
+  export type Actions = ListenAction | NextAction | VictoryAction | PlayAction;
 }

@@ -3,7 +3,7 @@ import { Actions, Effect } from '@ngrx/effects';
 
 import { Grid } from '../../main/grid/grid.model';
 import { Note } from '../../../common/core/note.model';
-import { PlayerActions } from './player.actions';
+import { Player } from './player.actions';
 import { SoundService } from "../../../common/sound/sound.service";
 import { StageService } from '../stage/stage.service';
 import { TransportService } from '../../../common/core/transport.service';
@@ -20,16 +20,16 @@ export class PlayerEffects {
   ) {}
 
   @Effect() play$ = this.actions$
-    .ofType(PlayerActions.SET)
+    .ofType<Player.SetAction>(Player.SET)
     .map(action => action.payload)
-    .filter(([surface]) => surface)
-    .do(([surface, key, cursor, pulses]) => {
-      let sound, beat, tick;
+    .do((payload) => {
+      let { key, surface, cursor } = payload;
+      let sound, beat, tick, pulses;
       if (surface instanceof Grid) {
         let pulse;
         [beat, pulse] = surface.beatPulseFor(cursor);
         sound = surface.soundByKey[key];
-        pulses = pulses[beat];
+        pulses = surface.pulsesByBeat[beat];
         tick = ticks(pulse, pulses);
       }
       if (this.stage.isPlayback && this.transport.canLivePlay(beat, cursor, pulses)) {

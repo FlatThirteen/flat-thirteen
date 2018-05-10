@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
 import { AppState } from '../../../common/app.reducer';
 import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
 import { PowersService, PowerType, PowerUp, PowerUpType } from '../../../common/core/powers.service';
-
+import { Rhythm } from '../../../common/core/rhythm.model';
 import { TransportService } from '../../../common/core/transport.service';
 
 import { Grid } from '../../main/grid/grid.model';
@@ -16,9 +16,8 @@ import { Grid } from '../../main/grid/grid.model';
 import { LessonService } from '../lesson/lesson.service';
 import { Result } from '../lesson/lesson.reducer';
 
-import { ProgressActions } from './progress.actions';
+import { Progress } from './progress.actions';
 import { Settings } from './progress.reducer';
-import { Rhythm } from '../../../common/core/rhythm.model';
 
 const numberOfStages = 4;
 const soundByKey = [
@@ -52,9 +51,8 @@ export class ProgressService {
   private _powerUps: PowerUp[];
   private _powerLevels: _.Dictionary<number[]>;
 
-  constructor(private store: Store<AppState>, private progress: ProgressActions,
-              private lesson: LessonService, private powers: PowersService,
-              private transport: TransportService) {
+  constructor(private store: Store<AppState>, private lesson: LessonService,
+              private powers: PowersService, private transport: TransportService) {
     this.settings$ = this.store.select(ProgressService.getSettings);
     this.lessonNumber$ = this.store.select(ProgressService.getLessonNumber);
     this.results$ = this.store.select(ProgressService.getResults);
@@ -106,20 +104,20 @@ export class ProgressService {
   }
 
   init(settings: Settings) {
-    this.store.dispatch(this.progress.init(settings));
+    this.store.dispatch(new Progress.InitAction({ settings }));
   }
 
-  power(powerUpType: PowerUpType, beat: number): PowerType {
-    this.store.dispatch(this.progress.power(powerUpType, beat));
-    return <PowerType>(beat ? powerUpType + beat : powerUpType);
+  power(type: PowerUpType, beat: number): PowerType {
+    this.store.dispatch(new Progress.PowerAction({ type, beat }));
+    return <PowerType>(beat ? type + beat : type);
   }
 
   result(result: Result) {
-    this.store.dispatch(this.progress.result(result));
+    this.store.dispatch(new Progress.ResultAction({ result }));
   }
 
   next() {
-    this.store.dispatch(this.progress.next());
+    this.store.dispatch(new Progress.NextAction());
   }
 
   get results() {

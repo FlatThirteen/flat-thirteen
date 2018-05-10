@@ -1,18 +1,19 @@
 import * as _ from 'lodash';
+import { createSelector } from 'reselect';
+import { Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Observable } from 'rxjs';
-import { createSelector } from 'reselect';
 
 import { AppState } from '../app.reducer';
-
 import { Note } from '../core/note.model';
 import { Phrase, PhraseBuilder } from '../phrase/phrase.model';
 import { PlayerService } from '../player/player.service';
 import { SoundService } from '../sound/sound.service';
+
 import { StageScene } from './stage.reducer';
-import { StageActions } from './stage.actions';
+import { Stage } from './stage.actions';
 
 @Injectable()
 export class StageService {
@@ -49,8 +50,8 @@ export class StageService {
   private _beatWrong: number;
   private _goalNotes: number;
 
-  constructor(private store: Store<AppState>, private stage: StageActions,
-              private player: PlayerService, private sound: SoundService) {
+  constructor(private store: Store<AppState>, private player: PlayerService,
+              private sound: SoundService) {
     this.scene$ = this.store.select(StageService.getScene);
     this.nextScene$ = this.store.select(StageService.getNextScene);
     this.round$ = this.store.select(StageService.getRound);
@@ -76,20 +77,20 @@ export class StageService {
   }
 
   listen() {
-    this.store.dispatch(this.stage.listen());
+    this.store.dispatch(new Stage.ListenAction());
   }
 
   next(phraseBuilder?: PhraseBuilder) {
-    this.store.dispatch(this.stage.next(phraseBuilder));
+    this.store.dispatch(new Stage.NextAction({ phraseBuilder }));
   }
 
   victory() {
-    this.store.dispatch(this.stage.victory(this.basePoints));
+    this.store.dispatch(new Stage.VictoryAction({ basePoints: this.basePoints }));
   }
 
   play(note: Note, beat: number, tick: number, time?: number) {
     this.sound.play(note.soundName, time);
-    this.store.dispatch(this.stage.play(note, beat, tick));
+    this.store.dispatch(new Stage.PlayAction({ note, beat, tick }));
   }
 
   pulse(time: number, beat: number, tick: number) {

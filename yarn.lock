@@ -92,21 +92,17 @@
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@angularclass/idle-preload/-/idle-preload-2.0.1.tgz#63f58fe6e18a2d3a1bbaeff6307c4905c3a18d7f"
 
-"@ngrx/core@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@ngrx/core/-/core-1.2.0.tgz#882b46abafa2e0e6d887cb71a1b2c2fa3e6d0dc6"
+"@ngrx/effects@5.2":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-5.2.0.tgz#aa762b69cb6fd4644d724a1cecd265caa42baf09"
 
-"@ngrx/effects@^2.0.3":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-2.0.5.tgz#10986923b7193af9b08944e80c5a661ba93a7936"
+"@ngrx/router-store@5.2":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-5.2.0.tgz#bf4b174ce19a36eba8211fc1ddeaf1e35ae74368"
 
-"@ngrx/router-store@^1.2.6":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-1.2.6.tgz#a2eb0ca515e9b367781f1030250dd64bb73c086b"
-
-"@ngrx/store@^2.2.2":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-2.2.3.tgz#e7bd1149f1c44208f1cc4744353f0f98a0f1f57b"
+"@ngrx/store@5.2":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-5.2.0.tgz#627ed74c9cd95462930485d912a557117b23903e"
 
 "@nguniversal/express-engine@^1.0.0-beta.1":
   version "1.0.0-beta.3"
@@ -1571,10 +1567,6 @@ deep-extend@^0.5.1:
 deep-extend@~0.4.0:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.4.2.tgz#48b699c27e334bf89f10892be432f6e4c7d34a7f"
-
-deep-freeze-strict@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/deep-freeze-strict/-/deep-freeze-strict-1.1.1.tgz#77d0583ca24a69be4bbd9ac2fae415d55523e5b0"
 
 deep-is@~0.1.3:
   version "0.1.3"
@@ -4134,15 +4126,9 @@ nested-error-stacks@^1.0.0:
   dependencies:
     inherits "~2.0.1"
 
-ngrx-store-freeze@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/ngrx-store-freeze/-/ngrx-store-freeze-0.1.9.tgz#b20f18f21fd5efc4e1b1e05f6f279674d0f70c81"
-  dependencies:
-    deep-freeze-strict "^1.1.1"
-
-ngrx-store-logger@^0.1.7:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/ngrx-store-logger/-/ngrx-store-logger-0.1.8.tgz#385cc71c4ad7d503173d88705846614c1be2eff6"
+ngrx-store-logger@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/ngrx-store-logger/-/ngrx-store-logger-0.2.1.tgz#216e99c9527cf3c50862ee2b27fe93fbe8c28671"
 
 no-case@^2.2.0:
   version "2.3.2"

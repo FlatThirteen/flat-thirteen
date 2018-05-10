@@ -1,8 +1,6 @@
-import { compose } from '@ngrx/core/compose';
-import { ActionReducer, combineReducers } from '@ngrx/store';
-import { storeFreeze } from 'ngrx-store-freeze';
+import { ActionReducer, ActionReducerMap, MetaReducer, combineReducers } from '@ngrx/store';
 import { storeLogger } from 'ngrx-store-logger';
-import { routerReducer, RouterState } from '@ngrx/router-store';
+import { routerReducer, RouterReducerState } from '@ngrx/router-store';
 
 import { LessonState as A1LessonState } from '../a1/model/lesson/lesson.reducer';
 import { PlayerState as A1PlayerState } from '../a1/model/player/player.reducer';
@@ -22,10 +20,10 @@ export interface AppState {
   lesson: LessonState;
   stage: StageState;
   player: PlayerState;
-  router: RouterState;
+  router: RouterReducerState;
 }
 
-export const reducers = {
+export const reducers: ActionReducerMap<AppState> = {
   a1: combineReducers({
     progress: A1ProgressState.reducer,
     lesson: A1LessonState.reducer,
@@ -38,6 +36,15 @@ export const reducers = {
   router: routerReducer,
 };
 
+export function logger(reducer: ActionReducer<AppState>): any {
+  // default, no options
+  return storeLogger()(reducer);
+}
+
+export const metaReducers: MetaReducer<AppState>[] = ENV !== 'development' ? [] :
+    [logger];
+
+/*
 // Generate a reducer to set the root state in dev mode for HMR
 function stateSetter(reducer: ActionReducer<any>): ActionReducer<any> {
   return function (state, action) {
@@ -47,20 +54,4 @@ function stateSetter(reducer: ActionReducer<any>): ActionReducer<any> {
     return reducer(state, action);
   };
 }
-
-const DEV_REDUCERS = [stateSetter, storeFreeze];
-// set in constants.js file of project root
-if (['logger', 'both'].indexOf(STORE_DEV_TOOLS) !== -1 ) {
-    DEV_REDUCERS.push(storeLogger());
-}
-
-const developmentReducer = <(state, action) => any>compose(...DEV_REDUCERS, combineReducers)(reducers);
-const productionReducer = compose(combineReducers)(reducers);
-
-export function rootReducer(state: any, action: any) {
-  if (ENV !== 'development') {
-    return productionReducer(state, action);
-  } else {
-    return developmentReducer(state, action);
-  }
-}
+*/

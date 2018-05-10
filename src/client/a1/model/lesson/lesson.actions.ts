@@ -1,41 +1,31 @@
-import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
 import { Plan } from './lesson.reducer';
 
-@Injectable()
-export class LessonActions {
+export namespace Lesson {
 
-  constructor() {}
-
-  static INIT = '[A1 LESSON] Init';
-  init(plan: Plan): Action {
-    return {
-      type: LessonActions.INIT,
-      payload: plan
-    };
+  export const INIT = '[A1 LESSON] Init';
+  export class InitAction implements Action {
+    readonly type = Lesson.INIT;
+    constructor(public payload: { plan: Plan }) {}
   }
 
-  static RESET = '[A1 LESSON] Reset';
-  reset(): Action {
-    return {
-      type: LessonActions.RESET
-    };
+  export const RESET = '[A1 LESSON] Reset';
+  export class ResetAction implements Action {
+    readonly type = Lesson.RESET;
   }
 
-  static STAGE = '[A1 LESSON] Stage';
-  stage(stage: number): Action {
-    return {
-      type: LessonActions.STAGE,
-      payload: stage
-    }
+  export const STAGE = '[A1 LESSON] Stage';
+  export class StageAction implements Action {
+    readonly type = Lesson.STAGE;
+    constructor(public payload: { stage: number }) {}
   }
 
-  static COMPLETE = '[A1 LESSON] Complete';
-  complete(rounds: number, stage: number, points: number): Action {
-    return {
-      type: LessonActions.COMPLETE,
-      payload: [rounds, stage, points]
-    }
+  export const COMPLETE = '[A1 LESSON] Complete';
+  export class CompleteAction implements Action {
+    readonly type = Lesson.COMPLETE;
+    constructor(public payload: { rounds: number, stage: number, points: number }) {}
   }
+
+  export type Actions = InitAction | ResetAction | StageAction | CompleteAction;
 }

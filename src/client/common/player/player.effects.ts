@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 
-import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
-import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
+import { Grid } from '../../a2/main/grid/grid.model';
 import { Note } from '../core/note.model';
-import { PlayerActions } from './player.actions';
+import { Player } from './player.actions';
 import { SoundService } from '../sound/sound.service';
 import { StageService } from '../stage/stage.service';
 import { TransportService } from '../core/transport.service';
@@ -21,16 +20,16 @@ export class PlayerEffects {
   ) {}
 
   @Effect() play$ = this.actions$
-    .ofType(PlayerActions.SET)
+    .ofType<Player.SetAction>(Player.SET)
     .map(action => action.payload)
-    .filter(([surface]) => surface)
-    .do(([surface, key, cursor, pulses]) => {
-      let sound, beat, tick;
-      if (surface instanceof A1Grid || surface instanceof A2Grid) {
+    .do((payload) => {
+      let { key, surface, cursor } = payload;
+      let sound, beat, tick, pulses;
+      if (surface instanceof Grid) {
         let pulse;
         [beat, pulse] = surface.beatPulseFor(cursor);
         sound = surface.soundByKey[key];
-        pulses = pulses[beat];
+        pulses = surface.pulsesByBeat[beat];
         tick = ticks(pulse, pulses);
       }
       if (this.stage.isDemo) {

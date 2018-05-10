@@ -1,12 +1,11 @@
 import * as _ from 'lodash';
 
-import { Action } from '@ngrx/store';
+import { Grid } from '../../a2/main/grid/grid.model';
 
-import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
-import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
-import { PlayerActions } from './player.actions';
-import { StageActions } from '../stage/stage.actions';
+import { Stage } from '../stage/stage.actions';
 import { Surface } from '../surface/surface.model';
+
+import { Player } from './player.actions';
 
 export class PlayerState {
   readonly selected?: string;
@@ -21,14 +20,14 @@ export class PlayerState {
     this.touched = false;
   }
 
-  static reducer(state: PlayerState, action: Action): PlayerState {
+  static reducer(state: PlayerState, action: Player.Actions | Stage.VictoryAction): PlayerState {
     switch (action.type) {
-      case PlayerActions.INIT: {
-        return new PlayerState(action.payload);
+      case Player.INIT: {
+        return new PlayerState(action.payload.initialData);
       }
-      case PlayerActions.SELECT: {
-        let [surface, key, cursor] = action.payload;
-        if (surface instanceof A1Grid || surface instanceof A2Grid) {
+      case Player.SELECT: {
+        let { key, surface, cursor } = action.payload;
+        if (surface instanceof Grid) {
           let beat = surface.beatPulseFor(cursor)[0];
           cursor = surface.wrapCursor(cursor);
           return <PlayerState>_.defaults({
@@ -40,17 +39,17 @@ export class PlayerState {
           return state;
         }
       }
-      case StageActions.VICTORY:
-      case PlayerActions.UNSELECT: {
+      case Stage.VICTORY:
+      case Player.UNSELECT: {
         if (!state.selected) {
           return state;
         } else {
           return _.defaults({ selected: null, beat: null, cursor: 0 }, state);
         }
       }
-      case PlayerActions.SET: {
-        let [surface, key, cursor] = action.payload;
-        if (surface instanceof A1Grid || surface instanceof A2Grid) {
+      case Player.SET: {
+        let { key, surface, cursor } = action.payload;
+        if (surface instanceof Grid) {
           let beat = surface.beatPulseFor(cursor)[0];
           let data = surface.dataFor(beat, state.data);
           return <PlayerState>_.defaultsDeep({
@@ -64,9 +63,9 @@ export class PlayerState {
           return state;
         }
       }
-      case PlayerActions.UNSET: {
-        let [surface, key, cursor] = action.payload;
-        if (surface instanceof A1Grid || surface instanceof A2Grid) {
+      case Player.UNSET: {
+        let { surface, cursor } = action.payload;
+        if (surface instanceof Grid) {
           cursor = surface.wrapCursor(cursor);
           let beat = surface.beatPulseFor(cursor)[0];
           let data = surface.dataFor(beat, state.data);

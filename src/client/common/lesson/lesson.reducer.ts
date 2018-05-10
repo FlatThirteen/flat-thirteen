@@ -1,10 +1,9 @@
 import * as _ from 'lodash';
 
-import { Action } from '@ngrx/store';
-
-import { LessonActions } from './lesson.actions';
 import { Phrase } from '../phrase/phrase.model';
 import { Surface } from '../surface/surface.model';
+
+import { Lesson } from './lesson.actions';
 
 export interface Plan {
   surfaces: Surface[];
@@ -22,16 +21,17 @@ export class LessonState {
     }
   }
 
-  static reducer(state: LessonState, action: Action): LessonState {
+  static reducer(state: LessonState, action: Lesson.Actions): LessonState {
     switch (action.type) {
-      case LessonActions.INIT: {
-        return new LessonState(action.payload);
+      case Lesson.INIT: {
+        let { plan } = action.payload;
+        return new LessonState(plan);
       }
-      case LessonActions.RESET: {
+      case Lesson.RESET: {
         return new LessonState(state.plan);
       }
-      case LessonActions.ADVANCE: {
-        let rounds = action.payload;
+      case Lesson.ADVANCE: {
+        let { rounds } = action.payload;
         return _.defaults({
           stage: state.stage + 1,
           rounds: state.rounds + rounds

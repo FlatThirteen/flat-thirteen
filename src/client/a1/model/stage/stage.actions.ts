@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
 import { Phrase } from '../../../common/phrase/phrase.model';
@@ -6,72 +5,56 @@ import { Note } from '../../../common/core/note.model';
 
 import { StageScene } from './stage.reducer';
 
-@Injectable()
-export class StageActions {
+export namespace Stage {
 
-  constructor() {}
-
-  static STANDBY = '[A1 STAGE] Standby';
-  standby(phrase?: Phrase): Action {
-    return {
-      type: StageActions.STANDBY,
-      payload: phrase
-    };
+  export const STANDBY = '[A1 STAGE] Standby';
+  export class StandbyAction implements Action {
+    readonly type = Stage.STANDBY;
+    constructor(public payload: { phrase?: Phrase }) {}
   }
 
-  static COUNT = '[A1 STAGE] Count';
-  count(nextScene: StageScene): Action {
-    return {
-      type: StageActions.COUNT,
-      payload: nextScene
-    };
+  export const COUNT = '[A1 STAGE] Count';
+  export class CountAction implements Action {
+    readonly type = Stage.COUNT;
+    constructor(public payload: { nextScene: StageScene }) {}
   }
 
-  static GOAL = '[A1 STAGE] Goal';
-  goal(nextScene: StageScene = null, penalty: number = 0): Action {
-    return {
-      type: StageActions.GOAL,
-      payload: [nextScene, penalty]
-    };
+  export const GOAL = '[A1 STAGE] Goal';
+  export class GoalAction implements Action {
+    readonly type = Stage.GOAL;
+    constructor(public payload: { nextScene?: StageScene, penalty?: number }) {}
   }
 
-  static PLAYBACK = '[A1 STAGE] Playback';
-  playback(nextScene: StageScene = null): Action {
-    return {
-      type: StageActions.PLAYBACK,
-      payload: nextScene
-    };
+  export const PLAYBACK = '[A1 STAGE] Playback';
+  export class PlaybackAction implements Action {
+    readonly type = Stage.PLAYBACK;
+    constructor(public payload: { nextScene?: StageScene }) {}
   }
 
-  static VICTORY = '[A1 STAGE] Victory';
-  victory(basePoints: number): Action {
-    return {
-      type: StageActions.VICTORY,
-      payload: basePoints
-    };
+  export const VICTORY = '[A1 STAGE] Victory';
+  export class VictoryAction implements Action {
+    readonly type = Stage.VICTORY;
+    constructor(public payload: { basePoints: number }) {}
   }
 
-  static NEXT = '[A1 STAGE] Next';
-  next(nextScene: StageScene): Action {
-    return {
-      type: StageActions.NEXT,
-      payload: nextScene
-    }
+  export const NEXT = '[A1 STAGE] Next';
+  export class NextAction implements Action {
+    readonly type = Stage.NEXT;
+    constructor(public payload: { nextScene: StageScene }) {}
   }
 
-  static PLAY = '[A1 STAGE] Play';
-  play(note: Note, beat: number, tick: number): Action {
-    return {
-      type: StageActions.PLAY,
-      payload: [note, beat, tick]
-    };
+  export const PLAY = '[A1 STAGE] Play';
+  export class PlayAction implements Action {
+    readonly type = Stage.PLAY;
+    constructor(public payload: { note: Note, beat: number, tick: number }) {}
   }
 
-  static WRONG = '[A1 STAGE] Wrong';
-  wrong(penalty: number): Action {
-    return {
-      type: StageActions.WRONG,
-      payload: penalty
-    };
+  export const WRONG = '[A1 STAGE] Wrong';
+  export class WrongAction implements Action {
+    readonly type = Stage.WRONG;
+    constructor(public payload: { penalty: number }) {}
   }
+
+  export type Actions = StandbyAction | CountAction | GoalAction |
+      PlaybackAction | VictoryAction | NextAction | PlayAction | WrongAction;
 }

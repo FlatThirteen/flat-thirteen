@@ -15,7 +15,6 @@ const NamedModulesPlugin = require('webpack/lib/NamedModulesPlugin');
 const EXCLUDE_SOURCE_MAPS = require('../constants').EXCLUDE_SOURCE_MAPS;
 const MY_TEST_RULES = require('../constants').MY_TEST_RULES;
 const MY_TEST_PLUGINS = require('../constants').MY_TEST_PLUGINS;
-const STORE_DEV_TOOLS = require('../constants').STORE_DEV_TOOLS;
 
 /**
  * Webpack configuration
@@ -192,7 +191,6 @@ module.exports = {
       HMR: false,
       PORT: 3000,
       HOST: JSON.stringify('localhost'),
-      STORE_DEV_TOOLS: JSON.stringify(STORE_DEV_TOOLS),
       UNIVERSAL: false
     }),
     new NamedModulesPlugin(),

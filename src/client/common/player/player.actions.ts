@@ -1,55 +1,46 @@
-import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
-import { LessonService } from '../lesson/lesson.service';
+import { Surface } from '../surface/surface.model';
 
-const noAction = { type: null };
+export namespace Player {
 
-@Injectable()
-export class PlayerActions {
-
-  constructor(private lesson: LessonService) {}
-
-  static INIT = '[PLAYER] Init';
-  init(): Action {
-    return {
-      type: PlayerActions.INIT,
-      payload: this.lesson.initialData
-    };
+  export const INIT = '[PLAYER] Init';
+  export class InitAction implements Action {
+    readonly type = Player.INIT;
+    constructor(public payload: { initialData: _.Dictionary<Surface.Data[]> }) {}
   }
 
-  static SELECT = '[PLAYER] Select';
-  select(key: string, cursor?: number): Action {
-    let surface = this.lesson.surfaceFor(key);
-    return !surface ? noAction : {
-      type: PlayerActions.SELECT,
-      payload: [surface, key, cursor]
-    };
+  export const SELECT = '[PLAYER] Select';
+  export class SelectAction implements Action {
+    readonly type = Player.SELECT;
+    constructor(public payload: { key: string, surface: Surface, cursor?: number }) {}
   }
 
-  static UNSELECT = '[PLAYER] Unselect';
-  unselect(): Action {
-    return {
-      type: PlayerActions.UNSELECT
-    };
+  export const UNSELECT = '[PLAYER] Unselect';
+  export class UnselectAction implements Action {
+    readonly type = Player.UNSELECT;
   }
 
-  static SET = '[PLAYER] Set';
-  set(key: string, cursor: number, pulses: number | number[]): Action {
-    let surface = this.lesson.surfaceFor(key);
-    return !surface ? noAction : {
-      type: PlayerActions.SET,
-      payload: [surface, key, cursor, pulses]
-    };
+  export const SET = '[PLAYER] Set';
+  export class SetAction implements Action {
+    readonly type = Player.SET;
+    constructor(public payload: {
+      key: string,
+      surface: Surface,
+      cursor: number
+    }) {}
   }
 
-  static UNSET = '[PLAYER] Unset';
-  unset(key: string, cursor: number): Action {
-    let surface = this.lesson.surfaceFor(key);
-    return !surface ? noAction : {
-      type: PlayerActions.UNSET,
-      payload: [surface, key, cursor]
-    };
+  export const UNSET = '[PLAYER] Unset';
+  export class UnsetAction implements Action {
+    readonly type = Player.UNSET;
+    constructor(public payload: {
+      surface: Surface,
+      cursor: number
+    }) {}
   }
+
+  export type Actions = InitAction | SelectAction | UnselectAction | SetAction |
+      UnsetAction;
 }
 

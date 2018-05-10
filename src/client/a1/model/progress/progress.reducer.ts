@@ -1,12 +1,10 @@
 import * as _ from 'lodash';
 
-import { Action } from '@ngrx/store';
-
-import { Powers, PowerUp } from '../../../common/core/powers.service';
+import { Powers, PowerType, PowerUp } from '../../../common/core/powers.service';
 
 import { Result } from '../lesson/lesson.reducer';
 
-import { ProgressActions } from './progress.actions';
+import { Progress } from './progress.actions';
 import { ProgressData } from './progress.data';
 
 export interface Settings {
@@ -23,17 +21,17 @@ export class ProgressState {
 
   constructor(readonly settings: Settings) {}
 
-  static reducer(state: ProgressState, action: Action): ProgressState {
+  static reducer(state: ProgressState, action: Progress.Actions): ProgressState {
     switch (action.type) {
-      case ProgressActions.INIT: {
-        return new ProgressState(action.payload);
+      case Progress.INIT: {
+        return new ProgressState(action.payload.settings);
       }
-      case ProgressActions.POWER: {
-        let [type, beat] = action.payload;
+      case Progress.POWER: {
+        let { type, beat } = action.payload;
         let removed = false;
         return _.defaults({
           settings: _.defaults({
-            powers: state.settings.powers.up(beat ? type + beat : type)
+            powers: state.settings.powers.up(<PowerType>(beat ? type + beat : type))
           }, state.settings),
           powerUps: _.filter(state.powerUps, (powerUp) => {
             if (!removed && powerUp.type === type) {
@@ -44,8 +42,8 @@ export class ProgressState {
           }),
         }, state);
       }
-      case ProgressActions.RESULT: {
-        let result = action.payload;
+      case Progress.RESULT: {
+        let { result } = action.payload;
         let newResults = state.results.slice();
         newResults.push(result);
         let newPoints = state.points + _.sum(result.points);
@@ -56,7 +54,7 @@ export class ProgressState {
               state.lessonNumber + 1, newPoints),
         }, state);
       }
-      case ProgressActions.NEXT: {
+      case Progress.NEXT: {
         return _.defaults({
           lessonNumber: state.lessonNumber === undefined ? 0 : state.lessonNumber + 1
         }, state);

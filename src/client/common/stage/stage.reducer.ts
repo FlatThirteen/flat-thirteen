@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
-import { Action } from '@ngrx/store';
 
-import { LessonActions } from '../lesson/lesson.actions';
+import { Lesson } from '../lesson/lesson.actions';
 import { Phrase } from '../phrase/phrase.model';
-import { PlayerActions } from '../player/player.actions';
-import { StageActions } from './stage.actions';
 import { VictoryPhraseBuilder } from '../phrase/victory.phrase';
+import { Player } from '../player/player.actions';
+
+import { Stage } from './stage.actions';
 
 export type StageScene = 'demo' | 'loop' | 'count' | 'goal' | 'play' | 'victory' | '';
 
@@ -20,16 +20,16 @@ export class StageState {
 
   constructor(readonly scene: StageScene, readonly nextScene: StageScene) {}
 
-  static reducer(state: StageState, action: Action): StageState {
+  static reducer(state: StageState, action: Stage.Actions | Lesson.Actions | Player.Actions): StageState {
     switch (action.type) {
-      case LessonActions.INIT:
-      case LessonActions.RESET: {
+      case Lesson.INIT:
+      case Lesson.RESET: {
         return new StageState('demo', 'count');
       }
-      case LessonActions.ADVANCE: {
+      case Lesson.ADVANCE: {
         return new StageState('count', 'goal');
       }
-      case StageActions.LISTEN: {
+      case Stage.LISTEN: {
         if (state.scene === 'demo') {
           return new StageState('loop', 'loop');
         } else {
@@ -39,8 +39,8 @@ export class StageState {
           }, state);
         }
       }
-      case StageActions.NEXT: {
-        let phraseBuilder = action.payload;
+      case Stage.NEXT: {
+        let { phraseBuilder } = action.payload;
         return {
           scene: state.nextScene,
           nextScene: 'goal',
@@ -53,19 +53,19 @@ export class StageState {
           victoryPhrase: null
         };
       }
-      case StageActions.VICTORY: {
-        let basePoints = action.payload;
+      case Stage.VICTORY: {
+        let { basePoints } = action.payload;
         return _.defaults({
           scene: 'victory',
           nextScene: 'count',
           victoryPhrase: new VictoryPhraseBuilder(basePoints / 10).build()
         }, state);
       }
-      case StageActions.PLAY: {
+      case Stage.PLAY: {
         if (state.scene === 'loop') {
           return state;
         }
-        let [note, beat, tick] = action.payload;
+        let { note, beat, tick } = action.payload;
         let playedPhrase = _.cloneDeep(state.playedPhrase).add(note, beat, tick);
         let goalPlayed = _.isEqual(state.goalPhrase, playedPhrase);
         return _.defaults({
@@ -74,8 +74,8 @@ export class StageState {
           nextScene: goalPlayed ? 'victory' : state.active ? 'play' : 'goal'
         }, state);
       }
-      case PlayerActions.SET:
-      case PlayerActions.UNSET: {
+      case Player.SET:
+      case Player.UNSET: {
         return _.defaults({
           active: true,
           goalPlayed: false,
