@@ -1,11 +1,10 @@
 import * as _ from 'lodash';
-import { Action } from '@ngrx/store';
 
 import { Phrase } from '../../../common/phrase/phrase.model';
 import { VictoryPhraseBuilder } from '../../../common/phrase/victory.phrase';
 
 import { Penalty } from './penalty.model';
-import { StageActions } from './stage.actions';
+import { Stage } from './stage.actions';
 
 export type StageScene = 'standby' | 'count' | 'goal' | 'playback' | 'victory' | '';
 
@@ -25,11 +24,10 @@ export class StageState {
     this.wrongPenalty = new Penalty(50);
   }
 
-  static reducer(state: StageState, action: Action): StageState {
-    let nextScene, penalty;
+  static reducer(state: StageState, action: Stage.Actions): StageState {
     switch(action.type) {
-      case StageActions.STANDBY:
-        let phrase = action.payload;
+      case Stage.STANDBY:
+        let { phrase } = action.payload;
         if (phrase) {
           return new StageState(phrase);
         } else {
@@ -38,53 +36,49 @@ export class StageState {
             nextScene: 'standby'
           }, state)
         }
-      case StageActions.COUNT:
-        nextScene = action.payload;
+      case Stage.COUNT:
         return _.defaults({
           scene: 'count',
-          nextScene: nextScene
+          nextScene: action.payload.nextScene
         }, state);
-      case StageActions.GOAL:
-        [nextScene, penalty] = action.payload;
+      case Stage.GOAL:
+        let { penalty } = action.payload;
         return _.defaults({
           scene: 'goal',
-          nextScene: nextScene,
+          nextScene: action.payload.nextScene,
           goalCount: state.goalCount + 1,
-          goalPenalty: penalty ? state.goalPenalty.accrue(penalty) : state.goalPenalty
+          goalPenalty: !penalty ? state.goalPenalty : state.goalPenalty.accrue(penalty)
         }, state);
-      case StageActions.PLAYBACK:
-        nextScene = action.payload;
+      case Stage.PLAYBACK:
         return _.defaults({
           scene: 'playback',
-          nextScene: nextScene,
+          nextScene: action.payload.nextScene,
           playbackCount: state.playbackCount + 1,
           playedPhrase: new Phrase()
         }, state);
-      case StageActions.VICTORY:
-        let basePoints = action.payload;
+      case Stage.VICTORY:
+        let { basePoints } = action.payload;
         return _.defaults({
           scene: 'victory',
           nextScene: 'standby',
           victoryPhrase: new VictoryPhraseBuilder(_.floor(basePoints / 10)).build()
         }, state);
-      case StageActions.NEXT:
-        nextScene = action.payload;
+      case Stage.NEXT:
         return _.defaults({
-          nextScene: nextScene
+          nextScene: action.payload.nextScene
         }, state);
-      case StageActions.PLAY:
-        let [note, beat, tick] = action.payload;
-        let playedPhrase = state.playedPhrase ?
-            _.cloneDeep(state.playedPhrase).add(note, beat, tick) : null;
+      case Stage.PLAY:
+        let { note, beat, tick } = action.payload;
+        let playedPhrase = !state.playedPhrase ? null :
+            _.cloneDeep(state.playedPhrase).add(note, beat, tick);
         let goalPlayed = _.isEqual(state.goalPhrase, playedPhrase);
         return _.defaults({
           playedPhrase: playedPhrase,
           goalPlayed: goalPlayed
         }, state);
-      case StageActions.WRONG:
-        penalty = action.payload;
+      case Stage.WRONG:
         return _.defaults({
-          wrongPenalty: state.wrongPenalty.accrue(penalty)
+          wrongPenalty: state.wrongPenalty.accrue(action.payload.penalty)
         }, state);
       default: {
         return state;

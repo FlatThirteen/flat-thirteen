@@ -8,9 +8,9 @@ import 'ts-helpers';
 import {
   DEV_PORT, PROD_PORT, UNIVERSAL_PORT, EXCLUDE_SOURCE_MAPS, HOST,
   USE_DEV_SERVER_PROXY, DEV_SERVER_PROXY_CONFIG, DEV_SERVER_WATCH_OPTIONS,
-  DEV_SOURCE_MAPS, PROD_SOURCE_MAPS, STORE_DEV_TOOLS, MY_ENTRY_PAGES,
-  MY_COPY_FOLDERS, MY_POLYFILL_DLLS, MY_VENDOR_DLLS, MY_CLIENT_PLUGINS,
-  MY_CLIENT_PRODUCTION_PLUGINS, MY_CLIENT_RULES, SHOW_WEBPACK_BUNDLE_ANALYZER
+  DEV_SOURCE_MAPS, PROD_SOURCE_MAPS, MY_ENTRY_PAGES, MY_COPY_FOLDERS,
+  MY_POLYFILL_DLLS, MY_VENDOR_DLLS, MY_CLIENT_PLUGINS,
+  MY_CLIENT_PRODUCTION_PLUGINS, SHOW_WEBPACK_BUNDLE_ANALYZER
 } from './constants';
 
 const {
@@ -72,7 +72,6 @@ const CONSTANTS = {
   HMR: HMR,
   HOST: JSON.stringify(HOST),
   PORT: PORT,
-  STORE_DEV_TOOLS: JSON.stringify(STORE_DEV_TOOLS),
   UNIVERSAL: UNIVERSAL
 };
 
@@ -86,12 +85,9 @@ const DLL_VENDORS = [
   '@angular/platform-browser-dynamic',
   '@angular/platform-server',
   '@angular/router',
-  '@ngrx/core',
-  '@ngrx/core/add/operator/select.js',
   '@ngrx/effects',
   '@ngrx/router-store',
   '@ngrx/store',
-  'ngrx-store-freeze',
   'ngrx-store-logger',
   'rxjs',
   ...MY_VENDOR_DLLS

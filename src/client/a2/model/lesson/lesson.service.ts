@@ -5,17 +5,18 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { createSelector } from 'reselect';
 
-import { AppState } from '../app.reducer';
-import { LessonActions } from './lesson.actions';
+import { AppState } from '../../../common/app.reducer';
+import { Rhythm } from '../../../common/core/rhythm.model';
+import { SoundName } from '../../../common/core/note.model';
+import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../../../common/phrase/phrase.model';
+import { Surface } from '../../../common/surface/surface.model';
+
+import { Lesson } from './lesson.actions';
 import { Plan } from './lesson.reducer';
-import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../phrase/phrase.model';
-import { Rhythm } from '../core/rhythm.model';
-import { SoundName } from '../core/note.model';
-import { Surface } from '../surface/surface.model';
 
 @Injectable()
 export class LessonService {
-  static getLesson = (state: AppState) => state.lesson;
+  static getLesson = (state: AppState) => state.a2.lesson;
   static getPlan = createSelector(LessonService.getLesson, lesson => lesson && lesson.plan);
   static getStage = createSelector(LessonService.getLesson, lesson => lesson && lesson.stage);
 
@@ -26,13 +27,13 @@ export class LessonService {
   private _stage: number;
 
   private _soundNames: SoundName[];
-  private _initialData: _.Dictionary<Surface.Data>;
+  private _initialData: _.Dictionary<Surface.Data[]>;
 
   private _rhythm: Rhythm;
   private _minNotes: number;
   private _maxNotes: number;
 
-  constructor(private store: Store<AppState>, private lesson: LessonActions) {
+  constructor(private store: Store<AppState>) {
     this.plan$ = this.store.select(LessonService.getPlan);
     this.stage$ = this.store.select(LessonService.getStage);
 
@@ -53,15 +54,15 @@ export class LessonService {
   }
 
   init(plan: Plan) {
-    this.store.dispatch(this.lesson.init(plan));
+    this.store.dispatch(new Lesson.InitAction({ plan }));
   }
 
   reset() {
-    this.store.dispatch(this.lesson.reset());
+    this.store.dispatch(new Lesson.ResetAction());
   }
 
   advance(rounds: number) {
-    this.store.dispatch(this.lesson.advance(rounds));
+    this.store.dispatch(new Lesson.AdvanceAction({ rounds }));
   }
 
   set rhythm(rhythm: Rhythm) {

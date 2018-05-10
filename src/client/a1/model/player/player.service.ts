@@ -14,7 +14,7 @@ import { Grid as A1Grid } from '../../main/grid/grid.model';
 
 import { LessonService } from '../lesson/lesson.service';
 
-import { PlayerActions } from './player.actions';
+import { Player } from './player.actions';
 
 @Injectable()
 export class PlayerService {
@@ -39,8 +39,7 @@ export class PlayerService {
 
   public noteCount$: Subject<number> = new Subject();
 
-  constructor(private store: Store<AppState>, private player: PlayerActions,
-              private lesson: LessonService) {
+  constructor(private store: Store<AppState>, private lesson: LessonService) {
     this.data$ = this.store.select(PlayerService.getData);
     this.selected$ = this.store.select(PlayerService.getSelected);
     this.beat$ = this.store.select(PlayerService.getBeat);
@@ -76,38 +75,33 @@ export class PlayerService {
   }
 
   init() {
-    this.store.dispatch(this.player.init());
+    this.store.dispatch(new Player.InitAction({ initialData: this.lesson.initialData }));
   }
 
   select(key: string, cursor?: number) {
-    if (key) {
-      this.store.dispatch(this.player.select(key, cursor));
+    let surface = this.lesson.surfaceFor(key);
+    if (surface) {
+      this.store.dispatch(new Player.SelectAction({ key, surface, cursor }));
     }
   }
 
   unselect() {
-    this.store.dispatch(this.player.unselect());
+    this.store.dispatch(new Player.UnselectAction());
   }
 
   set(key: string, cursor: number) {
     let surface = this.lesson.surfaceFor(key);
-    let pulses: number | number[] = 1;
-    if (surface instanceof A1Grid) {
-      // Send pulsesByBeat so player effect knows cursor is calculated from
-      pulses = surface.pulsesByBeat;
-    }
     if (surface) {
-      this.store.dispatch(this.player.set(key, cursor, pulses));
+      this.store.dispatch(new Player.SetAction({ key, surface, cursor }));
     }
     return !!surface;
   }
 
   unset(key: string, cursor: number) {
-    this.store.dispatch(this.player.unset(key, cursor));
-  }
-
-  isSelected(beat: number) {
-    return this._beat === beat;
+    let surface = this.lesson.surfaceFor(key);
+    if (surface) {
+      this.store.dispatch(new Player.UnsetAction({ surface, cursor }));
+    }
   }
 
   value(key: string, cursor: number = 0): boolean {

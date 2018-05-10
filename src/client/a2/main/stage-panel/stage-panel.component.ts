@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
-import { LessonService } from '../../common/lesson/lesson.service';
-import { PlayerService } from '../../common/player/player.service';
-import { StageService } from '../../common/stage/stage.service';
-import { TransportService } from '../../common/core/transport.service';
+import { LessonService } from '../../model/lesson/lesson.service';
+import { PlayerService } from '../../model/player/player.service';
+import { StageService } from '../../model/stage/stage.service';
+import { TransportService } from '../../../common/core/transport.service';
 
 /**
  * This class represents the stage panel below the surfaces.

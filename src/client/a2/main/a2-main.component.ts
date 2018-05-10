@@ -1,17 +1,20 @@
 import * as _ from 'lodash';
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { Grid } from './grid/grid.model';
-import { LessonService } from '../../common/lesson/lesson.service';
-import { PlayerService } from '../../common/player/player.service';
-import { StageService } from '../../common/stage/stage.service';
-import { Surface } from '../../common/surface/surface.model';
-import { TransportService } from '../../common/core/transport.service';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
+
 import { Rhythm } from '../../common/core/rhythm.model';
+import { TransportService } from '../../common/core/transport.service';
+import { Surface } from '../../common/surface/surface.model';
+
+import { LessonService } from '../model/lesson/lesson.service';
+import { PlayerService } from '../model/player/player.service';
+import { StageService } from '../model/stage/stage.service';
+
+import { Grid } from './grid/grid.model';
 
 let requestAnimationFrameId: number;
 

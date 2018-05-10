@@ -5,17 +5,19 @@ import { createSelector } from 'reselect';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { AppState } from '../app.reducer';
-import { Grid as A1Grid } from '../../a1/main/grid/grid.model';
-import { Grid as A2Grid } from '../../a2/main/grid/grid.model';
+import { AppState } from '../../../common/app.reducer';
+import { Note } from '../../../common/core/note.model';
+import { Surface } from '../../../common/surface/surface.model';
+
+import { Grid } from '../../main/grid/grid.model';
+
 import { LessonService } from '../lesson/lesson.service';
-import { Note } from '../core/note.model';
-import { PlayerActions } from './player.actions';
-import { Surface } from '../surface/surface.model';
+
+import { Player } from './player.actions';
 
 @Injectable()
 export class PlayerService {
-  static getPlayer = (state: AppState) => state.player;
+  static getPlayer = (state: AppState) => state.a2.player;
   static getData = createSelector(PlayerService.getPlayer, player => player && player.data);
   static getSelected = createSelector(PlayerService.getPlayer, player => player && player.selected);
   static getBeat = createSelector(PlayerService.getPlayer, player => player && player.beat);
@@ -34,8 +36,7 @@ export class PlayerService {
   private _beat: number;
   private _cursor: number;
 
-  constructor(private store: Store<AppState>, private player: PlayerActions,
-              private lesson: LessonService) {
+  constructor(private store: Store<AppState>, private lesson: LessonService) {
     this.data$ = this.store.select(PlayerService.getData);
     this.selected$ = this.store.select(PlayerService.getSelected);
     this.beat$ = this.store.select(PlayerService.getBeat);
@@ -70,43 +71,38 @@ export class PlayerService {
   }
 
   init() {
-    this.store.dispatch(this.player.init());
+    this.store.dispatch(new Player.InitAction({ initialData: this.lesson.initialData }));
   }
 
   select(key: string, cursor?: number) {
-    if (key) {
-      this.store.dispatch(this.player.select(key, cursor));
+    let surface = this.lesson.surfaceFor(key);
+    if (surface) {
+      this.store.dispatch(new Player.SelectAction({ key, surface, cursor }));
     }
   }
 
   unselect() {
-    this.store.dispatch(this.player.unselect());
+    this.store.dispatch(new Player.UnselectAction());
   }
 
   set(key: string, cursor: number) {
     let surface = this.lesson.surfaceFor(key);
-    let pulses: number | number[] = 1;
-    if (surface instanceof A1Grid || surface instanceof A2Grid) {
-      // Send pulsesByBeat so player effect knows cursor is calculated from
-      pulses = surface.pulsesByBeat;
-    }
     if (surface) {
-      this.store.dispatch(this.player.set(key, cursor, pulses));
+      this.store.dispatch(new Player.SetAction({ key, surface, cursor }));
     }
     return !!surface;
   }
 
   unset(key: string, cursor: number) {
-    this.store.dispatch(this.player.unset(key, cursor));
-  }
-
-  isSelected(beat: number) {
-    return this._beat === beat;
+    let surface = this.lesson.surfaceFor(key);
+    if (surface) {
+      this.store.dispatch(new Player.UnsetAction({ surface, cursor }));
+    }
   }
 
   value(key: string, cursor: number = 0): boolean {
     let surface = this.lesson.surfaceFor(key);
-    if (surface instanceof A1Grid || surface instanceof A2Grid) {
+    if (surface instanceof Grid) {
       let [beat, pulse] = surface.beatPulseFor(cursor);
       let data = surface.dataFor(beat, this._data);
       return data.notes[pulse] === surface.soundByKey[key];

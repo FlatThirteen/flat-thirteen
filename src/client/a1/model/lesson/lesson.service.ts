@@ -9,7 +9,7 @@ import { AppState } from '../../../common/app.reducer';
 import { SoundName } from '../../../common/core/note.model';
 import { Surface } from '../../../common/surface/surface.model';
 
-import { LessonActions } from './lesson.actions';
+import { Lesson } from './lesson.actions';
 import { Plan, Result } from './lesson.reducer';
 
 @Injectable()
@@ -28,10 +28,10 @@ export class LessonService {
   private _result: Result;
 
   private _soundNames: SoundName[];
-  private _initialData: _.Dictionary<Surface.Data>;
+  private _initialData: _.Dictionary<Surface.Data[]>;
   private _weenieStage: number;
 
-  constructor(private store: Store<AppState>, private lesson: LessonActions) {
+  constructor(private store: Store<AppState>) {
     this.plan$ = this.store.select(LessonService.getPlan);
     this.stage$ = this.store.select(LessonService.getStage);
     this.result$ = this.store.select(LessonService.getResult);
@@ -58,19 +58,19 @@ export class LessonService {
   }
 
   init(plan: Plan) {
-    this.store.dispatch(this.lesson.init(plan));
+    this.store.dispatch(new Lesson.InitAction({ plan }));
   }
 
   reset() {
-    this.store.dispatch(this.lesson.reset());
+    this.store.dispatch(new Lesson.ResetAction());
   }
 
   set stage(stage: number) {
-    this.store.dispatch(this.lesson.stage(stage));
+    this.store.dispatch(new Lesson.StageAction({ stage }));
   }
 
   complete(rounds: number, stage: number, points: number) {
-    this.store.dispatch(this.lesson.complete(rounds, stage, points));
+    this.store.dispatch(new Lesson.CompleteAction({ rounds, stage, points }));
   }
 
   get surfaces() {

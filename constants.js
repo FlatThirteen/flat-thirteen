@@ -39,12 +39,6 @@ exports.DEV_SERVER_WATCH_OPTIONS = {
   ignored: /node_modules/
 };
 
-/**
- * specifies which @ngrx dev tools will be available when you build and load
- * your app in dev mode. Options are: monitor | logger | both | none
- */
-exports.STORE_DEV_TOOLS = 'logger';
-
 exports.EXCLUDE_SOURCE_MAPS = [
   // these packages have problems with their sourcemaps
   root('node_modules/@angular'),
@@ -82,10 +76,6 @@ exports.MY_CLIENT_PLUGINS = [
 
 exports.MY_CLIENT_PRODUCTION_PLUGINS = [
   // use this to import your own webpack config plugins for production use.
-];
-
-exports.MY_CLIENT_RULES = [
-  // use this to import your own rules for Client webpack config.
 ];
 
 exports.MY_TEST_RULES = [

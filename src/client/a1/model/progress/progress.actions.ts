@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Action } from '@ngrx/store';
 
 import { PowerUpType } from '../../../common/core/powers.service';
@@ -7,39 +6,30 @@ import { Result } from '../lesson/lesson.reducer';
 
 import { Settings } from './progress.reducer';
 
-@Injectable()
-export class ProgressActions {
+export namespace Progress {
 
-  constructor() {}
-
-  static INIT = '[A1 PROGRESS] Init';
-  init(settings: Settings): Action {
-    return {
-      type: ProgressActions.INIT,
-      payload: settings
-    };
+  export const INIT = '[A1 PROGRESS] Init';
+  export class InitAction implements Action {
+    readonly type = Progress.INIT;
+    constructor(public payload: { settings: Settings }) {}
   }
 
-  static POWER = '[A1 PROGRESS] Power';
-  power(powerUpType: PowerUpType, beat: number) {
-    return {
-      type: ProgressActions.POWER,
-      payload: [powerUpType, beat]
-    }
+  export const POWER = '[A1 PROGRESS] Power';
+  export class PowerAction implements Action {
+    readonly type = Progress.POWER;
+    constructor(public payload: { type: PowerUpType, beat: number }) {}
   }
 
-  static RESULT = '[A1 PROGRESS] Result';
-  result(result: Result): Action {
-    return {
-      type: ProgressActions.RESULT,
-      payload: result
-    }
+  export const RESULT = '[A1 PROGRESS] Result';
+  export class ResultAction implements Action {
+    readonly type = Progress.RESULT;
+    constructor(public payload: { result: Result }) {}
   }
 
-  static NEXT = '[A1 PROGRESS] Next';
-  next(): Action {
-    return {
-      type: ProgressActions.NEXT
-    }
+  export const NEXT = '[A1 PROGRESS] Next';
+  export class NextAction implements Action {
+    readonly type = Progress.NEXT;
   }
+
+  export type Actions = InitAction | PowerAction | ResultAction | NextAction;
 }

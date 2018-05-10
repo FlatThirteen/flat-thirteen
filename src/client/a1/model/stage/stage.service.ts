@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
-import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
-
+import { createSelector } from 'reselect';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
-import { createSelector } from 'reselect';
+
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 import { AppState } from '../../../common/app.reducer';
 import { Note } from '../../../common/core/note.model';
@@ -15,7 +15,7 @@ import { PlayerService } from '../player/player.service';
 
 import { Penalty } from './penalty.model';
 import { StageScene } from './stage.reducer';
-import { StageActions } from './stage.actions';
+import { Stage } from './stage.actions';
 
 @Injectable()
 export class StageService {
@@ -59,8 +59,8 @@ export class StageService {
   public goalMinusFx$: Subject<number> = new Subject();
   public playMinusFx$: Subject<number> = new Subject();
 
-  constructor(private store: Store<AppState>, private stage: StageActions,
-              private player: PlayerService, private sound: SoundService) {
+  constructor(private store: Store<AppState>, private player: PlayerService,
+              private sound: SoundService) {
     this.scene$ = this.store.select(StageService.getScene);
     this.nextScene$ = this.store.select(StageService.getNextScene);
     this.goalCount$ = this.store.select(StageService.getGoalCount);
@@ -102,36 +102,36 @@ export class StageService {
   }
 
   standby(phrase?: Phrase) {
-    this.store.dispatch(this.stage.standby(phrase));
+    this.store.dispatch(new Stage.StandbyAction({ phrase }));
   }
 
   count(nextScene: StageScene) {
-    this.store.dispatch(this.stage.count(nextScene));
+    this.store.dispatch(new Stage.CountAction({ nextScene }));
   }
 
   goal(nextScene: StageScene, penalty: number) {
-    this.store.dispatch(this.stage.goal(nextScene, penalty));
+    this.store.dispatch(new Stage.GoalAction({ nextScene, penalty }));
   }
 
   playback(nextScene: StageScene) {
-    this.store.dispatch(this.stage.playback(nextScene));
+    this.store.dispatch(new Stage.PlaybackAction({ nextScene }));
   }
 
   victory() {
-    this.store.dispatch(this.stage.victory(this.basePoints));
+    this.store.dispatch(new Stage.VictoryAction({ basePoints: this.basePoints }));
   }
 
   next(nextScene: StageScene) {
-    this.store.dispatch(this.stage.next(nextScene));
+    this.store.dispatch(new Stage.NextAction({ nextScene }));
   }
 
   play(note: Note, beat: number, tick: number, time?: number) {
     this.sound.play(note.soundName, time);
-    this.store.dispatch(this.stage.play(note, beat, tick));
+    this.store.dispatch(new Stage.PlayAction({ note, beat, tick }));
   }
 
   wrong(penalty: number) {
-    this.store.dispatch(this.stage.wrong(penalty));
+    this.store.dispatch(new Stage.WrongAction({ penalty }));
   }
 
   pulse(time: number, beat: number, tick: number) {

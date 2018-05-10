@@ -1,13 +1,15 @@
 import * as _ from 'lodash';
-import { Component, Input, OnInit } from '@angular/core';
-
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 
-import { Grid } from '../grid.model';
-import { PlayerService } from '../../../../common/player/player.service';
-import { StageService } from '../../../../common/stage/stage.service';
+import { Component, Input, OnInit } from '@angular/core';
+
 import { TransportService } from '../../../../common/core/transport.service';
+
+import { PlayerService } from '../../../model/player/player.service';
+import { StageService } from '../../../model/stage/stage.service';
+
+import { Grid } from '../grid.model';
 
 /**
  * This class represents the HTML version of the Grid Component.

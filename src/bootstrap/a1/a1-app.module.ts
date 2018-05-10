@@ -9,7 +9,7 @@
 import { ApplicationRef, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { Store } from '@ngrx/store';
 
@@ -33,7 +33,7 @@ import { APP_PROVIDERS } from '../../client/a1/a1-app.config';
     APP_IMPORTS,
     BrowserModule,
     BrowserAnimationsModule,
-    HttpModule,
+    HttpClientModule,
   ],
   providers: [APP_PROVIDERS]
 })
