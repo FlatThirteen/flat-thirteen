@@ -88,7 +88,6 @@ const DLL_VENDORS = [
   '@ngrx/effects',
   '@ngrx/router-store',
   '@ngrx/store',
-  'ngrx-store-freeze',
   'ngrx-store-logger',
   'rxjs',
   ...MY_VENDOR_DLLS
