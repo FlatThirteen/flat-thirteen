@@ -5,19 +5,19 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
+import { AppState } from '../../../common/app.reducer';
+import { Note } from '../../../common/core/note.model';
+import { Phrase, PhraseBuilder } from '../../../common/phrase/phrase.model';
+import { SoundService } from '../../../common/sound/sound.service';
 
-import { AppState } from '../app.reducer';
-import { Note } from '../core/note.model';
-import { Phrase, PhraseBuilder } from '../phrase/phrase.model';
 import { PlayerService } from '../player/player.service';
-import { SoundService } from '../sound/sound.service';
 
 import { StageScene } from './stage.reducer';
 import { Stage } from './stage.actions';
 
 @Injectable()
 export class StageService {
-  static getStage = (state: AppState) => state.stage;
+  static getStage = (state: AppState) => state.a2.stage;
   static getScene = createSelector(StageService.getStage, stage => stage && stage.scene);
   static getNextScene = createSelector(StageService.getStage, stage => stage && stage.nextScene);
   static getRound = createSelector(StageService.getStage, stage => stage && stage.round);

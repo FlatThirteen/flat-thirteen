@@ -1,9 +1,10 @@
 import * as _ from 'lodash';
 
-import { Grid } from '../../a2/main/grid/grid.model';
+import { Surface } from '../../../common/surface/surface.model';
+
+import { Grid } from '../../main/grid/grid.model';
 
 import { Stage } from '../stage/stage.actions';
-import { Surface } from '../surface/surface.model';
 
 import { Player } from './player.actions';
 

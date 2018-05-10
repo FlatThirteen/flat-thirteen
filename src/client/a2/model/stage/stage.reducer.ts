@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 
+import { Phrase } from '../../../common/phrase/phrase.model';
+import { VictoryPhraseBuilder } from '../../../common/phrase/victory.phrase';
+
 import { Lesson } from '../lesson/lesson.actions';
-import { Phrase } from '../phrase/phrase.model';
-import { VictoryPhraseBuilder } from '../phrase/victory.phrase';
 import { Player } from '../player/player.actions';
 
 import { Stage } from './stage.actions';

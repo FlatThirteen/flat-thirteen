@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 
-import { Note } from '../core/note.model';
-import { PhraseBuilder } from '../phrase/phrase.model';
+import { Note } from '../../../common/core/note.model';
+import { PhraseBuilder } from '../../../common/phrase/phrase.model';
 
 export namespace Stage {
 

@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-import { Surface } from '../surface/surface.model';
+import { Surface } from '../../../common/surface/surface.model';
 
 export namespace Player {
 

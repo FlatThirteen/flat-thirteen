@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 
-import { Grid } from '../../a2/main/grid/grid.model';
-import { Note } from '../core/note.model';
-import { Player } from './player.actions';
-import { SoundService } from '../sound/sound.service';
+import { ticks } from '../../../common/core/beat-tick.model';
+import { Note } from '../../../common/core/note.model';
+import { TransportService } from '../../../common/core/transport.service';
+import { SoundService } from '../../../common/sound/sound.service';
+
+import { Grid } from '../../main/grid/grid.model';
+
 import { StageService } from '../stage/stage.service';
-import { TransportService } from '../core/transport.service';
-import { ticks } from '../core/beat-tick.model';
+
+import { Player } from './player.actions';
 
 @Injectable()
 export class PlayerEffects {

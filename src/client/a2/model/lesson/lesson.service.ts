@@ -5,18 +5,18 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { createSelector } from 'reselect';
 
-import { AppState } from '../app.reducer';
-import { Rhythm } from '../core/rhythm.model';
-import { SoundName } from '../core/note.model';
-import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../phrase/phrase.model';
-import { Surface } from '../surface/surface.model';
+import { AppState } from '../../../common/app.reducer';
+import { Rhythm } from '../../../common/core/rhythm.model';
+import { SoundName } from '../../../common/core/note.model';
+import { ConstantPhraseBuilder, MonophonicMonotonePhraseBuilder } from '../../../common/phrase/phrase.model';
+import { Surface } from '../../../common/surface/surface.model';
 
 import { Lesson } from './lesson.actions';
 import { Plan } from './lesson.reducer';
 
 @Injectable()
 export class LessonService {
-  static getLesson = (state: AppState) => state.lesson;
+  static getLesson = (state: AppState) => state.a2.lesson;
   static getPlan = createSelector(LessonService.getLesson, lesson => lesson && lesson.plan);
   static getStage = createSelector(LessonService.getLesson, lesson => lesson && lesson.stage);
 

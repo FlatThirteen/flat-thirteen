@@ -5,18 +5,19 @@ import { createSelector } from 'reselect';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Grid } from '../../a2/main/grid/grid.model';
+import { AppState } from '../../../common/app.reducer';
+import { Note } from '../../../common/core/note.model';
+import { Surface } from '../../../common/surface/surface.model';
 
-import { AppState } from '../app.reducer';
+import { Grid } from '../../main/grid/grid.model';
+
 import { LessonService } from '../lesson/lesson.service';
-import { Note } from '../core/note.model';
-import { Surface } from '../surface/surface.model';
 
 import { Player } from './player.actions';
 
 @Injectable()
 export class PlayerService {
-  static getPlayer = (state: AppState) => state.player;
+  static getPlayer = (state: AppState) => state.a2.player;
   static getData = createSelector(PlayerService.getPlayer, player => player && player.data);
   static getSelected = createSelector(PlayerService.getPlayer, player => player && player.selected);
   static getBeat = createSelector(PlayerService.getPlayer, player => player && player.beat);

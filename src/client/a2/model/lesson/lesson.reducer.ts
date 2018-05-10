@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
-import { Phrase } from '../phrase/phrase.model';
-import { Surface } from '../surface/surface.model';
+import { Phrase } from '../../../common/phrase/phrase.model';
+import { Surface } from '../../../common/surface/surface.model';
 
 import { Lesson } from './lesson.actions';
 
