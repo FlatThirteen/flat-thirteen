@@ -28,6 +28,54 @@
       font-size: 40px;
       padding: 10px 5px;
 
+  .beats-input, .performance
+    margin: 10px 0;
+
+    &.dim
+      opacity: 0.5;
+
+    &.invalid input
+      color: primary-red;
+      opacity: 1;
+
+    input
+      background: transparent;
+      border: none;
+      font-size: 30px;
+      margin: 0;
+      text-align: center;
+      width: 100%;
+
+      &[type="text"]
+        margin-right: 14%;
+        width: 86%;
+
+      &:focus
+        outline: none;
+
+  .performance
+    position: relative;
+
+    input
+      font-size: 14px;
+      opacity: 0.3;
+
+      &:hover, &:focus
+        opacity: 1;
+
+    .suggestions
+      position: absolute;
+      left: 20%;
+      border: solid darkgray 1px;
+      padding: 1px 5px;
+
+      .suggestion
+        color: darkgray;
+        cursor: pointer;
+
+        &:hover
+          color: black;
+
 .right
   position: absolute;
   right: 0;
@@ -44,23 +92,26 @@
     opacity: 0.5;
 
   input
+    background-color: transparent;
     margin: 0 2px;
+    border: solid 1px lightgray;
 
     &:focus
-      border: solid 2px back-grey;
+      background-color: alpha-white;
+      border: solid 1px back-grey;
       outline: none;
 
   input.type
     width: 6vw;
 
   input.notes
-    width: 40vw;
+    width: 50vw;
 
   .close
     margin-left: 5px;
 
 .mini-button
-  background-color: white;
+  background-color: transparent;
   border: solid 1px lightgray;
   border-radius: 3px;
   color: lightgray;
@@ -71,6 +122,7 @@
   padding: 2px 10px;
 
   &:hover
+    background-color: alpha-white;
     color: dark-grey;
     border-color: dark-grey;
 
@@ -92,3 +144,35 @@
     &.now
       color: black;
 
+.transport
+  background-color: faint-grey;
+  padding: 5px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+
+  .latency
+    color: primary-red;
+
+.fx-controls
+  cursor: pointer;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 250ms;
+
+  &:hover
+    opacity: 1;
+
+  .enable
+    background-color: primary-blue;
+    height: 40px;
+    width: 40px;
+    transition: background-color 250ms;
+
+    &.on
+      background-color: primary-green;
+
+    &.off
+      background-color: primary-red;

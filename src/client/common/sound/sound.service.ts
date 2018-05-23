@@ -31,6 +31,10 @@ export class SoundService {
     }
   }
 
+  get resumed() {
+    return this.firstUserAction;
+  }
+
   play(soundName: SoundName, time?: any, params?: Params): Sound {
     let sound = this.loadSound(soundName);
     sound.play(time, params);

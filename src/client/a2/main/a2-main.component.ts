@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -44,6 +45,7 @@ export class A2MainComponent implements OnInit, OnDestroy {
   public showBall$: Observable<boolean>;
   public showStart: boolean = false;
   public weenieStart: string = 'inactive';
+  private subscriptions: Subscription[];
 
   constructor(public route: ActivatedRoute, public transport: TransportService,
               public player: PlayerService, public stage: StageService,
@@ -66,12 +68,16 @@ export class A2MainComponent implements OnInit, OnDestroy {
     this.lesson.max = _.parseInt(this.route.snapshot.queryParams['max']);
     this.lesson.min = _.parseInt(this.route.snapshot.queryParams['min']);
     let grid = new Grid({q: 'snare', a: 'kick'}, this.lesson.pulsesByBeat);
-    this.lesson.init({ surfaces: [grid], stages: 5 });
+    this.lesson.init({ surfaces: [grid], stages: 4 });
     this.player.init();
     this.transport.reset([this.lesson.beatsPerMeasure]);
 
-    this.transport.setOnTop((first) => this.onTop());
-    this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
+    this.subscriptions = [
+      this.transport.top$.subscribe(() => this.onTop()),
+      this.transport.pulse$.subscribe(pulse => {
+        this.stage.pulse(pulse.time, pulse.beat, pulse.tick);
+      })
+    ];
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);

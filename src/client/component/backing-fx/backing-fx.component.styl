@@ -30,6 +30,11 @@
 .note
   position: relative;
 
+  &:before, &:after
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
   .shadow
     position: absolute;
     width: 100%;
@@ -44,9 +49,6 @@
       &:before, &:after
         border-radius: 50%;
         content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
 
       &:before
         left: 7%;
@@ -82,16 +84,21 @@
       box-shadow: 0 0 15px 3px alpha(gray, 0.2);
 
   &.synth .note
-    animation-name: synth;
-    animation-duration: 250ms;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
+    transform-origin: top;
     height: 10vh;
     width: 300%;
-    background-color: primary-green;
-    background: linear-gradient(-15deg, transparent 65px, alpha(primary-green, 0.5) 75px) repeat-x;
-    background-size: 25vh 10vh;
-    transform-origin: top;
+    transition-timing-function: ease-out;
+
+    &:after
+      content: '';
+      animation-name: synth;
+      animation-duration: 250ms;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      background-color: primary-green;
+      background: linear-gradient(-15deg, transparent 65px, alpha(primary-green, 0.5) 75px) repeat-x;
+      background-size: 25vh 10vh;
+      width: 100%;
 
     .shadow
       background: linear-gradient(transparent, alpha(primary-green, 0.5));

@@ -1,11 +1,15 @@
 import * as _ from 'lodash';
+import * as Tone from 'tone';
 
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { trigger, style, animate, transition, keyframes, query } from '@angular/animations';
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
+import { beatTickFrom } from '../../common/core/beat-tick.model';
 import { Note } from '../../common/core/note.model';
+import { Phrase } from '../../common/phrase/phrase.model';
+import { SoundService } from '../../common/sound/sound.service';
+import { TransportService } from '../../common/core/transport.service';
 
 class BackingNote {
   readonly id: string;
@@ -15,9 +19,9 @@ class BackingNote {
   readonly noteClass: string;
   readonly shadowHeight: string;
 
-  constructor(readonly note: Note) {
-    this.id = note.toString();
+  constructor(note: Note, id: string) {
     let frequency = note.frequency;
+    this.id = id;
     this.fxClass = note.soundName + (frequency ? ' rotate' + (frequency.toMidi() % 12) :
         ' rotate' + _.random(11) + ' offset' + _.random(24));
     this.tiltTransform = frequency ? 'rotateX(40deg)' : 'rotateX(10deg)';
@@ -40,8 +44,8 @@ class BackingNote {
     trigger('show', [
       transition(':enter', [
         query('.pitched', animate(100, keyframes([
-            style({ transform: 'scale(1.2, .8)', opacity: 0 }),
-            style({ transform: 'scale(1)', opacity: 1 })
+            style({ transform: 'translateX(-40%)', opacity: 0 }),
+            style({ transform: 'translate(0, 0) scale(1)', opacity: 1 })
           ])), { optional: true }),
         query('.unpitched', animate(250, keyframes([
             style({ transform: 'scale(0.8)', opacity: 0.5, offset: 0 }),
@@ -53,9 +57,9 @@ class BackingNote {
         /* TODO: Performance sucks!
         query('.shadow',
           animate(140, keyframes([
-            style({ opacity: 0, offset: 0 }),
-            style({ opacity: 1, offset: 1 })
-          ])), { optional: true })*/
+            style({ transform: 'scale(1)' }),
+            style({ transform: 'scale(3)' })
+          ])), { optional: true }), */
         query('.pitched',
           animate(140, keyframes([
             style({ transform: 'translateY(0) scale(1)', opacity: 1 }),
@@ -70,32 +74,57 @@ class BackingNote {
     ])
   ]
 })
-export class BackingFx implements OnChanges, OnDestroy {
-  @Input() public notes$: Observable<Note[]>;
-  @Input() public notesOff$: Observable<String[]>;
+export class BackingFx implements OnInit, OnDestroy {
+  @Input() private phrase: Phrase;
+  @Input() show: boolean = true;
+  private _fixedNotes: string[] = [];
   private subscriptions: Subscription[];
 
+  public notesMap: _.Dictionary<BackingNote> = {};
   public notes: BackingNote[] = [];
 
-  constructor() { }
+  constructor(private sound: SoundService, private transport: TransportService) { }
 
-  ngOnChanges() {
-    if (!this.subscriptions) {
-      this.subscriptions = [
-        this.notes$.subscribe((notes) => {
-          _.forEach(notes, (note) => {
-            this.notes.push(new BackingNote(note));
-          });
-        }),
-        this.notesOff$.subscribe((noteIds) => {
-          _.forEach(noteIds, (noteId) => {
-            _.remove(this.notes, (n) => {
-              return n.id === noteId;
-            });
-          });
-        })
-      ];
-    }
+  ngOnInit() {
+    this.subscriptions = [
+      this.transport.pulse$.subscribe((pulse) => {
+        if (!this.phrase) {
+          return;
+        }
+        let {time, beat, tick} = pulse;
+        let now = beatTickFrom(beat, tick);
+        let notes = this.phrase.getNotes(beat, tick);
+        _.forEach(notes, (note) => {
+          this.sound.play(note.soundName, time, note.params);
+          if (this.show !== undefined) {
+            let id = note.toString() + now;
+            Tone.Draw.schedule(() => {
+              this.notesMap[id] = new BackingNote(note, id);
+              this.notes = _.values(this.notesMap);
+            }, time);
+            Tone.Draw.schedule(() => {
+              delete this.notesMap[id];
+              this.notes = _.values(this.notesMap);
+            }, time + note.duration);
+          }
+        });
+      })
+    ];
+  }
+
+  @Input() set fixedNotes(fixedNotes: string[]) {
+    _.forEach(this._fixedNotes, (noteId) => {
+      delete this.notesMap[noteId];
+    });
+    this._fixedNotes = fixedNotes;
+    _.forEach(fixedNotes, (noteId) => {
+      let note = Note.from(noteId);
+      if (this.transport.paused) {
+        this.sound.play(note.soundName, '+0.1', note.params);
+      }
+      this.notesMap[noteId] = new BackingNote(note, noteId);
+    });
+    this.notes = _.values(this.notesMap);
   }
 
   ngOnDestroy() {

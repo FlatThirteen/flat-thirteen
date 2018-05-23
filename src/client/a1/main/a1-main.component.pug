@@ -62,7 +62,7 @@ mixin pulse-setting(type)
           [ngClass]="{active: stage.isCountPlay && transport.active()," +
               "fail: player.noteCount !== stage.goalNotes, " +
               "weenie: isPlaybackWeenie(), disabled: playDisabled()}")
-        .counter(*ngIf="stage.nextScene === 'playback'", (click)="onStandby()") {{ transport.count() }}
+        .counter(*ngIf="stage.nextScene === 'playback'", (click)="onStandby()") {{ transport.count }}
       minus-fx([show$]="stage.playMinusFx$")
     html-grid(*ngIf="isGrid(surface)", [grid]="surface", [class.weenie]="isGridWeenie()")
     .controls

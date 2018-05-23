@@ -35,7 +35,7 @@ export class Note {
     return accent + this.soundName + pitch;
   }
 
-  static from(soundString: String): Note {
+  static from(soundString: String, duration: string = '8n'): Note {
     let matches = soundString.match(/([>\*]?)(\w+)(?:\((.+)\))?/);
     if (!matches || !soundMap.hasOwnProperty(matches[2])) {
       return null;
@@ -48,6 +48,7 @@ export class Note {
     if (pitch) {
       params.pitch = pitch;
     }
+    params.duration = duration;
     return new Note(<SoundName>soundName, params);
   }
 
