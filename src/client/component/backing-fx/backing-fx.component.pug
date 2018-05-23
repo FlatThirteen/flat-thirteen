@@ -1,4 +1,4 @@
-.container
+.container(*ngIf="show")
   .fx(*ngFor="let note of notes", [ngClass]="note.fxClass", [@show]="")
     .tilt([style.transform]="note.tiltTransform")
       .scale([style.transform]="note.scaleTransform")

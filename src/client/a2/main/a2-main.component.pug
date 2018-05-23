@@ -1,7 +1,7 @@
 .surface-container
   bouncing-ball([showBall$]="showBall$")
   .surface(*ngFor="let surface of lesson.surfaces; let i = index")
-    html-grid(*ngIf="transport.firstUserAction && isGrid(surface)", [grid]="surface")
+    html-grid(*ngIf="transport.resumed && isGrid(surface)", [grid]="surface")
   .controls
     .start.button(*ngIf="transport.paused || stage.isLoop", [@weenie]="weenieStart",
         (click)="onStart()") Start

@@ -30,4 +30,4 @@
               | {{player.cursor === pulseIndex ? key : ''}}
   .counter-container.overlay(*ngIf="stage.isCount || stage.isVictory || !stage.isLoop && transport.starting")
     .counter([class.active]="transport.active()", *ngIf="stage.isCount || transport.starting")
-      | {{transport.count()}}
+      | {{transport.count}}

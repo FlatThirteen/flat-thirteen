@@ -21,38 +21,38 @@ export class Pulse {
 export class TransportService {
   quarterLoop: Tone.Loop;
   pulsesPart: Tone.Part;
+  onTopId: number;
 
   beatsPerMeasure: number[];
   numBeats: number;
   supportedTicks: number[];
 
   paused$: Subject<boolean> = new Subject();
+  top$: Subject<boolean> = new Subject();
   pulse$: Subject<Pulse> = new Subject();
   lastBeat$: Subject<boolean> = new Subject();
 
+  paused: boolean = true;
   measure: number = 0;
   beat: number = 0;
   beatIndex: number = 0;
 
-  onTopId: number;
-  onPulse: (time: number, beat: number, pulse: number) => any;
-
-  paused: boolean = true;
-  firstUserAction: boolean = false;
+  latencyHistogram: number[] = [];
 
   constructor(private sound: SoundService) {}
 
   resume() {
-    // New versions of Chrome don't allow Audio until user takes action.
-    if (!this.firstUserAction) {
-      return this.sound.resume().then(() => {
-        this.firstUserAction = true;
-        console.log('Resumed AudioContext')
-      });
-    }
+    this.sound.resume();
+  }
+
+  get resumed() {
+    return this.sound.resumed;
   }
 
   reset(beatsPerMeasure: number[] = [4]) {
+    let restart = !this.paused;
+    this.stop();
+
     this.beatsPerMeasure = beatsPerMeasure;
     this.numBeats = _.sum(beatsPerMeasure);
 
@@ -61,7 +61,7 @@ export class TransportService {
     this.beatIndex = -1;
 
     Tone.Transport.loop = true;
-    Tone.Transport.setLoopPoints(0, beatsPerMeasure.length + 'm');
+    Tone.Transport.setLoopPoints(0, this.loopTime());
 
     this.disposeLoops();
 
@@ -69,25 +69,18 @@ export class TransportService {
       if (this.paused) {
         return;
       }
+      this.logIfLate(time);
       this.beatIndex++;
-      this.sound.play('click', time, { variation: this.beat ? 'normal' : 'heavy' });
-
-      this.pulse$.next({
-        time: time,
-        beat: this.beatIndex,
-        nextBeat: this.nextBeat(),
-        tick: 0
-      });
-      if (this.onPulse) {
-        this.onPulse(time, this.beatIndex, 0);
-      }
-      this.lastBeat$.next(this.lastBeat());
-
       this.beat++;
-      if (this.beat === beatsPerMeasure[this.measure]) {
+      if (this.beat >= this.countBeats) {
         this.beat = 0;
         this.measure++;
       }
+
+      this.sound.play('click', time, { variation: this.beat ? 'normal' : 'heavy' });
+      this.emitPulse(time, 0);
+
+      this.lastBeat$.next(this.lastBeat());
     }, '4n');
     this.quarterLoop.start(0);
 
@@ -100,50 +93,89 @@ export class TransportService {
     }, {});
     this.supportedTicks = <number[]>_.sortBy(_.values(tickEvents));
     this.pulsesPart = new Tone.Part((time: number, tick) => {
-      this.pulse$.next({
-        time: time,
-        beat: this.beatIndex,
-        nextBeat: this.nextBeat(),
-        tick: tick
-      });
-      if (this.onPulse) {
-        this.onPulse(time, this.beatIndex, tick);
-      }
+      this.logIfLate(time);
+      this.emitPulse(time, tick);
     }, _.toPairs(tickEvents));
     this.pulsesPart.loop = true;
     this.pulsesPart.loopEnd = '4n';
     this.pulsesPart.start(0);
 
     if (!this.onTopId) {
-      this.onTopId = Tone.Transport.schedule((time) => {
+      this.onTopId = Tone.Transport.schedule(() => {
+        let first = this.measure == 0;
         this.measure = 0;
+        this.beat = -1;
         this.beatIndex = -1;
+        this.top$.next(first);
       }, 0);
     }
-  }
 
-  setOnTop(callback: (first: boolean) => any) {
-    if (this.onTopId !== undefined) {
-      Tone.Transport.clear(this.onTopId);
+    if (restart) {
+      this.start();
     }
-    this.onTopId = Tone.Transport.schedule(() => {
-      let first = this.measure == 0;
-      this.measure = 0;
-      this.beatIndex = -1;
-      return callback(first);
-    }, 0);
   }
 
-  setOnPulse(callback: (time: number, beat: number, pulse: number) => any) {
-    this.onPulse = callback;
+  emitPulse(time: number, tick:number) {
+    this.pulse$.next({
+      time,
+      beat: this.beatIndex,
+      nextBeat: this.nextBeat(),
+      tick
+    });
+  }
+
+  logIfLate(time) {
+    let start = Tone.now();
+    if (start <= time) {
+      return;
+    }
+    let difference = _.floor(10 * (start - time));
+    if (!this.latencyHistogram[difference]) {
+      this.latencyHistogram[difference] = 1;
+    } else {
+      this.latencyHistogram[difference]++;
+    }
+    console.log('Late: ', _.round(start - time, 5), this.latencyHistogram, time,
+        this.latencyHint);
+  }
+
+  set latencyHint(latencyHint: string) {
+    if (this.isValidLatencyHint(latencyHint)) {
+      if (_.inRange(_.toNumber(latencyHint), 0, 0.5)) {
+        Tone.context['latencyHint'] = _.toNumber(latencyHint);
+      } else {
+        Tone.context['latencyHint'] = latencyHint;
+      }
+    }
+  }
+
+  get latencyHint() {
+    return Tone.context['latencyHint'];
+  }
+
+  isValidLatencyHint(latencyHint: string) {
+    return latencyHint === 'fastest' || latencyHint ===  'interactive' ||
+      latencyHint === 'balanced' || latencyHint === 'playback' ||
+      _.inRange(_.toNumber(latencyHint), 0, 0.5);
   }
 
   set bpm(bpm: number) {
-    Tone.Transport.bpm.value = bpm;
+    if (this.isValidBpm(bpm)) {
+      Tone.Transport.bpm.rampTo(bpm, 1);
+      Tone.Transport.setLoopPoints(0, this.loopTime());
+    }
   }
 
   get bpm() {
     return Tone.Transport.bpm.value;
+  }
+
+  isValidBpm(bpm: number) {
+    return bpm >= 40 && bpm <= 300;
+  }
+
+  loopTime() {
+    return (new Tone.Time('4n')).toSeconds() * this.numBeats;
   }
 
   get started() {
@@ -155,6 +187,7 @@ export class TransportService {
   }
 
   start(time = '+4n') {
+    this.latencyHistogram = [];
     this.paused = false;
     this.paused$.next(false);
     this.lastBeat$.next(false);
@@ -171,11 +204,6 @@ export class TransportService {
     Tone.Transport.stop();
     if (shouldDestroy) {
       this.disposeLoops();
-      this.onPulse = undefined;
-      if (this.onTopId !== undefined) {
-        Tone.Transport.clear(this.onTopId);
-        this.onTopId = undefined;
-      }
     }
   }
 
@@ -188,15 +216,18 @@ export class TransportService {
       this.pulsesPart.dispose();
       delete this.pulsesPart;
     }
-
   }
 
-  count() {
-    return this.beat || this.beatsPerMeasure[this.measure - 1];
+  get count() {
+    return this.beat + 1;
   }
 
   counts() {
     return _.times(this.numBeats);
+  }
+
+  get countBeats() {
+    return this.beatsPerMeasure[this.measure];
   }
 
   nextBeat() {

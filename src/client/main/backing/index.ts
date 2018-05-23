@@ -9,7 +9,6 @@ import { BackingFxModule } from '../../component/backing-fx/backing-fx.module';
 
 import { BackingComponent } from './backing.component';
 
-import { BackingService } from '../../common/backing/backing.service';
 import { SoundService } from '../../common/sound/sound.service';
 import { TransportService } from '../../common/core/transport.service';
 
@@ -25,7 +24,6 @@ import { TransportService } from '../../common/core/transport.service';
     BackingComponent
   ],
   providers: [
-    BackingService,
     SoundService,
     TransportService
   ]

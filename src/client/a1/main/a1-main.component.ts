@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { trigger, style, animate, state, transition, keyframes } from '@angular/animations';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { PowersService, PowerType, PowerUp } from '../../common/core/powers.service';
 import { SoundService } from '../../common/sound/sound.service';
@@ -289,6 +289,10 @@ export class A1MainComponent implements OnInit, OnDestroy {
           this.sound.playSequence('cowbell', ['E5', 'F4'], '32n');
         }
         this.changed = true;
+      }),
+      this.transport.top$.subscribe(first => { this.onTop(first); }),
+      this.transport.pulse$.subscribe(pulse => {
+        this.stage.pulse(pulse.time, pulse.beat, pulse.tick)
       })
     ];
     this.powers.init(this.route.snapshot.queryParams);
@@ -301,8 +305,6 @@ export class A1MainComponent implements OnInit, OnDestroy {
       // Don't show initial next button if there are no powers.
       this.progress.next();
     }
-    this.transport.setOnTop((first) => this.onTop(first));
-    this.transport.setOnPulse((time, beat, tick) => this.stage.pulse(time, beat, tick));
 
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
