@@ -4,3 +4,10 @@
       .scale([style.transform]="note.scaleTransform")
         .note([ngClass]="note.noteClass")
           .shadow([style.height]="note.shadowHeight")
+  .counts(*ngIf="showCounts", (click)="resetCounts()")
+    span {{ playCount }}
+    span  {{ drawCount }}
+    span.diff(*ngIf="playCount !== drawCount && playCount - drawCount > playNotes")
+      | ({{ drawCount - playCount }})
+    span([ngClass]="{diff: activeNotes < 0}")  {{ undrawCount }}
+      | {{activeNotes < 0 ? '' : '+'}}{{ activeNotes }}

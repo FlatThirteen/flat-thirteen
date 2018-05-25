@@ -1,8 +1,15 @@
 import * as _ from 'lodash';
 
-import { BeatTick, beatTickFrom } from '../core/beat-tick.model';
+import { BeatTick, beatTickFrom, duration, ticks } from '../core/beat-tick.model';
 import { SoundName, Note } from '../core/note.model';
 import { Rhythm } from '../core/rhythm.model';
+
+export interface Track {
+  type: string,
+  notes: string,
+  solo?: boolean,
+  mute?: boolean
+}
 
 export class Phrase {
   private notes: _.Dictionary<Note[]>;
@@ -51,19 +58,65 @@ export class Phrase {
     }
   }
 
-  builder(): PhraseBuilder {
-    return new ConstantPhraseBuilder(this);
-  }
-
   toArray(): string[] {
-    return _.chain(this.notes).toPairs().sortBy([0]).
-        map((pair) => _.replace(_.toString(pair), ',', ': ')).value();
+    return _.chain(this.notes).toPairs().sortBy([0]).map((pair) => _.replace(_.toString(pair), ',', ': ')).value();
   }
 
   toString(): string {
     return _.toString(_.toPairs(this.notes));
   }
+
+  static from(tracks: Track[]) {
+    return _.reduce(tracks, (phrase, track) => {
+      if (parser[track.type] && track.notes) {
+        _.forEach(track.notes.split('|'), (beatNote, beatIndex) => {
+          _.forEach(beatNote.split(','), (pulseNote, pulseIndex, array) => {
+            if (pulseIndex > 3) {
+              return;
+            }
+            let pulses = Math.min(array.length, 4);
+            _.forEach(pulseNote.split('.'), (chordNote) => {
+              try {
+                let note = parser[track.type](chordNote, duration(pulses));
+                if (note) {
+                  phrase.add(note, beatIndex, ticks(pulseIndex, pulses));
+                }
+              } catch (error) {
+                console.log('Parse error:', error);
+              }
+            });
+          });
+        });
+      }
+      return phrase;
+    }, new Phrase());
+  }
 }
+
+const parser = {
+  synth: (data, duration) => {
+    let frequency = Note.pitch(data);
+    if (frequency) {
+      return new Note('synth', {
+        pitch: frequency.toNote(),
+        duration: duration
+      });
+    }
+  },
+  drums: (data) => {
+    let sound: SoundName = data.match(/[kK]/) ? 'kick' :
+      data.match(/[sS]/) ? 'snare' : null;
+    if (sound) {
+      return new Note(sound);
+    }
+  },
+  cowbell: (data) => {
+    let frequency = Note.pitch(data);
+    if (frequency) {
+      return new Note('cowbell', { pitch: frequency.toNote() });
+    }
+  }
+};
 
 export interface PhraseBuilder {
   build(): Phrase;

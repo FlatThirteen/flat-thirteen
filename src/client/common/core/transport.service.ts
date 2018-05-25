@@ -36,6 +36,8 @@ export class TransportService {
   measure: number = 0;
   beat: number = 0;
   beatIndex: number = 0;
+  startTime: number = 0;
+  endTime: number = 0;
 
   latencyHistogram: number[] = [];
 
@@ -115,7 +117,7 @@ export class TransportService {
     }
   }
 
-  emitPulse(time: number, tick:number) {
+  emitPulse(time: number, tick: number) {
     this.pulse$.next({
       time,
       beat: this.beatIndex,
@@ -125,27 +127,24 @@ export class TransportService {
   }
 
   logIfLate(time) {
-    let start = Tone.now();
+    let start = this.currentTime;
     if (start <= time) {
       return;
     }
-    let difference = _.floor(10 * (start - time));
+    let difference = Math.min(_.floor(10 * (start - time)), 20);
     if (!this.latencyHistogram[difference]) {
       this.latencyHistogram[difference] = 1;
     } else {
       this.latencyHistogram[difference]++;
     }
-    console.log('Late: ', _.round(start - time, 5), this.latencyHistogram, time,
-        this.latencyHint);
+    console.log(this.elapsedTime() + 's Late: ', _.round(start - time, 5),
+        this.latencyHistogram, time, this.latencyHint);
   }
 
   set latencyHint(latencyHint: string) {
     if (this.isValidLatencyHint(latencyHint)) {
-      if (_.inRange(_.toNumber(latencyHint), 0, 0.5)) {
-        Tone.context['latencyHint'] = _.toNumber(latencyHint);
-      } else {
-        Tone.context['latencyHint'] = latencyHint;
-      }
+      Tone.context['latencyHint'] = this.isNumericLatencyHint(latencyHint) ?
+        _.toNumber(latencyHint) : latencyHint;
     }
   }
 
@@ -156,7 +155,11 @@ export class TransportService {
   isValidLatencyHint(latencyHint: string) {
     return latencyHint === 'fastest' || latencyHint ===  'interactive' ||
       latencyHint === 'balanced' || latencyHint === 'playback' ||
-      _.inRange(_.toNumber(latencyHint), 0, 0.5);
+      this.isNumericLatencyHint(latencyHint);
+  }
+
+  isNumericLatencyHint(latencyHint: string) {
+    return _.inRange(_.toNumber(latencyHint), 0, 0.5);
   }
 
   set bpm(bpm: number) {
@@ -193,10 +196,13 @@ export class TransportService {
     this.lastBeat$.next(false);
     if (!this.started) {
       Tone.Transport.start(time);
+      this.startTime = this.currentTime;
+      this.endTime = 0;
     }
   }
 
   stop(shouldDestroy: boolean = false) {
+    this.endTime = this.currentTime;
     this.paused = true;
     this.paused$.next(true);
     this.measure = 0;
@@ -215,6 +221,12 @@ export class TransportService {
     if (this.pulsesPart) {
       this.pulsesPart.dispose();
       delete this.pulsesPart;
+    }
+  }
+
+  elapsedTime() {
+    if (this.startTime) {
+      return _.round((this.endTime || this.currentTime) - this.startTime);
     }
   }
 
@@ -277,5 +289,9 @@ export class TransportService {
     let high = tickIndex !== this.supportedTicks.length ?
       this.supportedTicks[tickIndex] : ticksPerBeat;
     return tick - low < high - tick ? low : high !== ticksPerBeat ? high : null;
+  }
+
+  get currentTime() {
+    return Tone.context['currentTime'];
   }
 }

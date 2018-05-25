@@ -137,6 +137,7 @@
 
   .debug
     display: inline-block;
+    cursor: pointer;
 
     &.selected
       background-color: faint-grey;
@@ -153,6 +154,12 @@
 
   .latency
     color: primary-red;
+
+  .started, .starting, .paused, .elapsed
+    display: inline-block;
+
+  .elapsed
+    margin-left: 10px;
 
 .fx-controls
   cursor: pointer;
