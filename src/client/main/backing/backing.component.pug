@@ -1,4 +1,4 @@
-backing-fx([phrase]="phrase", [fixedNotes]="fixedNotes", [show]="showFx")
+backing-fx([phrase]="phrase", [fixedNotes]="fixedNotes", [show]="showFx", [showCounts]="true")
 
 .container
   .left
@@ -32,8 +32,9 @@ backing-fx([phrase]="phrase", [fixedNotes]="fixedNotes", [show]="showFx")
     .add.mini-button((click)="onAdd()") +
 
   .footer
-    .line(*ngFor="let beat of debugPhrase", (click)="onBeat(beat)")
-      .debug([ngClass]="{selected: selectedBeat === beat, now: isNow(beat)}") {{ beat }}
+    .line(*ngFor="let beat of debugPhrase")
+      .debug([ngClass]="{selected: selected === beat, now: isNow(beat)}",
+          (click)="onBeat(beat)") {{ beat }}
 
   .right
     h3 More
@@ -49,6 +50,7 @@ backing-fx([phrase]="phrase", [fixedNotes]="fixedNotes", [show]="showFx")
       | {{ transport.measure }} : {{ transport.count }} / {{ transport.countBeats }}
     .starting(*ngIf="transport.starting") ...
     .paused(*ngIf="transport.paused") {{ transport.numBeats }} beats
+    .elapsed(*ngIf="transport.startTime") ({{ transport.elapsedTime() }}s)
 
 .fx-controls
   .enable((click)="showFx = !showFx", [ngClass]="showFx ? 'on' : showFx === false ? 'off' : ''")

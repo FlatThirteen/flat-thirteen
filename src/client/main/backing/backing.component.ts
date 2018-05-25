@@ -3,19 +3,12 @@ import * as _ from 'lodash';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { beatTickFrom, duration, ticks } from '../../common/core/beat-tick.model';
-import { Note, SoundName } from '../../common/core/note.model';
+import { beatTickFrom } from '../../common/core/beat-tick.model';
 import { TransportService } from '../../common/core/transport.service';
-import { Phrase } from '../../common/phrase/phrase.model';
+import { Phrase, Track } from '../../common/phrase/phrase.model';
 
 let requestAnimationFrameId: number;
 
-interface Track {
-  type: string,
-  notes: string,
-  solo?: boolean,
-  mute?: boolean
-}
 
 @Component({
   selector: 'backing-page',
@@ -24,7 +17,7 @@ interface Track {
 })
 
 export class BackingComponent implements OnInit, OnDestroy {
-  beatsPerMeasure: string = '4';
+  beatsPerMeasure: string = '4,4';
   tempo: number = 120;
   latencyHint: string = 'balanced';
 
@@ -44,7 +37,7 @@ export class BackingComponent implements OnInit, OnDestroy {
       'C1.C2.C3.C4.C5 .C6.C7.C8.C9| C4.E4.G4.Bb4| Db6.F6.Ab6.Cb7| D8.F#8.A8.C9'
     ]
   });
-  selectedBeat: string;
+  selected: string;
   showFx: boolean = true;
   showSuggestions: boolean = false;
 
@@ -65,7 +58,7 @@ export class BackingComponent implements OnInit, OnDestroy {
       })
     ];
     this.transport.latencyHint = this.latencyHint;
-    this.transport.reset([4]);
+    this.onBpm(this.beatsPerMeasure);
     this.parseNotes();
     function draw() {
       requestAnimationFrameId = requestAnimationFrame(draw);
@@ -133,11 +126,11 @@ export class BackingComponent implements OnInit, OnDestroy {
 
   onBeat(beatDebug: string) {
     this.transport.resume();
-    if (this.selectedBeat !== beatDebug) {
-      this.selectedBeat = beatDebug;
-      this.fixedNotes = _.split(_.split(beatDebug, ': ')[1], ',');
+    if (this.selected !== beatDebug) {
+      this.selected = beatDebug;
+      this.fixedNotes = this._getFixed(beatDebug);
     } else {
-      this.selectedBeat = null;
+      this.selected = null;
       this.fixedNotes = [];
     }
   }
@@ -150,61 +143,32 @@ export class BackingComponent implements OnInit, OnDestroy {
   }
 
   parseNotes() {
-    let phrase = new Phrase();
-    let solo = false;
-    _.forEach(this.tracks, (track) => {
-      if (!solo && track.solo) {
-        phrase = new Phrase();
-        solo = true;
-      }
-      if (parser[track.type] && track.notes && !track.mute && (!solo || track.solo)) {
-        _.forEach(track.notes.split('|'), (beatNote, beatIndex) => {
-          _.forEach(beatNote.split(','), (pulseNote, pulseIndex, array) => {
-            let pulses = array.length;
-            _.forEach(pulseNote.split('.'), (chordNote) => {
-              try {
-                let note = parser[track.type](chordNote, duration(pulses));
-                if (note) {
-                  phrase.add(note, beatIndex, ticks(pulseIndex, pulses));
-                }
-              } catch(error) {
-                console.log('Parse error:', error);
-              }
-            });
-          });
-        });
-      }
+    let startTime = _.now();
+    let solo = true;
+    let activeTracks = _.filter(this.tracks, (track) => {
+      return track.solo && !track.mute;
     });
-
-    this.phrase = phrase;
-    this.debugPhrase = phrase.toArray();
-    this.fixedNotes = [];
-    this.selectedBeat = null;
-    this.anySolo = solo;
-  }
-}
-
-const parser = {
-  synth: (data, duration) => {
-    let frequency = Note.pitch(data);
-    if (frequency) {
-      return new Note('synth', {
-        pitch: frequency.toNote(),
-        duration: duration
+    if (!activeTracks.length) {
+      solo = false;
+      activeTracks = _.filter(this.tracks, (track) => {
+        return !track.mute;
       });
     }
-  },
-  drums: (data) => {
-    let sound: SoundName = data.match(/[kK]/) ? 'kick' :
-      data.match(/[sS]/) ? 'snare' : null;
-    if (sound) {
-      return new Note(sound);
+
+    this.phrase = Phrase.from(activeTracks);
+    this.debugPhrase = this.phrase.toArray();
+    this.anySolo = solo;
+    if (this.selected) {
+      let selectedBeatTick = _.split(this.selected, ': ')[0];
+      this.selected = _.find(this.debugPhrase, (debugPhrase) => {
+        return _.startsWith(debugPhrase, selectedBeatTick);
+      });
+      this.fixedNotes = this.selected ? this._getFixed(this.selected) : [];
     }
-  },
-  cowbell: (data) => {
-    let frequency = Note.pitch(data);
-    if (frequency) {
-      return new Note('cowbell', { pitch: frequency.toNote() });
-    }
+    console.log('parseNotes took ' + (_.now() - startTime) + 'ms', startTime, _.now());
   }
-};
+
+  private _getFixed(beatDebug) {
+    return _.split(_.split(beatDebug, ': ')[1], ',')
+  }
+}

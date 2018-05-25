@@ -11,31 +11,6 @@ import { Phrase } from '../../common/phrase/phrase.model';
 import { SoundService } from '../../common/sound/sound.service';
 import { TransportService } from '../../common/core/transport.service';
 
-class BackingNote {
-  readonly id: string;
-  readonly fxClass: string;
-  readonly tiltTransform: string;
-  readonly scaleTransform: string;
-  readonly noteClass: string;
-  readonly shadowHeight: string;
-
-  constructor(note: Note, id: string) {
-    let frequency = note.frequency;
-    this.id = id;
-    this.fxClass = note.soundName + (frequency ? ' rotate' + (frequency.toMidi() % 12) :
-        ' rotate' + _.random(11) + ' offset' + _.random(24));
-    this.tiltTransform = frequency ? 'rotateX(40deg)' : 'rotateX(10deg)';
-    this.scaleTransform = !frequency ? '' : 'scale(' +
-        (-.009375 * frequency.toMidi() + 1.225) + ',' +
-        (frequency.toMidi() / -160 + 1.15) + ')';
-    this.noteClass = note.soundName === 'cowbell' ? 'cowbell delay' + _.random(4) :
-        frequency ? 'pitched' : 'unpitched' + (note.soundName !== 'snare' ?
-            ' before' + _.random(11) + ' after' + _.random(11) : '');
-    this.shadowHeight = this.noteClass !== 'pitched' ? '0' :
-      (frequency.toMidi() * -1.875 + 245) + '%';
-  }
-}
-
 @Component({
   selector: 'backing-fx',
   templateUrl: 'backing-fx.component.pug',
@@ -49,8 +24,7 @@ class BackingNote {
           ])), { optional: true }),
         query('.unpitched', animate(250, keyframes([
             style({ transform: 'scale(0.8)', opacity: 0.5, offset: 0 }),
-            style({ transform: 'scale(2)', opacity: 1, offset: 0.3 }),
-            style({ transform: 'scale(2.5)', opacity: 0.7, offset: 1 }),
+            style({ transform: 'scale(2)', opacity: 1, offset: 1 })
         ])), { optional: true })
       ]),
       transition(':leave', [
@@ -60,13 +34,15 @@ class BackingNote {
             style({ transform: 'scale(1)' }),
             style({ transform: 'scale(3)' })
           ])), { optional: true }), */
-        query('.pitched',
-          animate(140, keyframes([
+        query('.pitched', animate(140, keyframes([
             style({ transform: 'translateY(0) scale(1)', opacity: 1 }),
             style({ transform: 'translateY(20vh) scale(3, 1.5)', opacity: 0.3 })
           ])), { optional: true }),
-        query('.cowbell',
-          animate(140, keyframes([
+        query('.unpitched', animate(150, keyframes([
+            style({ transform: 'scale(0.8)', opacity: 0.5, offset: 0 }),
+            style({ transform: 'scale(2)', opacity: 1, offset: 1 })
+          ])), { optional: true }),
+        query('.cowbell', animate(140, keyframes([
             style({ transform: 'scale(1)', opacity: 0.5 }),
             style({ transform: 'scale(3)', opacity: 0.1 })
           ])), { optional: true })
@@ -77,11 +53,17 @@ class BackingNote {
 export class BackingFx implements OnInit, OnDestroy {
   @Input() private phrase: Phrase;
   @Input() show: boolean = true;
+  @Input() showCounts: boolean = false;
   private _fixedNotes: string[] = [];
   private subscriptions: Subscription[];
 
-  public notesMap: _.Dictionary<BackingNote> = {};
-  public notes: BackingNote[] = [];
+  public notesMap: _.Dictionary<any> = {};
+  public notes: any[] = [];
+  public playCount: number = 0;
+  public drawCount: number = 0;
+  public undrawCount: number = 0;
+  public playNotes: number = 0;
+  public activeNotes: number = 0;
 
   constructor(private sound: SoundService, private transport: TransportService) { }
 
@@ -91,30 +73,43 @@ export class BackingFx implements OnInit, OnDestroy {
         if (!this.phrase) {
           return;
         }
+        let startTime = _.now();
         let {time, beat, tick} = pulse;
         let now = beatTickFrom(beat, tick);
         let notes = this.phrase.getNotes(beat, tick);
+        this.playNotes = notes.length;
         _.forEach(notes, (note) => {
           this.sound.play(note.soundName, time, note.params);
           if (this.show !== undefined) {
+            this.playCount++;
             let id = note.toString() + now;
             Tone.Draw.schedule(() => {
-              this.notesMap[id] = new BackingNote(note, id);
-              this.notes = _.values(this.notesMap);
+              this.setBackingNote(note, id);
+              this.drawCount++;
+              this.activeNotes++;
+              this.notes = _.filter(this.notesMap, 'on');
             }, time);
             Tone.Draw.schedule(() => {
-              delete this.notesMap[id];
-              this.notes = _.values(this.notesMap);
+              if (this.notesMap[id]) {
+                this.notesMap[id].on = false;
+              }
+              this.undrawCount++;
+              this.activeNotes--;
+              this.notes = _.filter(this.notesMap, 'on');
             }, time + note.duration);
           }
         });
+        let elapsedTime = _.now() - startTime;
+        elapsedTime > 10 && console.log('pulse processing took ' + elapsedTime + 'ms')
       })
     ];
   }
 
   @Input() set fixedNotes(fixedNotes: string[]) {
     _.forEach(this._fixedNotes, (noteId) => {
-      delete this.notesMap[noteId];
+      if (this.notesMap[noteId]) {
+        this.notesMap[noteId].on = false;
+      }
     });
     this._fixedNotes = fixedNotes;
     _.forEach(fixedNotes, (noteId) => {
@@ -122,9 +117,35 @@ export class BackingFx implements OnInit, OnDestroy {
       if (this.transport.paused) {
         this.sound.play(note.soundName, '+0.1', note.params);
       }
-      this.notesMap[noteId] = new BackingNote(note, noteId);
+      this.setBackingNote(note, noteId);
     });
-    this.notes = _.values(this.notesMap);
+    this.notes = _.filter(this.notesMap, 'on');
+  }
+
+  private setBackingNote(note, id) {
+    let backingNote = this.notesMap[id] || (this.notesMap[id] = {id});
+    let frequency = note.frequency;
+    backingNote.on = true;
+    backingNote.fxClass = note.soundName + (frequency ?
+        ' rotate' + (frequency.toMidi() % 12) :
+        ' rotate' + _.random(11) + ' offset' + _.random(24));
+    backingNote.tiltTransform = frequency ? 'rotateX(40deg)' : 'rotateX(10deg)';
+    backingNote.scaleTransform = !frequency ? '' : 'scale(' +
+      (-.009375 * frequency.toMidi() + 1.225) + ',' +
+      (frequency.toMidi() / -160 + 1.15) + ')';
+    backingNote.noteClass = note.soundName === 'cowbell' ? 'cowbell delay' + _.random(4) :
+      frequency ? 'pitched' : 'unpitched' + (note.soundName !== 'snare' ?
+          ' before' + _.random(11) + ' after' + _.random(11) : '');
+    backingNote.shadowHeight = backingNote.noteClass !== 'pitched' ? '0' :
+      (frequency.toMidi() * -1.875 + 245) + '%';
+  }
+
+  resetCounts() {
+    this.playCount = 0;
+    this.drawCount = 0;
+    this.undrawCount = 0;
+    this.playNotes = 0;
+    this.activeNotes = 0;
   }
 
   ngOnDestroy() {
