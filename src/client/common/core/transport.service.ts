@@ -58,8 +58,8 @@ export class TransportService {
     this.beatsPerMeasure = beatsPerMeasure;
     this.numBeats = _.sum(beatsPerMeasure);
 
-    this.measure = 0;
-    this.beat = 0;
+    this.measure = -1;
+    this.beat = -1;
     this.beatIndex = -1;
 
     Tone.Transport.loop = true;
@@ -104,7 +104,7 @@ export class TransportService {
 
     if (!this.onTopId) {
       this.onTopId = Tone.Transport.schedule(() => {
-        let first = this.measure == 0;
+        let first = this.measure === -1;
         this.measure = 0;
         this.beat = -1;
         this.beatIndex = -1;
@@ -131,7 +131,7 @@ export class TransportService {
     if (start <= time) {
       return;
     }
-    let difference = Math.min(_.floor(10 * (start - time)), 20);
+    let difference = Math.min(_.floor(10 * (start - time)), 10);
     if (!this.latencyHistogram[difference]) {
       this.latencyHistogram[difference] = 1;
     } else {
@@ -205,8 +205,7 @@ export class TransportService {
     this.endTime = this.currentTime;
     this.paused = true;
     this.paused$.next(true);
-    this.measure = 0;
-    this.beat = 0;
+    this.measure = -1;
     Tone.Transport.stop();
     if (shouldDestroy) {
       this.disposeLoops();

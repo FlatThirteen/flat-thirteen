@@ -16,7 +16,7 @@ export type SoundName = keyof typeof soundMap;
 
 export class Note {
   constructor(public readonly soundName: SoundName,
-              public readonly params: Params = {}) {
+              public readonly params: Params = {duration: '8n'}) {
   }
 
   get frequency(): Tone.Frequency {
