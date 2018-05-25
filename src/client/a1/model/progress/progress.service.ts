@@ -80,10 +80,10 @@ export class ProgressService {
         this.lesson.init({
           surfaces: [grid],
           stages: [
-            new Phrase('kick@0:000,1:000,2:000,3:000'),
-            new Phrase('kick@0:000,1:000,2:000'),
-            new Phrase('kick@0:000,2:000,3:000'),
-            new Phrase('kick@0:000,1:000,3:000')
+            new Phrase('kick@00:000,01:000,02:000,03:000'),
+            new Phrase('kick@00:000,01:000,02:000'),
+            new Phrase('kick@00:000,02:000,03:000'),
+            new Phrase('kick@00:000,01:000,03:000')
           ],
           numberOfStages: numberOfStages
         });
