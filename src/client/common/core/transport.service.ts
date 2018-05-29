@@ -205,6 +205,7 @@ export class TransportService {
     this.endTime = this.currentTime;
     this.paused = true;
     this.paused$.next(true);
+    this.beat = -1;
     this.measure = -1;
     Tone.Transport.stop();
     if (shouldDestroy) {
@@ -230,7 +231,7 @@ export class TransportService {
   }
 
   get count() {
-    return this.beat + 1;
+    return this.beat + 1 || '';
   }
 
   counts() {
