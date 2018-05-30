@@ -24,7 +24,7 @@ export class ProgressData {
     if (powers.level('backing') < max['backing'] && powers.level('auto') === max['auto']) {
       result.push(new PowerUp('backing'));
     }
-    if (powers.level('strip') === max['strip'] && powers.level('auto') === max['auto']) {
+    if (powers.level('strip') === max['strip'] && powers.level('backing') === max['backing']) {
       let maxPulses = _.map(['pulse1', 'pulse2', 'pulse3', 'pulse4'],
           (type: PowerType) => powers.level(type));
       let min = _.min(maxPulses);
