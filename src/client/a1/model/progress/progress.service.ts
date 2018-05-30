@@ -97,7 +97,7 @@ export class ProgressService {
         });
         this.backingBuilder = new BackingPhraseBuilder([
           'C2|G1|Bb1|Eb2', 'C2|G1|Bb1|D2', 'C2|G1|Bb1|Db2', 'C2|F#1|G1|Bb1',
-          'C2|F1|G1|Bb1', 'C2|Eb1|F1|Bb1', 'C2|Eb1|F1|G'][_.random(6)]);
+          'C2|F1|G1|Bb1', 'C2|Eb1|F1|Bb1', 'C2|Eb1|F1|G1'][_.random(6)]);
       }
     });
 
