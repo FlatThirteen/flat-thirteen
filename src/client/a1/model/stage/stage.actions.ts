@@ -10,7 +10,7 @@ export namespace Stage {
   export const STANDBY = '[A1 STAGE] Standby';
   export class StandbyAction implements Action {
     readonly type = Stage.STANDBY;
-    constructor(public payload: { phrase?: Phrase }) {}
+    constructor(public payload: { goalPhrase?: Phrase, backingPhrase?: Phrase }) {}
   }
 
   export const COUNT = '[A1 STAGE] Count';

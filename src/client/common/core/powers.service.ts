@@ -6,8 +6,8 @@ import { Params } from '@angular/router';
 import { SoundService } from '../sound/sound.service';
 import { ProgressData } from '../../a1/model/progress/progress.data';
 
-export type PowerType = 'strip' | 'pulse1' | 'pulse2' | 'pulse3' | 'pulse4' | 'auto';
-export type PowerUpType = 'strip' | 'pulse' | 'auto';
+export type PowerType = 'strip' | 'pulse1' | 'pulse2' | 'pulse3' | 'pulse4' | 'auto' | 'backing';
+export type PowerUpType = 'strip' | 'pulse' | 'auto' | 'backing';
 
 export class PowerUp {
   constructor(public type: PowerUpType, public range?: number[]) {}
@@ -63,7 +63,8 @@ export class PowersService {
       pulse2: pulses[1],
       pulse3: pulses[2],
       pulse4: pulses[3],
-      auto:  _toLevel(params['auto'], ProgressData.max('auto'))
+      auto:  _toLevel(params['auto'], ProgressData.max('auto')),
+      backing: _toLevel(params['backing'], ProgressData.max('backing'))
     };
   }
 
@@ -114,6 +115,10 @@ export class PowersService {
 
   get autoLoop() {
     return this.setting['auto'] > 2;
+  }
+
+  get backing() {
+    return this.setting['backing'] > 0;
   }
 }
 

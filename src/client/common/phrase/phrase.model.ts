@@ -15,21 +15,13 @@ export class Phrase {
   private notes: _.Dictionary<Note[]>;
   private noteCount: number;
 
-  constructor(noteString?: String) {
-    this.notes = {};
-    this.noteCount = 0;
-    if (noteString) {
-      _.forEach(noteString.split(';'), (trackString: String) => {
-        let [soundString, beatTickString] = trackString.split('@', 2);
-        let note = Note.from(soundString);
-        if (note) {
-          _.forEach(beatTickString.split(','), (beatTick: BeatTick) => {
-            this.add(note, beatTick);
-          });
-        } else {
-          console.error('Invalid sound: ' + soundString);
-        }
-      });
+  constructor(copyFrom?: Phrase) {
+    if (copyFrom) {
+      this.notes = _.cloneDeep(copyFrom.notes);
+      this.noteCount = copyFrom.noteCount;
+    } else {
+      this.notes = {};
+      this.noteCount = 0;
     }
   }
 
@@ -48,6 +40,13 @@ export class Phrase {
 
   getNotes(beat: number, tick: number = 0): Note[] {
     return this.notes[beatTickFrom(beat, tick)] || [];
+  }
+
+  removeNotes(beat: number, tick: number = 0): Note[] {
+    let beatTick = beatTickFrom(beat, tick);
+    let notes = this.notes[beatTick];
+    delete this.notes[beatTick];
+    return notes;
   }
 
   numNotes(beatTick?: BeatTick): number {
