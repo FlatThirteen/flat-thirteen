@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import * as Tone from 'tone';
 
 import { Params, KickSound, SnareSound, ClickSound } from '../sound/sound';

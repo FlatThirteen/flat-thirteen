@@ -1,5 +1,8 @@
-import { PhraseBuilder, Phrase } from './phrase.model';
+import * as _ from 'lodash';
+
 import { ticks } from '../core/beat-tick.model';
+
+import { PhraseBuilder, Phrase } from './phrase.model';
 
 const type = 'synth';
 const halfTick = ticks(1, 2);
