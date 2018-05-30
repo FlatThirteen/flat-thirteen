@@ -8,9 +8,9 @@ import { trigger, style, animate, state, transition, keyframes } from '@angular/
 import { ActivatedRoute } from '@angular/router';
 
 import { PowersService, PowerType, PowerUp } from '../../common/core/powers.service';
+import { TransportService } from '../../common/core/transport.service';
 import { SoundService } from '../../common/sound/sound.service';
 import { Surface } from '../../common/surface/surface.model';
-import { TransportService } from '../../common/core/transport.service';
 
 import { LessonService } from '../model/lesson/lesson.service';
 import { PlayerService } from '../model/player/player.service';
@@ -417,7 +417,9 @@ export class A1MainComponent implements OnInit, OnDestroy {
     this.lesson.stage = stage;
     let goal = this.lesson.inStage && this.lesson.stages[stage];
     if (goal) {
-      this.stage.standby(goal);
+      let backingPhrase = !this.powers.backing ? null :
+          this.progress.backingBuilder.setLevel(stage).build();
+      this.stage.standby(goal, backingPhrase);
       if (this.powers.autoGoal) {
         this.stage.count('goal');
         if (this.transport.paused) {

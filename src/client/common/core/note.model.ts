@@ -28,6 +28,12 @@ export class Note {
     return time.toSeconds();
   }
 
+  alter(durationMap: any = {'4n': '8n', '8n': '16n'}): Note {
+    let params = _.clone(this.params);
+    params.duration = durationMap[params.duration] || params.duration;
+    return new Note(this.soundName, params)
+  }
+
   toString(): string {
     let pitch = this.params.pitch ? '(' + this.params.pitch + ')' : '';
     let accent = this.params.variation === 'heavy' ? '>' :

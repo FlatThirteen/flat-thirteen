@@ -19,7 +19,7 @@ export class StageState {
   readonly victoryPhrase: Phrase = null;
   readonly goalPlayed: boolean = false;
 
-  constructor(readonly goalPhrase: Phrase) {
+  constructor(readonly goalPhrase: Phrase, readonly backingPhrase: Phrase) {
     this.goalPenalty = new Penalty(45);
     this.wrongPenalty = new Penalty(50);
   }
@@ -27,9 +27,9 @@ export class StageState {
   static reducer(state: StageState, action: Stage.Actions): StageState {
     switch(action.type) {
       case Stage.STANDBY:
-        let { phrase } = action.payload;
-        if (phrase) {
-          return new StageState(phrase);
+        let { goalPhrase, backingPhrase } = action.payload;
+        if (goalPhrase) {
+          return new StageState(goalPhrase, backingPhrase);
         } else {
           return _.defaults({
             scene: 'standby',

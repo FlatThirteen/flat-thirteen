@@ -10,6 +10,8 @@ import { routes } from './a1-app.routing';
 import { reducers, metaReducers } from '../common/app.reducer';
 
 import { AutoIconModule } from '../component/auto-icon/auto-icon.module';
+import { BackingFxModule } from '../component/backing-fx/backing-fx.module';
+import { BackingIconModule } from '../component/backing-icon/backing-icon.module';
 import { BouncingBallModule } from '../component/bouncing-ball/bouncing-ball.module';
 import { GoalIconModule } from '../component/goal-icon/goal-icon.module';
 import { GridModule } from './main/grid/grid.module';
@@ -38,6 +40,8 @@ export const APP_IMPORTS = [
   StoreModule.forRoot(reducers, { metaReducers }),
   EffectsModule.forRoot([PlayerEffects]),
   AutoIconModule,
+  BackingFxModule,
+  BackingIconModule,
   BouncingBallModule,
   GoalIconModule,
   GridModule,

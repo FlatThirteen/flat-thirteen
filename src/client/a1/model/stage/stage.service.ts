@@ -26,6 +26,7 @@ export class StageService {
   static getPlaybackCount = createSelector(StageService.getStage, stage => stage && stage.playbackCount);
   static getGoalPenalty = createSelector(StageService.getStage, stage => stage && stage.goalPenalty);
   static getWrongPenalty = createSelector(StageService.getStage, stage => stage && stage.wrongPenalty);
+  static getBackingPhrase = createSelector(StageService.getStage, stage => stage && stage.backingPhrase);
   static getGoalPhrase = createSelector(StageService.getStage, stage => stage && stage.goalPhrase);
   static getPlayedPhrase = createSelector(StageService.getStage, stage => stage && stage.playedPhrase);
   static getVictoryPhrase = createSelector(StageService.getStage, stage => stage && stage.victoryPhrase);
@@ -37,6 +38,7 @@ export class StageService {
   readonly playbackCount$: Observable<number>;
   readonly goalPenalty$: Observable<Penalty>;
   readonly wrongPenalty$: Observable<Penalty>;
+  readonly backingPhrase$: Observable<Phrase>;
   readonly goalPhrase$: Observable<Phrase>;
   readonly playedPhrase$: Observable<Phrase>;
   readonly victoryPhrase$: Observable<Phrase>;
@@ -48,6 +50,7 @@ export class StageService {
   private _playbackCount: number;
   private goalPenalty: number;
   private wrongPenalty: number;
+  private _backingPhrase: Phrase;
   private goalPhrase: Phrase;
   private playedPhrase: Phrase;
   private victoryPhrase: Phrase;
@@ -67,6 +70,7 @@ export class StageService {
     this.playbackCount$ = this.store.select(StageService.getPlaybackCount);
     this.goalPenalty$ = this.store.select(StageService.getGoalPenalty);
     this.wrongPenalty$ = this.store.select(StageService.getWrongPenalty);
+    this.backingPhrase$ = this.store.select(StageService.getBackingPhrase);
     this.goalPhrase$ = this.store.select(StageService.getGoalPhrase);
     this.playedPhrase$ = this.store.select(StageService.getPlayedPhrase);
     this.victoryPhrase$ = this.store.select(StageService.getVictoryPhrase);
@@ -92,6 +96,7 @@ export class StageService {
     });
     this.goalCount$.subscribe(goalCount => { this._goalCount = goalCount; });
     this.playbackCount$.subscribe(playbackCount => { this._playbackCount = playbackCount; });
+    this.backingPhrase$.subscribe(backingPhrase => { this._backingPhrase = backingPhrase; });
     this.goalPhrase$.subscribe(goalPhrase => {
       this.goalPhrase = goalPhrase;
       this._goalNotes = goalPhrase && goalPhrase.numNotes();
@@ -101,8 +106,8 @@ export class StageService {
     this.goalPlayed$.subscribe(goalPlayed => { this._goalPlayed = goalPlayed; });
   }
 
-  standby(phrase?: Phrase) {
-    this.store.dispatch(new Stage.StandbyAction({ phrase }));
+  standby(goalPhrase?: Phrase, backingPhrase?: Phrase) {
+    this.store.dispatch(new Stage.StandbyAction({ goalPhrase, backingPhrase }));
   }
 
   count(nextScene: StageScene) {
@@ -169,6 +174,10 @@ export class StageService {
 
   get playbackCount() {
     return this._playbackCount;
+  }
+
+  get backingPhrase() {
+    return this._backingPhrase;
   }
 
   get sceneState() {

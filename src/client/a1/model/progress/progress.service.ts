@@ -6,15 +6,16 @@ import { Observable } from 'rxjs';
 import { createSelector } from 'reselect';
 
 import { AppState } from '../../../common/app.reducer';
-import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
 import { PowersService, PowerType, PowerUp, PowerUpType } from '../../../common/core/powers.service';
 import { Rhythm } from '../../../common/core/rhythm.model';
 import { TransportService } from '../../../common/core/transport.service';
+import { BackingPhraseBuilder } from '../../../common/phrase/backing.phrase';
+import { MonophonicMonotonePhraseBuilder, Phrase } from '../../../common/phrase/phrase.model';
 
 import { Grid } from '../../main/grid/grid.model';
 
-import { LessonService } from '../lesson/lesson.service';
 import { Result } from '../lesson/lesson.reducer';
+import { LessonService } from '../lesson/lesson.service';
 
 import { Progress } from './progress.actions';
 import { Settings } from './progress.reducer';
@@ -51,6 +52,8 @@ export class ProgressService {
   private _powerUps: PowerUp[];
   private _powerLevels: _.Dictionary<number[]>;
 
+  public backingBuilder: BackingPhraseBuilder;
+
   constructor(private store: Store<AppState>, private lesson: LessonService,
               private powers: PowersService, private transport: TransportService) {
     this.settings$ = this.store.select(ProgressService.getSettings);
@@ -79,14 +82,11 @@ export class ProgressService {
       if (!lessonNumber && rhythm.isSimple() && !stripLevel) {
         this.lesson.init({
           surfaces: [grid],
-          stages: [
-            new Phrase('kick@00:000,01:000,02:000,03:000'),
-            new Phrase('kick@00:000,01:000,02:000'),
-            new Phrase('kick@00:000,02:000,03:000'),
-            new Phrase('kick@00:000,01:000,03:000')
-          ],
+          stages: _.map(['K|K|K|K', 'K|K|K', 'K||K|K', 'K|K||K'],
+              (notes) => Phrase.from([{ type: 'drums', notes: notes}])),
           numberOfStages: numberOfStages
         });
+        this.backingBuilder = new BackingPhraseBuilder('C2|G1|Bb1|B1');
       } else {
         let phraseBuilder = new MonophonicMonotonePhraseBuilder(grid.soundNames,
           rhythm, this._settings.minNotes, this._settings.maxNotes);
@@ -95,6 +95,9 @@ export class ProgressService {
           stages: _.times(numberOfStages, () => phraseBuilder.build()),
           numberOfStages: numberOfStages
         });
+        this.backingBuilder = new BackingPhraseBuilder([
+          'C2|G1|Bb1|Eb2', 'C2|G1|Bb1|D2', 'C2|G1|Bb1|Db2', 'C2|F#1|G1|Bb1',
+          'C2|F1|G1|Bb1', 'C2|Eb1|F1|Bb1', 'C2|Eb1|F1|G'][_.random(6)]);
       }
     });
 
